@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Stack } from 'expo-router'
+import { Stack, router } from 'expo-router'
 import { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 
@@ -14,23 +14,28 @@ export default function RootLayout() {
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => setSession(session)
+      (_event, session) => {
+        setSession(session)
+      }
     )
 
     return () => subscription.unsubscribe()
   }, [])
 
-  if (!initialized) return null
+  useEffect(() => {
+    if (!initialized) return
+
+    if (session) {
+      router.replace('/(tabs)')
+    } else {
+      router.replace('/auth/login')
+    }
+  }, [session, initialized])
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      {session ? (
-        // Authenticated — show tab navigation
-        <Stack.Screen name="(tabs)" />
-      ) : (
-        // Unauthenticated — show auth screens
-        <Stack.Screen name="auth" />
-      )}
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="auth" />
     </Stack>
   )
 }

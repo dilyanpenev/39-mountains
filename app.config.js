@@ -1,4 +1,6 @@
-{
+import 'dotenv/config'
+
+export default {
   "expo": {
     "name": "39-mountains",
     "slug": "39-mountains",
@@ -26,6 +28,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "supabaseUrl": process.env.EXPO_PUBLIC_SUPABASE_URL,
+      "supabaseKey": process.env.EXPO_PUBLIC_SUPABASE_KEY,
     },
     "plugins": [
       "expo-secure-store",
