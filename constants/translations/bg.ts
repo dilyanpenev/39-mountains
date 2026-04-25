@@ -69,7 +69,22 @@ export default {
     markSummited: 'Маркирай като изкачен',
     summited: 'Изкачен',
     elevation: 'Височина',
+    range: 'Планинска верига',
     region: 'Регион',
+    diff: 'Трудност',
+    noResults: 'Няма планини, отговарящи на филтрите',
+    sort: {
+      elevationDesc: 'Най-високи първо',
+      elevationAsc: 'Най-ниски първо',
+      name: 'А–Я',
+    },
+    filters: {
+      allRanges: 'Всички вериги',
+      allDifficulties: 'Всички трудности',
+      all: 'Всички',
+      summited: 'Изкачени',
+      unsummited: 'Неизкачени',
+    },
   },
   log: {
     title: 'Моят дневник',

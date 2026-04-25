@@ -69,8 +69,22 @@ export default {
     markSummited: 'Mark as Summited',
     summited: 'Summited',
     elevation: 'Elevation',
+    range: 'Mountain range',
     region: 'Region',
     diff: 'Difficulty',
+    noResults: 'No mountains match your filters',
+    sort: {
+      elevationDesc: 'Highest first',
+      elevationAsc: 'Lowest first',
+      name: 'A–Z',
+    },
+    filters: {
+      allRanges: 'All ranges',
+      allDifficulties: 'All difficulties',
+      all: 'All',
+      summited: 'Summited',
+      unsummited: 'Not yet climbed',
+    },
   },
   log: {
     title: 'My Summit Log',

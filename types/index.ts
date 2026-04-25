@@ -1,13 +1,16 @@
 export interface Mountain {
   id: number
-  name: string
+  name_en: string
+  name_bg: string
   elevation_m: number
-  range: 'Rila' | 'Pirin' | 'Balkan' | 'Rhodopes' | 'Vitosha' | 'Other'
+  range_en: string
+  range_bg: string
   region: string
   latitude: number
   longitude: number
   difficulty: 'easy' | 'moderate' | 'hard'
-  description: string
+  description_en: string
+  description_bg: string
   cover_image_url: string
 }
 

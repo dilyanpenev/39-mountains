@@ -4,6 +4,7 @@ import * as Localization from 'expo-localization'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import en from '../constants/translations/en'
 import bg from '../constants/translations/bg'
+import { Mountain } from '../types'
 
 const resources = {
   en: { translation: en },
@@ -20,6 +21,18 @@ AsyncStorage.getItem('user-language').then((savedLang) => {
     i18next.changeLanguage(savedLang)
   }
 })
+
+export function getMountainName(mountain: Mountain): string {
+  return i18next.language === 'bg' ? mountain.name_bg : mountain.name_en
+}
+
+export function getMountainDescription(mountain: Mountain): string {
+  return i18next.language === 'bg' ? mountain.description_bg : mountain.description_en
+}
+
+export function getMountainRange(mountain: Mountain): string {
+  return i18next.language === 'bg' ? mountain.range_bg : mountain.range_en
+}
 
 i18next
   .use(initReactI18next)

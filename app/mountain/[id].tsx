@@ -1,0 +1,236 @@
+import { useEffect, useState } from 'react'
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native'
+import { useLocalSearchParams, router } from 'expo-router'
+import { Ionicons } from '@expo/vector-icons'
+import { useTranslation } from 'react-i18next'
+import { supabase } from '../../lib/supabase'
+import { useSummits } from '../../hooks/useSummits'
+import { SummitModal } from '../../components/mountains/SummitModal'
+import { getMountainName, getMountainDescription, getMountainRange } from '../../lib/i18n'
+import { Mountain } from '../../types'
+import { colors, typography, spacing, globalStyles } from '../../constants/theme'
+import { Button } from '../../components/ui/Button'
+
+export default function MountainDetailScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>()
+  const { t } = useTranslation()
+  const [mountain, setMountain] = useState<Mountain | null>(null)
+  const [summited, setSummited] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  const { removeSummit, loading: summitLoading } = useSummits(() => {
+    setSummited(false)
+  })
+
+  useEffect(() => {
+    fetchMountain()
+  }, [id])
+
+  const fetchMountain = async () => {
+    setLoading(true)
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const [mountainResult, summitResult] = await Promise.all([
+      supabase.from('mountains').select('*').eq('id', id).single(),
+      user
+        ? supabase.from('summits').select('id').eq('mountain_id', id).eq('user_id', user.id).single()
+        : Promise.resolve({ data: null, error: null }),
+    ])
+
+    if (mountainResult.data) setMountain(mountainResult.data)
+    setSummited(!!summitResult.data)
+    setLoading(false)
+  }
+
+  if (loading || !mountain) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    )
+  }
+
+  return (
+    <View style={globalStyles.screen}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+
+        {/* Cover Image */}
+        <View style={styles.imageContainer}>
+          {mountain.cover_image_url ? (
+            <Image source={{ uri: mountain.cover_image_url }} style={styles.image} />
+          ) : (
+            <View style={styles.imagePlaceholder}>
+              <Text style={styles.placeholderEmoji}>⛰️</Text>
+            </View>
+          )}
+
+          {/* Back Button */}
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={22} color={colors.text.primary} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Content */}
+        <View style={styles.content}>
+
+          {/* Title Row */}
+          <View style={styles.titleRow}>
+            <Text style={styles.name}>{getMountainName(mountain)}</Text>
+            {summited && (
+              <View style={styles.summitedBadge}>
+                <Ionicons name="checkmark" size={14} color="#fff" />
+                <Text style={styles.summitedText}>{t('mountains.summited')}</Text>
+              </View>
+            )}
+          </View>
+
+          {/* Stats Row */}
+          <View style={styles.statsRow}>
+            <StatItem icon="trending-up" label={t('mountains.elevation')} value={`${mountain.elevation_m}m`} />
+            <StatItem icon="map" label={t('mountains.range')} value={getMountainRange(mountain)} />
+            <StatItem icon="flag" label={t('mountains.diff')} value={t(`mountains.difficulty.${mountain.difficulty}`)} />
+          </View>
+
+          {/* Description */}
+          <Text style={styles.description}>{getMountainDescription(mountain)}</Text>
+
+          {/* Action Button */}
+          {summited ? (
+            <Button
+              label={t('mountains.removeSummit')}
+              onPress={() => removeSummit(mountain.id)}
+              loading={summitLoading}
+              variant="secondary"
+            />
+          ) : (
+            <Button
+              label={t('mountains.markSummited')}
+              onPress={() => setModalVisible(true)}
+              loading={summitLoading}
+            />
+          )}
+        </View>
+      </ScrollView>
+
+      {/* Summit Modal */}
+      <SummitModal
+        visible={modalVisible}
+        mountain={mountain}
+        onClose={() => setModalVisible(false)}
+        onSuccess={() => {
+          setModalVisible(false)
+          setSummited(true)
+        }}
+      />
+    </View>
+  )
+}
+
+function StatItem({ icon, label, value }: { icon: any; label: string; value: string }) {
+  return (
+    <View style={styles.statItem}>
+      <Ionicons name={icon} size={18} color={colors.primary} />
+      <Text style={styles.statLabel}>{label}</Text>
+      <Text style={styles.statValue}>{value}</Text>
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imageContainer: {
+    height: 280,
+    position: 'relative',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  imagePlaceholder: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#E9ECEF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  placeholderEmoji: {
+    fontSize: 64,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 52,
+    left: spacing.xl,
+    backgroundColor: colors.surface,
+    borderRadius: 20,
+    padding: spacing.sm,
+  },
+  content: {
+    padding: spacing.xl,
+    gap: spacing.lg,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  name: {
+    ...typography.h1,
+    color: colors.text.primary,
+    flex: 1,
+  },
+  summitedBadge: {
+    backgroundColor: colors.primary,
+    borderRadius: 20,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  summitedText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: spacing.md,
+  },
+  statItem: {
+    alignItems: 'center',
+    gap: 4,
+    flex: 1,
+  },
+  statLabel: {
+    ...typography.caption,
+    color: colors.text.secondary,
+  },
+  statValue: {
+    ...typography.body,
+    color: colors.text.primary,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  description: {
+    ...typography.body,
+    color: colors.text.secondary,
+    lineHeight: 24,
+  },
+})

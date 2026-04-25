@@ -36,3 +36,28 @@ export const typography = {
   body: { fontSize: 16, fontWeight: '400' as const },
   caption: { fontSize: 12, fontWeight: '400' as const },
 }
+
+export const globalStyles = {
+  screen: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  row: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+  },
+  centeredContent: {
+    flex: 1,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+  },
+}
