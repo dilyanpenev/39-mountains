@@ -1,11 +1,14 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useLanguage } from '../../hooks/useLanguage'
+import { useAuth } from '../../hooks/useAuth'
+import { Button } from '../../components/ui/Button'
 import { colors, typography, spacing } from '../../constants/theme'
 
 export default function ProfileScreen() {
   const { t } = useTranslation()
   const { language, switchLanguage } = useLanguage()
+  const { signOut, loading } = useAuth()
 
   return (
     <View style={styles.container}>
@@ -30,6 +33,16 @@ export default function ProfileScreen() {
             🇧🇬 Български
           </Text>
         </TouchableOpacity>
+      </View>
+
+      {/* Sign Out */}
+      <View style={styles.signOutContainer}>
+        <Button
+          label={t('profile.signOut')}
+          onPress={signOut}
+          loading={loading}
+          variant="secondary"
+        />
       </View>
     </View>
   )
@@ -72,5 +85,8 @@ const styles = StyleSheet.create({
   },
   langTextActive: {
     color: colors.text.inverse,
+  },
+  signOutContainer: {
+    marginTop: spacing.xl,
   },
 })
