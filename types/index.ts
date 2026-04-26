@@ -29,5 +29,5 @@ export interface Summit {
   notes: string | null
   photo_url: string | null
   created_at: string
-  mountain?: Mountain        // joined data
+  mountain?: Mountain
 }

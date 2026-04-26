@@ -2,6 +2,7 @@ import '../lib/i18n'
 import { useEffect, useState } from 'react'
 import { Stack, router } from 'expo-router'
 import { Session } from '@supabase/supabase-js'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { supabase } from '../lib/supabase'
 
 export default function RootLayout() {
@@ -34,9 +35,11 @@ export default function RootLayout() {
   }, [session, initialized])
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="auth" />
-    </Stack>
+    <SafeAreaProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="auth" />
+      </Stack>
+    </SafeAreaProvider>
   )
 }

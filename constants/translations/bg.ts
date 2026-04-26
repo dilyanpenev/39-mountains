@@ -67,6 +67,7 @@ export default {
       other: 'Друго',
     },
     markSummited: 'Маркирай като изкачен',
+    removeSummit: 'Премахни изкачване',
     summited: 'Изкачен',
     elevation: 'Височина',
     range: 'Планинска верига',
@@ -94,6 +95,9 @@ export default {
     notes: 'Бележки',
     notesPlaceholder: 'Как беше походът?',
     addPhoto: 'Добави снимка',
+    deleteTitle: 'Премахни изкачване',
+    deleteConfirm: 'Сигурен ли си, че искаш да премахнеш това изкачване?',
+    explore: 'Разгледай планините',
   },
   profile: {
     title: 'Профил',

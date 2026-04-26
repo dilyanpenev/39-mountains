@@ -14,6 +14,7 @@ import { MountainCard } from '../../components/mountains/MountainCard'
 import { FilterBar } from '../../components/mountains/FilterBar'
 import { Mountain } from '../../types'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function HomeScreen() {
   const { t } = useTranslation()
@@ -27,6 +28,7 @@ export default function HomeScreen() {
     updateFilters,
     refresh,
   } = useMountains()
+  const insets = useSafeAreaInsets()
 
   const renderItem = useCallback(({ item }: { item: Mountain }) => (
     <MountainCard
@@ -67,7 +69,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={globalStyles.screen}>
+    <View style={[globalStyles.screen, { paddingTop: insets.top }]}>
       <FlatList
         data={mountains}
         keyExtractor={item => item.id.toString()}

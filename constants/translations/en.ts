@@ -67,6 +67,7 @@ export default {
       other: 'Other',
     },
     markSummited: 'Mark as Summited',
+    removeSummit: 'Remove Summit',
     summited: 'Summited',
     elevation: 'Elevation',
     range: 'Mountain range',
@@ -94,6 +95,9 @@ export default {
     notes: 'Notes',
     notesPlaceholder: 'How was the hike?',
     addPhoto: 'Add Photo',
+    deleteTitle: 'Remove Summit',
+    deleteConfirm: 'Are you sure you want to remove this summit entry?',
+    explore: 'Explore Mountains',
   },
   profile: {
     title: 'Profile',
