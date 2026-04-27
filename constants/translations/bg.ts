@@ -73,6 +73,7 @@ export default {
     range: 'Планинска верига',
     region: 'Регион',
     diff: 'Трудност',
+    viewDetails: 'Виж детайли',
     noResults: 'Няма планини, отговарящи на филтрите',
     sort: {
       elevationDesc: 'Най-високи първо',

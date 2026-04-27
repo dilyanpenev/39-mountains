@@ -73,6 +73,7 @@ export default {
     range: 'Mountain range',
     region: 'Region',
     diff: 'Difficulty',
+    viewDetails: 'View Details',
     noResults: 'No mountains match your filters',
     sort: {
       elevationDesc: 'Highest first',
