@@ -1,24 +1,26 @@
-import '../lib/i18n'
 import { useEffect, useState } from 'react'
 import { Stack, router } from 'expo-router'
-import { Session } from '@supabase/supabase-js'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { Session } from '@supabase/supabase-js'
+import * as MediaLibrary from 'expo-media-library'
 import { supabase } from '../lib/supabase'
+import '../lib/i18n'
 
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
   const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
+    // request media library permission early
+    MediaLibrary.requestPermissionsAsync()
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       setInitialized(true)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session)
-      }
+      (_event, session) => setSession(session)
     )
 
     return () => subscription.unsubscribe()
@@ -26,7 +28,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (!initialized) return
-
     if (session) {
       router.replace('/(tabs)')
     } else {
@@ -40,6 +41,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="auth" />
         <Stack.Screen name="mountain/[id]" />
+        <Stack.Screen name="share" />
       </Stack>
     </SafeAreaProvider>
   )

@@ -122,4 +122,10 @@ export default {
     shareStats: 'Share My Stats',
     language: 'Language',
   },
+  share: {
+    title: 'Share Stats',
+    shareButton: 'Share Card',
+    sharing: 'Sharing...',
+    hint: 'Your card will be saved to your camera roll and you can share it to Instagram, WhatsApp, or any other app.',
+  },
 }

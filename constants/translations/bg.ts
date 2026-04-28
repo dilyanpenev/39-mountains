@@ -40,6 +40,7 @@ export default {
   },
   tabs: {
     home: 'Начало',
+    mountains: 'Планини',
     map: 'Карта',
     log: 'Дневник',
     profile: 'Профил',
@@ -121,5 +122,11 @@ export default {
     },
     shareStats: 'Сподели статистиката',
     language: 'Език',
+  },
+  share: {
+    title: 'Сподели статистика',
+    shareButton: 'Сподели картичката',
+    sharing: 'Споделяне...',
+    hint: 'Картичката ще бъде запазена в галерията ти и можеш да я споделиш в Instagram, WhatsApp или друго приложение.',
   },
 }

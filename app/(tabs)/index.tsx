@@ -92,7 +92,7 @@ export default function HomeScreen() {
       {/* Browse Mountains Button */}
       <TouchableOpacity
         style={styles.browseButton}
-        onPress={() => router.push('/mountain/mountainScreen')}
+        onPress={() => router.push('/(tabs)/mountains')}
         activeOpacity={0.85}
       >
         <View style={styles.browseButtonContent}>
@@ -114,9 +114,9 @@ export default function HomeScreen() {
           onPress={() => router.push('/(tabs)/map')}
         />
         <QuickAction
-          icon="list"
-          label={t('tabs.log')}
-          onPress={() => router.push('/(tabs)/log')}
+          icon="share-social"
+          label={t('home.share')}
+          onPress={() => router.push('/share')}
         />
         <QuickAction
           icon="share-social"
