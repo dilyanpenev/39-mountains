@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Linking,
+  Platform
 } from 'react-native'
 import { useLocalSearchParams, router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -49,6 +51,25 @@ export default function MountainDetailScreen() {
     if (mountainResult.data) setMountain(mountainResult.data)
     setSummited(!!summitResult.data)
     setLoading(false)
+  }
+
+  const openInMaps = () => {
+    if (!mountain) return
+    const { latitude, longitude } = mountain
+    const label = encodeURIComponent(getMountainName(mountain))
+    const url = Platform.select({
+      ios: `https://maps.apple.com/?ll=${latitude},${longitude}&q=${label}`,
+      android: `geo:${latitude},${longitude}?q=${latitude},${longitude}(${label})`,
+    })
+
+    Linking.canOpenURL(url!).then(supported => {
+      if (supported) {
+        Linking.openURL(url!)
+      } else {
+        // fall back to Google Maps in browser if native maps not available
+        Linking.openURL(`https://www.google.com/maps?q=${latitude},${longitude}`)
+      }
+    })
   }
 
   if (loading || !mountain) {
@@ -118,6 +139,15 @@ export default function MountainDetailScreen() {
               loading={summitLoading}
             />
           )}
+
+          <TouchableOpacity
+            style={styles.mapButton}
+            onPress={openInMaps}
+            activeOpacity={0.85}
+          >
+            <Ionicons name="map" size={18} color={colors.primary} />
+            <Text style={styles.mapButtonText}>{t('mountains.viewOnMap')}</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
 
@@ -228,4 +258,21 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     lineHeight: 24,
   },
+  mapButton: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: spacing.sm,
+  paddingVertical: spacing.sm,
+  paddingHorizontal: spacing.md,
+  borderRadius: 12,
+  borderWidth: 1.5,
+  borderColor: colors.primary,
+  backgroundColor: colors.primary + '10',
+},
+mapButtonText: {
+  ...typography.body,
+  color: colors.primary,
+  fontWeight: '600',
+},
 })

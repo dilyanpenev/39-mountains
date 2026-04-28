@@ -81,6 +81,7 @@ export default {
     region: 'Регион',
     diff: 'Трудност',
     viewDetails: 'Виж детайли',
+    viewOnMap: 'Виж на картата',
     noResults: 'Няма планини, отговарящи на филтрите',
     sort: {
       elevationDesc: 'Най-високи първо',

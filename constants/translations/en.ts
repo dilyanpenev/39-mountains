@@ -80,6 +80,7 @@ export default {
     region: 'Region',
     diff: 'Difficulty',
     viewDetails: 'View Details',
+    viewOnMap: 'View on Map',
     noResults: 'No mountains match your filters',
     sort: {
       elevationDesc: 'Highest first',
