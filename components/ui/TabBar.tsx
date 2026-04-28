@@ -14,8 +14,8 @@ const TAB_CONFIG: Record<string, { icon: IoniconsName; activeIcon: IoniconsName;
     label: 'tabs.home',
   },
   mountains: {
-    icon: 'triangle-outline',
-    activeIcon: 'triangle',
+    icon: 'prism-outline',
+    activeIcon: 'prism',
     label: 'tabs.mountains',
   },
   map: {
@@ -24,13 +24,13 @@ const TAB_CONFIG: Record<string, { icon: IoniconsName; activeIcon: IoniconsName;
     label: 'tabs.map',
   },
   log: {
-    icon: 'list-outline',
-    activeIcon: 'list',
+    icon: 'reader-outline',
+    activeIcon: 'reader',
     label: 'tabs.log',
   },
   profile: {
-    icon: 'person-outline',
-    activeIcon: 'person',
+    icon: 'person-circle-outline',
+    activeIcon: 'person-circle',
     label: 'tabs.profile',
   },
 }

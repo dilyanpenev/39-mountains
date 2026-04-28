@@ -44,8 +44,8 @@ export function MountainCard({ mountain, summited, onPress }: MountainCardProps)
 
       {/* Content */}
       <View style={styles.content}>
-        <View style={styles.row}>
-          <Text style={styles.name} numberOfLines={1}>
+        <View>
+          <Text style={styles.name}>
             {getMountainName(mountain)}
           </Text>
           <Text style={styles.elevation}>{mountain.elevation_m}m</Text>
@@ -53,6 +53,7 @@ export function MountainCard({ mountain, summited, onPress }: MountainCardProps)
 
         <View style={styles.row}>
           <View style={styles.rangeBadge}>
+            <Ionicons name="triangle" size={12} color="#000" />
             <Text style={styles.rangeText}>{getMountainRange(mountain)}</Text>
           </View>
           <View style={[styles.difficultyBadge, { backgroundColor: DIFFICULTY_COLORS[mountain.difficulty] + '22' }]}>
@@ -73,10 +74,11 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     overflow: 'hidden',
     padding: 0,
+    flexDirection: 'row',
   },
   imageContainer: {
     height: 140,
-    width: '100%',
+    width: '40%',
     position: 'relative',
   },
   image: {
@@ -114,6 +116,9 @@ const styles = StyleSheet.create({
   content: {
     padding: spacing.md,
     gap: spacing.xs,
+    flexDirection: 'column',
+    width: '60%',
+    justifyContent: 'space-between'
   },
   row: {
     flexDirection: 'row',
@@ -136,6 +141,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     paddingVertical: 3,
     borderRadius: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   rangeText: {
     fontSize: 12,

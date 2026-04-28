@@ -72,6 +72,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   col2: {
-    flex: 2,
+    flex: 1.5,
   }
 })

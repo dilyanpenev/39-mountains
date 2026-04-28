@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { Mountain } from '../types'
+import { useLanguage } from './useLanguage'
 
 type SortOption = 'elevation_desc' | 'elevation_asc' | 'name'
 type DifficultyFilter = 'all' | 'easy' | 'moderate' | 'hard'
@@ -24,6 +25,7 @@ export function useMountains() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [filters, setFilters] = useState<MountainFilters>(DEFAULT_FILTERS)
+  const { language, switchLanguage } = useLanguage()
 
   useEffect(() => {
     fetchData()
@@ -69,7 +71,8 @@ export function useMountains() {
     .sort((a, b) => {
       if (filters.sort === 'elevation_desc') return b.elevation_m - a.elevation_m
       if (filters.sort === 'elevation_asc') return a.elevation_m - b.elevation_m
-      if (filters.sort === 'name') return a.name_en.localeCompare(b.name_en)
+      if (filters.sort === 'name' && language === 'en') return a.name_en.localeCompare(b.name_en)
+      if (filters.sort === 'name' && language === 'bg') return a.name_bg.localeCompare(b.name_bg)
       return 0
     })
 
