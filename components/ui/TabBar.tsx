@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import { useEffect, useRef } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Platform, Animated } from 'react-native'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
@@ -34,9 +35,68 @@ const TAB_CONFIG: Record<string, { icon: IoniconsName; activeIcon: IoniconsName;
   },
 }
 
-export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  const { t } = useTranslation()
+interface AnimatedTabProps {
+  focused: boolean
+  config: { icon: IoniconsName; activeIcon: IoniconsName; label: string }
+  onPress: () => void
+}
 
+function AnimatedTab({ focused, config, onPress }: AnimatedTabProps) {
+  const { t } = useTranslation()
+  const scaleAnim = useRef(new Animated.Value(1)).current
+  const pillOpacity = useRef(new Animated.Value(focused ? 1 : 0)).current
+
+  useEffect(() => {
+    if (focused) {
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 0.85,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+      ]).start()
+
+      Animated.timing(pillOpacity, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start()
+    } else {
+      Animated.timing(pillOpacity, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }).start()
+    }
+  }, [focused])
+
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.tab}
+      activeOpacity={0.8}
+    >
+      {/* Animated pill background */}
+      <Animated.View style={[styles.pill, { opacity: pillOpacity }]} />
+
+      {/* Icon and label */}
+      <Animated.View
+        style={[styles.tabContent, { transform: [{ scale: scaleAnim }] }]}
+      >
+        <Ionicons
+          name={focused ? config.activeIcon : config.icon}
+          size={22}
+          color={focused ? '#ffffff' : colors.text.secondary}
+        />
+        <Text style={[styles.label, focused && styles.labelActive]}>
+          {t(config.label)}
+        </Text>
+      </Animated.View>
+    </TouchableOpacity>
+  )
+}
+
+export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
@@ -57,21 +117,12 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           }
 
           return (
-            <TouchableOpacity
+            <AnimatedTab
               key={route.key}
+              focused={focused}
+              config={config}
               onPress={onPress}
-              style={[styles.tab, focused && styles.tabFocused]}
-              activeOpacity={0.8}
-            >
-              <Ionicons
-                name={focused ? config.activeIcon : config.icon}
-                size={22}
-                color={focused ? '#ffffff' : colors.text.secondary}
-              />
-              <Text style={[styles.label, focused && styles.labelFocused]}>
-                {t(config.label)}
-              </Text>
-            </TouchableOpacity>
+            />
           )
         })}
       </View>
@@ -101,23 +152,33 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   tab: {
-    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
     borderRadius: 40,
-    gap: 3,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    position: 'relative',
   },
-  tabFocused: {
+  pill: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: colors.primary,
+    borderRadius: 40,
+  },
+  tabContent: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 3,
   },
   label: {
     fontSize: 11,
     fontWeight: '500',
     color: colors.text.secondary,
   },
-  labelFocused: {
+  labelActive: {
     color: '#ffffff',
   },
 })

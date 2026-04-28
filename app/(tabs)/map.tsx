@@ -18,9 +18,9 @@ import { colors, globalStyles, spacing, typography } from '../../constants/theme
 // Bulgaria's geographic center
 const BULGARIA_REGION: Region = {
   latitude: 42.7339,
-  longitude: 25.4858,
-  latitudeDelta: 3.5,
-  longitudeDelta: 3.5,
+  longitude: 24.4858,
+  latitudeDelta: 4.5,
+  longitudeDelta: 4.5,
 }
 
 type MapFilter = 'all' | 'summited' | 'unsummited'
