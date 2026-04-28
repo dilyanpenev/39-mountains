@@ -83,13 +83,15 @@ export default {
     viewOnMap: 'View on Map',
     noResults: 'No mountains match your filters',
     sort: {
+      sortBy: 'Sort by',
       elevationDesc: 'Highest first',
       elevationAsc: 'Lowest first',
       name: 'A–Z',
     },
     filters: {
-      allRanges: 'All ranges',
-      allDifficulties: 'All difficulties',
+      filterByDiff: 'Filter by difficulty',
+      filterBySummited: 'Filter by summited',
+      allDifficulties: 'All',
       all: 'All',
       summited: 'Summited',
       unsummited: 'Not yet climbed',

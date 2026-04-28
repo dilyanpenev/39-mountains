@@ -84,13 +84,15 @@ export default {
     viewOnMap: 'Виж на картата',
     noResults: 'Няма планини, отговарящи на филтрите',
     sort: {
+      sortBy: 'Подреди по',
       elevationDesc: 'Най-високи първо',
       elevationAsc: 'Най-ниски първо',
       name: 'А–Я',
     },
     filters: {
-      allRanges: 'Всички вериги',
-      allDifficulties: 'Всички трудности',
+      filterByDiff: 'Избери по трудност',
+      filterBySummited: 'Избери по изкачени',
+      allDifficulties: 'Всички',
       all: 'Всички',
       summited: 'Изкачени',
       unsummited: 'Неизкачени',

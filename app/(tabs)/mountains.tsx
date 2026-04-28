@@ -77,10 +77,6 @@ export default function MountainsScreen() {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    paddingHorizontal: spacing.xl,
     paddingVertical: spacing.lg,
   },
   title: {
