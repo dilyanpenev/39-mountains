@@ -49,7 +49,7 @@ export default function LogScreen() {
 
   if (loading) {
     return (
-      <View style={styles.centered}>
+      <View style={globalStyles.centeredContent}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     )
@@ -166,11 +166,6 @@ function SummitLogCard({ entry, onPress, onDelete }: SummitLogCardProps) {
 }
 
 const styles = StyleSheet.create({
-  centered: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   listContent: {
     paddingHorizontal: spacing.xl,
     paddingBottom: 120,

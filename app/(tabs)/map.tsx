@@ -13,7 +13,7 @@ import { useMapMountains } from '../../hooks/useMapMountains'
 import { MountainMarker } from '../../components/mountains/MountainMarker'
 import { MapPreviewSheet } from '../../components/mountains/MapPreviewSheet'
 import { Mountain } from '../../types'
-import { colors, spacing, typography } from '../../constants/theme'
+import { colors, globalStyles, spacing, typography } from '../../constants/theme'
 
 // Bulgaria's geographic center
 const BULGARIA_REGION: Region = {
@@ -44,19 +44,19 @@ export default function MapScreen() {
     mapRef.current?.animateToRegion({
       latitude: mountain.latitude - 0.15,
       longitude: mountain.longitude,
-      latitudeDelta: 1.2,
-      longitudeDelta: 1.2,
+      latitudeDelta: 0.5,
+      longitudeDelta: 0.5,
     }, 400)
   }
 
   const handleClose = () => {
     setSelectedMountain(null)
-    mapRef.current?.animateToRegion(BULGARIA_REGION, 400)
+    // mapRef.current?.animateToRegion(BULGARIA_REGION, 400)
   }
 
   if (loading) {
     return (
-      <View style={styles.centered}>
+      <View style={globalStyles.centeredContent}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     )
@@ -131,11 +131,6 @@ export default function MapScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  centered: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   map: {
     flex: 1,

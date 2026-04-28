@@ -107,10 +107,13 @@ export default {
     email: 'Email',
     signOut: 'Sign Out',
     stats: {
+      title: 'My Stats',
       summited: 'Summited',
       totalElevation: 'Total Elevation',
       highestPeak: 'Highest Peak',
+      mostRecentSummit: 'Last Summit',
     },
     shareStats: 'Share My Stats',
+    language: 'Language',
   },
 }

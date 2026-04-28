@@ -61,3 +61,11 @@ export const globalStyles = {
     justifyContent: 'center' as const,
   },
 }
+
+export const avatarColors = [
+  '#2D6A4F', // forest green
+  '#52796F', // sage
+  '#74C69D', // light green
+  '#1B4332', // dark green
+  '#40916C', // medium green
+]

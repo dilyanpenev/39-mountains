@@ -7,22 +7,53 @@ export function useProfile() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    let channel: ReturnType<typeof supabase.channel>
+
+    const setup = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single()
+      fetchProfile()
 
-      if (!error) setProfile(data)
-      setLoading(false)
+      channel = supabase
+        .channel('profile-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'profiles',
+            filter: `id=eq.${user.id}`,  // only listen to this user's row
+          },
+          (payload) => {
+            setProfile(payload.new as Profile)
+          }
+        )
+        .subscribe()
     }
 
-    fetchProfile()
+    setup()
+
+    return () => {
+      if (channel) supabase.removeChannel(channel)
+    }
   }, [])
 
-  return { profile, loading }
+  const fetchProfile = async () => {
+    setLoading(true)
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
+
+    if (!error) setProfile(data)
+    setLoading(false)
+  }
+
+  return { profile, loading, refresh: fetchProfile }
 }

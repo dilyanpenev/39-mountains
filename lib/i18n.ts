@@ -34,6 +34,28 @@ export function getMountainRange(mountain: Mountain): string {
   return i18next.language === 'bg' ? mountain.range_bg : mountain.range_en
 }
 
+export function getRelativeTime(dateString: string, language: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
+
+  if (language === 'bg') {
+    if (diffDays === 0) return 'днес'
+    if (diffDays === 1) return 'вчера'
+    if (diffDays < 7) return `преди ${diffDays} дни`
+    if (diffDays < 30) return `преди ${Math.floor(diffDays / 7)} седмици`
+    if (diffDays < 365) return `преди ${Math.floor(diffDays / 30)} месеца`
+    return `преди ${Math.floor(diffDays / 365)} години`
+  }
+
+  if (diffDays === 0) return 'today'
+  if (diffDays === 1) return 'yesterday'
+  if (diffDays < 7) return `${diffDays} days ago`
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`
+  return `${Math.floor(diffDays / 365)} years ago`
+}
+
 i18next
   .use(initReactI18next)
   .init({

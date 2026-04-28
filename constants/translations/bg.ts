@@ -107,10 +107,13 @@ export default {
     email: 'Имейл',
     signOut: 'Излез',
     stats: {
+      title: 'Моята статистика',
       summited: 'Изкачени',
       totalElevation: 'Обща височина',
       highestPeak: 'Най-висок връх',
+      mostRecentSummit: 'Последно изкачване',
     },
     shareStats: 'Сподели статистиката',
+    language: 'Език',
   },
 }

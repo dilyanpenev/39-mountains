@@ -53,7 +53,7 @@ export default function MountainDetailScreen() {
 
   if (loading || !mountain) {
     return (
-      <View style={styles.centered}>
+      <View style={globalStyles.centeredContent}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     )
@@ -146,11 +146,6 @@ function StatItem({ icon, label, value }: { icon: any; label: string; value: str
 }
 
 const styles = StyleSheet.create({
-  centered: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   imageContainer: {
     height: 280,
     position: 'relative',

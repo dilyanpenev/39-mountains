@@ -121,9 +121,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   centered: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    ...globalStyles.centeredContent,
     paddingTop: spacing.xxl,
   },
   emptyText: {
