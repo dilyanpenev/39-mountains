@@ -40,6 +40,7 @@ export default {
   },
   tabs: {
     home: 'Home',
+    mountains: 'Mountains',
     map: 'Map',
     log: 'My Log',
     profile: 'Profile',
@@ -50,6 +51,11 @@ export default {
     summitProgress: 'Summit Progress',
     of: 'of',
     peaks: 'peaks summited',
+    lastSummit: 'Last Summit',
+    browseAll: 'Browse All Mountains',
+    remaining: 'peaks remaining',
+    completion: 'Completion',
+    share: 'Share Stats',
   },
   mountains: {
     title: 'Mountains',

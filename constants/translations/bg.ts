@@ -50,6 +50,12 @@ export default {
     summitProgress: 'Прогрес',
     of: 'от',
     peaks: 'върха изкачени',
+    lastSummit: 'Последно изкачване',
+    browseAll: 'Всички планини',
+    remaining: 'оставащи върха',
+    completion: 'Завършеност',
+    share: 'Сподели',
+
   },
   mountains: {
     title: 'Планини',

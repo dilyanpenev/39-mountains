@@ -12,6 +12,11 @@ const TAB_CONFIG: Record<string, { icon: IoniconsName; activeIcon: IoniconsName;
     activeIcon: 'home',
     label: 'tabs.home',
   },
+  mountains: {
+    icon: 'triangle-outline',
+    activeIcon: 'triangle',
+    label: 'tabs.mountains',
+  },
   map: {
     icon: 'map-outline',
     activeIcon: 'map',

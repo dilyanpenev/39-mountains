@@ -25,7 +25,7 @@ import { supabase } from '../../lib/supabase'
 export default function ProfileScreen() {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
-  const { profile, loading: profileLoading } = useProfile()
+  const { profile, loading: profileLoading, refresh } = useProfile()
   const { stats, loading: statsLoading } = useProfileStats()
   const { signOut, loading: authLoading } = useAuth()
   const { language, switchLanguage } = useLanguage()
@@ -50,6 +50,7 @@ export default function ProfileScreen() {
       Alert.alert(t('common.error'), error.message)
     } else {
       setEditing(false)
+      await refresh()  // manually refetch after saving
     }
 
     setSaving(false)

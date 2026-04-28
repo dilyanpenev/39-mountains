@@ -10,6 +10,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen name="index" />
+      <Tabs.Screen name="mountains" />
       <Tabs.Screen name="map" />
       <Tabs.Screen name="log" />
       <Tabs.Screen name="profile" />
