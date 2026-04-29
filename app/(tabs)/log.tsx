@@ -13,16 +13,18 @@ import {
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
-import { useSummitLog } from '../../hooks/useSummitLog'
+import { useSummitLog } from '../../context/SummitLogContext'
 import { Summit } from '../../types'
 import { getMountainName } from '../../lib/i18n'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useProfileStats } from '../../context/StatsContext'
 
 export default function LogScreen() {
   const { t } = useTranslation()
   const { entries, loading, refresh, deleteEntry } = useSummitLog()
   const insets = useSafeAreaInsets()
+  const { refresh: refreshStats } = useProfileStats() 
 
   const handleDelete = (entry: Summit) => {
     Alert.alert(
@@ -33,7 +35,10 @@ export default function LogScreen() {
         {
           text: t('common.delete'),
           style: 'destructive',
-          onPress: () => deleteEntry(entry.id, entry.mountain_id),
+          onPress: () => {
+            deleteEntry(entry.id, entry.mountain_id)
+            refreshStats()
+          },
         },
       ]
     )

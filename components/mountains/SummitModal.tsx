@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Platform,
   ScrollView,
+  KeyboardAvoidingView
 } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Ionicons } from '@expo/vector-icons'
@@ -38,9 +39,17 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.overlay}>
-        <View style={styles.sheet}>
+      <KeyboardAvoidingView
+        style={styles.overlay}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <TouchableOpacity
+          style={styles.backdrop}
+          activeOpacity={1}
+          onPress={onClose}
+        />
 
+        <View style={styles.sheet}>
           {/* Handle */}
           <View style={styles.handle} />
 
@@ -52,20 +61,21 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
             </TouchableOpacity>
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={styles.scrollContent}
+          >
             <Text style={styles.mountainName}>{getMountainName(mountain)}</Text>
 
-            {/* Date Picker */}
             <DateTimePicker
               value={date}
               mode="date"
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
               onChange={(_, selected) => selected && setDate(selected)}
               maximumDate={new Date()}
-              style={styles.datePicker}
             />
 
-            {/* Notes */}
             <Input
               label={t('log.notes')}
               value={notes}
@@ -84,7 +94,7 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
             />
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   )
 }
@@ -92,16 +102,23 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'flex-end',
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
   },
   sheet: {
     backgroundColor: colors.background,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: spacing.xl,
-    paddingBottom: 40,
-    maxHeight: '80%',
+    paddingBottom: Platform.OS === 'ios' ? 40 : spacing.xl,
+    maxHeight: '85%',
+  },
+  scrollContent: {
+    paddingBottom: spacing.xl,
+    gap: spacing.md,
   },
   handle: {
     width: 40,
@@ -124,7 +141,6 @@ const styles = StyleSheet.create({
   mountainName: {
     ...typography.h2,
     color: colors.primary,
-    marginBottom: spacing.lg,
   },
   datePicker: {
     marginBottom: spacing.lg,
@@ -132,7 +148,6 @@ const styles = StyleSheet.create({
   errorText: {
     ...typography.caption,
     color: '#E76F51',
-    marginBottom: spacing.md,
     textAlign: 'center',
   },
 })

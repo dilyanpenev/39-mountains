@@ -11,7 +11,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { useProfile } from '../../context/ProfileContext'
-import { useProfileStats } from '../../hooks/useProfileStats'
+import { useProfileStats } from '../../context/StatsContext'
 import { getMountainName } from '../../lib/i18n'
 import { ProgressRing } from '../../components/ui/ProgressRing'
 import { RecentSummitCard } from '../../components/mountains/RecentSummitCard'
@@ -241,7 +241,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     gap: spacing.sm,
-    borderRadius: 16,
     padding: spacing.md,
     ...globalStyles.card,
   },

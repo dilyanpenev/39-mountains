@@ -90,7 +90,7 @@ export function MapPreviewSheet({ mountain, summited, onClose }: MapPreviewSheet
 const styles = StyleSheet.create({
   sheet: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 120,
     left: spacing.xl,
     right: spacing.xl,
     backgroundColor: colors.surface,

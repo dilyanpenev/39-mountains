@@ -81,12 +81,16 @@ export default function MapScreen() {
               latitude: mountain.latitude,
               longitude: mountain.longitude,
             }}
-            onPress={() => handleMarkerPress(mountain)}
+            onPress={(e) => {
+              e.stopPropagation()
+            }}
             tracksViewChanges={false}
           >
             <MountainMarker
               summited={summitedIds.has(mountain.id)}
-              onPress={() => handleMarkerPress(mountain)}
+              onPress={() => {
+                handleMarkerPress(mountain)
+              }}
             />
           </Marker>
         ))}

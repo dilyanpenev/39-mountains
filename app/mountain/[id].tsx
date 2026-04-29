@@ -20,6 +20,8 @@ import { getMountainName, getMountainDescription, getMountainRange } from '../..
 import { Mountain } from '../../types'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 import { Button } from '../../components/ui/Button'
+import { useProfileStats } from '../../context/StatsContext'
+import { useSummitLog } from '../../context/SummitLogContext'
 
 export default function MountainDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -28,9 +30,13 @@ export default function MountainDetailScreen() {
   const [summited, setSummited] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [loading, setLoading] = useState(true)
+  const { refresh: refreshStats } = useProfileStats()
+  const { refresh: refreshLog } = useSummitLog()
 
   const { removeSummit, loading: summitLoading } = useSummits(() => {
     setSummited(false)
+    refreshStats()
+    refreshLog()
   })
 
   useEffect(() => {
@@ -159,6 +165,8 @@ export default function MountainDetailScreen() {
         onSuccess={() => {
           setModalVisible(false)
           setSummited(true)
+          refreshStats()
+          refreshLog()
         }}
       />
     </View>

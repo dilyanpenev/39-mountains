@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { supabase } from '../lib/supabase'
 import { Mountain } from '../types'
 
@@ -12,13 +12,27 @@ interface ProfileStats {
   } | null
 }
 
-export function useProfileStats() {
-  const [stats, setStats] = useState<ProfileStats>({
-    summitedCount: 0,
-    totalElevation: 0,
-    highestPeak: null,
-    mostRecentSummit: null,
-  })
+interface StatsContextValue {
+  stats: ProfileStats
+  loading: boolean
+  refresh: () => Promise<void>
+}
+
+const defaultStats: ProfileStats = {
+  summitedCount: 0,
+  totalElevation: 0,
+  highestPeak: null,
+  mostRecentSummit: null,
+}
+
+const StatsContext = createContext<StatsContextValue>({
+  stats: defaultStats,
+  loading: true,
+  refresh: async () => {},
+})
+
+export function StatsProvider({ children }: { children: ReactNode }) {
+  const [stats, setStats] = useState<ProfileStats>(defaultStats)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -38,6 +52,7 @@ export function useProfileStats() {
       .order('summited_at', { ascending: false })
 
     if (!data || data.length === 0) {
+      setStats(defaultStats)
       setLoading(false)
       return
     }
@@ -65,5 +80,24 @@ export function useProfileStats() {
     setLoading(false)
   }
 
-  return { stats, loading, refresh: fetchStats }
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (event) => {
+            if (event === 'SIGNED_OUT') {
+                setStats(defaultStats)
+            }
+        }
+    )
+    return () => subscription.unsubscribe()
+    }, [])
+
+  return (
+    <StatsContext.Provider value={{ stats, loading, refresh: fetchStats }}>
+      {children}
+    </StatsContext.Provider>
+  )
+}
+
+export function useProfileStats() {
+  return useContext(StatsContext)
 }

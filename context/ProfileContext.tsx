@@ -38,6 +38,17 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     setLoading(false)
   }
 
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event) => {
+        if (event === 'SIGNED_OUT') {
+          setProfile(null)
+        }
+      }
+    )
+    return () => subscription.unsubscribe()
+  }, [])
+
   return (
     <ProfileContext.Provider value={{ profile, loading, refresh: fetchProfile }}>
       {children}
