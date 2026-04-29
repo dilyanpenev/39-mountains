@@ -59,9 +59,8 @@ export function SummitLogProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event) => {
-        if (event === 'SIGNED_OUT') {
-          setEntries([])
-        }
+        if (event === 'SIGNED_IN') fetchEntries()
+        if (event === 'SIGNED_OUT') setEntries([])
       }
     )
     return () => subscription.unsubscribe()

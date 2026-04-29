@@ -83,9 +83,8 @@ export function StatsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
         (event) => {
-            if (event === 'SIGNED_OUT') {
-                setStats(defaultStats)
-            }
+            if (event === 'SIGNED_IN') fetchStats()
+            if (event === 'SIGNED_OUT') setStats(defaultStats)
         }
     )
     return () => subscription.unsubscribe()
