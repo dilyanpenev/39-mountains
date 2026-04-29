@@ -124,6 +124,14 @@ export default {
     },
     shareStats: 'Share My Stats',
     language: 'Language',
+    edit: {
+      title: 'Edit Profile',
+      save: 'Save Changes',
+      nameRequired: 'Display name cannot be empty',
+      namePlaceholder: 'Your name',
+      avatarHint: 'Avatar is generated from your initials',
+      nameTooShort: 'Name must be at least 2 characters',
+    },
   },
   share: {
     title: 'Share Stats',

@@ -10,7 +10,7 @@ import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
-import { useProfile } from '../../hooks/useProfile'
+import { useProfile } from '../../context/ProfileContext'
 import { useProfileStats } from '../../hooks/useProfileStats'
 import { getMountainName } from '../../lib/i18n'
 import { ProgressRing } from '../../components/ui/ProgressRing'
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
   },
   name: {
-    ...typography.h1,
+    ...typography.h2,
     color: colors.text.primary,
   },
   emoji: {

@@ -77,7 +77,7 @@ export default {
     removeSummit: 'Премахни изкачване',
     summited: 'Изкачен',
     elevation: 'Височина',
-    range: 'Планинска верига',
+    range: 'Планина',
     region: 'Регион',
     diff: 'Трудност',
     viewDetails: 'Виж детайли',
@@ -125,6 +125,14 @@ export default {
     },
     shareStats: 'Сподели статистиката',
     language: 'Език',
+    edit: {
+      title: 'Редактирай профил',
+      save: 'Запази промените',
+      nameRequired: 'Името не може да е празно',
+      namePlaceholder: 'Твоето име',
+      avatarHint: 'Аватарът се генерира от инициалите ти',
+      nameTooShort: 'Името трябва да е поне 2 символа',
+    },
   },
   share: {
     title: 'Сподели статистика',

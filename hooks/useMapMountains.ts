@@ -9,10 +9,13 @@ export function useMapMountains() {
 
   useEffect(() => {
     fetchData()
+
+    // use a unique channel name per instance to avoid conflicts
+    const channelName = `summits-changes-${Date.now()}`
     
     // listen for any changes to the summits table in real time
     const channel = supabase
-      .channel('summits-changes')
+      .channel(channelName)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'summits' },

@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Session } from '@supabase/supabase-js'
 import * as MediaLibrary from 'expo-media-library'
 import { supabase } from '../lib/supabase'
+import { ProfileProvider } from '../context/ProfileContext'
 import '../lib/i18n'
 
 export default function RootLayout() {
@@ -11,7 +12,6 @@ export default function RootLayout() {
   const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
-    // request media library permission early
     MediaLibrary.requestPermissionsAsync()
 
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -37,12 +37,14 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="auth" />
-        <Stack.Screen name="mountain/[id]" />
-        <Stack.Screen name="share" />
-      </Stack>
+      <ProfileProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="auth" />
+          <Stack.Screen name="mountain/[id]" />
+          <Stack.Screen name="share" />
+        </Stack>
+      </ProfileProvider>
     </SafeAreaProvider>
   )
 }
