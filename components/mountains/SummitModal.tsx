@@ -12,7 +12,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
-import { useSummits } from '../../hooks/useSummits'
+import { useSummitLog } from '../../context/SummitLogContext'
 import { Mountain } from '../../types'
 import { getMountainName } from '../../lib/i18n'
 import { Button } from '../ui/Button'
@@ -23,18 +23,18 @@ interface SummitModalProps {
   visible: boolean
   mountain: Mountain
   onClose: () => void
-  onSuccess: () => void
+  onSuccess: (summitedAt: string, notes: string) => void
 }
 
 export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitModalProps) {
   const { t } = useTranslation()
   const [date, setDate] = useState(new Date())
   const [notes, setNotes] = useState('')
-  const { addSummit, loading, error } = useSummits(onSuccess)
+  const { loading, error } = useSummitLog()
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const dateString = date.toISOString().split('T')[0]
-    await addSummit(mountain.id, dateString, notes)
+    onSuccess(dateString, notes)
   }
 
   return (

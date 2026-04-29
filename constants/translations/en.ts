@@ -139,4 +139,54 @@ export default {
     sharing: 'Sharing...',
     hint: 'Your card will be saved to your camera roll and you can share it to Instagram, WhatsApp, or any other app.',
   },
+  achievements: {
+    title: 'Achievements',
+    unlocked: 'Unlocked',
+    congratulations: 'Congratulations!',
+    awesome: 'Awesome!',
+    firstSummit: {
+      title: 'First Steps',
+      description: 'Logged your very first summit',
+    },
+    fiveSummits: {
+      title: 'Getting Started',
+      description: 'Summited 5 peaks',
+    },
+    tenSummits: {
+      title: 'Mountain Explorer',
+      description: 'Summited 10 peaks',
+    },
+    halfway: {
+      title: 'Halfway There',
+      description: 'Summited 20 of the 39 peaks',
+    },
+    allPeaks: {
+      title: 'Conqueror of Bulgaria',
+      description: 'Summited all 39 peaks',
+    },
+    above2500: {
+      title: 'High Altitude',
+      description: 'Summited a peak above 2500m',
+    },
+    allAbove2500: {
+      title: 'Alpine Master',
+      description: 'Summited all peaks above 2500m',
+    },
+    rilaComplete: {
+      title: 'Rila Champion',
+      description: 'Summited all peaks in the Rila range',
+    },
+    pirinComplete: {
+      title: 'Pirin Champion',
+      description: 'Summited all peaks in the Pirin range',
+    },
+    winterSummiter: {
+      title: 'Winter Warrior',
+      description: 'Summited a peak in winter',
+    },
+    speedSummiter: {
+      title: 'Speed Runner',
+      description: 'Summited 3 peaks in a single day',
+    },
+  },
 }

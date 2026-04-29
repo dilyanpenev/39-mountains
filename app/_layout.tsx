@@ -6,6 +6,7 @@ import * as MediaLibrary from 'expo-media-library'
 import { supabase } from '../lib/supabase'
 import '../lib/i18n'
 import { AppProviders } from '../context/AppProviders'
+import { AchievementModal } from '../components/achievements/AchievementModal'
 
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
@@ -43,7 +44,9 @@ export default function RootLayout() {
           <Stack.Screen name="auth" />
           <Stack.Screen name="mountain/[id]" />
           <Stack.Screen name="share" />
+          <Stack.Screen name="achievements" />
         </Stack>
+        <AchievementModal />
       </AppProviders>
     </SafeAreaProvider>
   )

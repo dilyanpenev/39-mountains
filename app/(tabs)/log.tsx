@@ -22,7 +22,7 @@ import { useProfileStats } from '../../context/StatsContext'
 
 export default function LogScreen() {
   const { t } = useTranslation()
-  const { entries, loading, refresh, deleteEntry } = useSummitLog()
+  const { entries, loading, refresh: refreshLog, deleteEntry } = useSummitLog()
   const insets = useSafeAreaInsets()
   const { refresh: refreshStats } = useProfileStats() 
 
@@ -35,9 +35,10 @@ export default function LogScreen() {
         {
           text: t('common.delete'),
           style: 'destructive',
-          onPress: () => {
-            deleteEntry(entry.id, entry.mountain_id)
-            refreshStats()
+          onPress: async () => {
+            await deleteEntry(entry.id, entry.mountain_id)
+            await refreshStats()
+            await refreshLog()
           },
         },
       ]
@@ -71,7 +72,7 @@ export default function LogScreen() {
         refreshControl={
           <RefreshControl
             refreshing={loading}
-            onRefresh={refresh}
+            onRefresh={refreshLog}
             tintColor={colors.primary}
           />
         }

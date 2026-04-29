@@ -140,4 +140,54 @@ export default {
     sharing: 'Споделяне...',
     hint: 'Картичката ще бъде запазена в галерията ти и можеш да я споделиш в Instagram, WhatsApp или друго приложение.',
   },
+  achievements: {
+    title: 'Постижения',
+    unlocked: 'Отключени',
+    congratulations: 'Поздравления!',
+    awesome: 'Страхотно!',
+    firstSummit: {
+      title: 'Първи стъпки',
+      description: 'Изкачи първия си връх',
+    },
+    fiveSummits: {
+      title: 'Начало',
+      description: 'Изкачи 5 върха',
+    },
+    tenSummits: {
+      title: 'Планински изследовател',
+      description: 'Изкачи 10 върха',
+    },
+    halfway: {
+      title: 'Наполовина',
+      description: 'Изкачи 20 от 39 върха',
+    },
+    allPeaks: {
+      title: 'Покорител на България',
+      description: 'Изкачи всичките 39 върха',
+    },
+    above2500: {
+      title: 'Голяма надморска височина',
+      description: 'Изкачи връх над 2500м',
+    },
+    allAbove2500: {
+      title: 'Алпийски майстор',
+      description: 'Изкачи всички върхове над 2500м',
+    },
+    rilaComplete: {
+      title: 'Шампион на Рила',
+      description: 'Изкачи всички върхове в Рила',
+    },
+    pirinComplete: {
+      title: 'Шампион на Пирин',
+      description: 'Изкачи всички върхове в Пирин',
+    },
+    winterSummiter: {
+      title: 'Зимен воин',
+      description: 'Изкачи връх през зимата',
+    },
+    speedSummiter: {
+      title: 'Скоростен алпинист',
+      description: 'Изкачи 3 върха в един ден',
+    },
+  },
 }

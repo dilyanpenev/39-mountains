@@ -16,6 +16,8 @@ import { getMountainName } from '../../lib/i18n'
 import { ProgressRing } from '../../components/ui/ProgressRing'
 import { RecentSummitCard } from '../../components/mountains/RecentSummitCard'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
+import { useAchievements } from '../../context/AchievementContext'
+import { ACHIEVEMENTS } from '../../constants/achievements'
 
 const TOTAL_PEAKS = 39
 
@@ -24,6 +26,7 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets()
   const { profile } = useProfile()
   const { stats, loading } = useProfileStats()
+  const { unlockedIds } = useAchievements()
 
   if (loading) {
     return (
@@ -125,6 +128,20 @@ export default function HomeScreen() {
         />
       </View>
 
+      <TouchableOpacity
+        style={styles.achievementsButton}
+        onPress={() => router.push('/achievements')}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.achievementsButtonIcon}>🏆</Text>
+        <View>
+          <Text style={styles.achievementsButtonTitle}>{t('achievements.title')}</Text>
+          <Text style={styles.achievementsButtonSubtitle}>
+            {unlockedIds.size} / {ACHIEVEMENTS.length} {t('achievements.unlocked')}
+          </Text>
+        </View>
+        <Ionicons name="arrow-forward" size={20} color={colors.primary} />
+      </TouchableOpacity>
     </ScrollView>
   )
 }
@@ -258,4 +275,22 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
   },
+  achievementsButton: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: spacing.md,
+  padding: spacing.md,
+  ...globalStyles.card,
+},
+achievementsButtonIcon: {
+  fontSize: 32,
+},
+achievementsButtonTitle: {
+  ...typography.h3,
+  color: colors.text.primary,
+},
+achievementsButtonSubtitle: {
+  ...typography.caption,
+  color: colors.text.secondary,
+},
 })

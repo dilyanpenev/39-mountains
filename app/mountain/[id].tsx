@@ -14,7 +14,6 @@ import { useLocalSearchParams, router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
-import { useSummits } from '../../hooks/useSummits'
 import { SummitModal } from '../../components/mountains/SummitModal'
 import { getMountainName, getMountainDescription, getMountainRange } from '../../lib/i18n'
 import { Mountain } from '../../types'
@@ -22,26 +21,53 @@ import { colors, typography, spacing, globalStyles } from '../../constants/theme
 import { Button } from '../../components/ui/Button'
 import { useProfileStats } from '../../context/StatsContext'
 import { useSummitLog } from '../../context/SummitLogContext'
+import { useAchievements } from '../../context/AchievementContext'
 
 export default function MountainDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const { t } = useTranslation()
   const [mountain, setMountain] = useState<Mountain | null>(null)
-  const [summited, setSummited] = useState(false)
+  const [summitId, setSummitId] = useState<string | null>(null)
   const [modalVisible, setModalVisible] = useState(false)
   const [loading, setLoading] = useState(true)
   const { refresh: refreshStats } = useProfileStats()
-  const { refresh: refreshLog } = useSummitLog()
+  const { addSummit, deleteEntry, isSummited, refresh: refreshLog } = useSummitLog()
+  const { checkAchievements } = useAchievements()
+  const [allMountains, setAllMountains] = useState<Mountain[]>([])
 
-  const { removeSummit, loading: summitLoading } = useSummits(() => {
-    setSummited(false)
-    refreshStats()
-    refreshLog()
-  })
+  const summited = isSummited(Number(id))
+
+  const handleRemoveSummit = async () => {
+    if (!summitId) return
+    await deleteEntry(summitId, Number(id))
+    setSummitId(null)
+    await refreshStats()
+    await refreshLog()
+  }
+
+  const handleSummitSuccess = async () => {
+    setModalVisible(false)
+    await refreshStats()
+    await refreshLog()
+    // check achievements with updated entries
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    const { data } = await supabase
+      .from('summits')
+      .select('*, mountain:mountains(*)')
+      .eq('user_id', user.id)
+    if (data) checkAchievements(data, allMountains)
+  }
 
   useEffect(() => {
     fetchMountain()
+    fetchAllMountains()
   }, [id])
+
+  const fetchAllMountains = async () => {
+    const { data } = await supabase.from('mountains').select('*')
+    if (data) setAllMountains(data)
+  }
 
   const fetchMountain = async () => {
     setLoading(true)
@@ -55,7 +81,7 @@ export default function MountainDetailScreen() {
     ])
 
     if (mountainResult.data) setMountain(mountainResult.data)
-    setSummited(!!summitResult.data)
+    if (summitResult.data) setSummitId(summitResult.data.id)
     setLoading(false)
   }
 
@@ -134,17 +160,26 @@ export default function MountainDetailScreen() {
           {summited ? (
             <Button
               label={t('mountains.removeSummit')}
-              onPress={() => removeSummit(mountain.id)}
-              loading={summitLoading}
+              onPress={handleRemoveSummit}
               variant="secondary"
             />
           ) : (
             <Button
               label={t('mountains.markSummited')}
               onPress={() => setModalVisible(true)}
-              loading={summitLoading}
             />
           )}
+
+          <SummitModal
+            visible={modalVisible}
+            mountain={mountain}
+            onClose={() => setModalVisible(false)}
+            onSuccess={async (summitedAt, notes) => {
+              setModalVisible(false)
+              const success = await addSummit(mountain.id, summitedAt, notes)
+              if (success) await refreshStats()
+            }}
+          />
 
           <TouchableOpacity
             style={styles.mapButton}
@@ -162,12 +197,7 @@ export default function MountainDetailScreen() {
         visible={modalVisible}
         mountain={mountain}
         onClose={() => setModalVisible(false)}
-        onSuccess={() => {
-          setModalVisible(false)
-          setSummited(true)
-          refreshStats()
-          refreshLog()
-        }}
+        onSuccess={handleSummitSuccess}
       />
     </View>
   )
