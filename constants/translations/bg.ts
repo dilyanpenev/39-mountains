@@ -116,6 +116,8 @@ export default {
     displayName: 'Потребителско име',
     email: 'Имейл',
     signOut: 'Излез',
+    deleteAccount: 'Изтрий моя профил',
+    deleteAccountConfirm: 'Сигурен ли си, че искаш да изтриеш своите данни?',
     stats: {
       title: 'Моята статистика',
       summited: 'Изкачени',
@@ -172,14 +174,6 @@ export default {
     allAbove2500: {
       title: 'Алпийски майстор',
       description: 'Изкачи всички върхове над 2500м',
-    },
-    rilaComplete: {
-      title: 'Шампион на Рила',
-      description: 'Изкачи всички върхове в Рила',
-    },
-    pirinComplete: {
-      title: 'Шампион на Пирин',
-      description: 'Изкачи всички върхове в Пирин',
     },
     winterSummiter: {
       title: 'Зимен воин',

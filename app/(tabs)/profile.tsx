@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -23,7 +24,7 @@ import { colors, typography, spacing, globalStyles } from '../../constants/theme
 export default function ProfileScreen() {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
-  const { profile, loading: profileLoading, refresh } = useProfile()
+  const { profile, loading: profileLoading, deleteAccount, refresh } = useProfile()
   const { stats, loading: statsLoading } = useProfileStats()
   const { signOut, loading: authLoading } = useAuth()
   const { language, switchLanguage } = useLanguage()
@@ -34,6 +35,21 @@ export default function ProfileScreen() {
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
+    )
+  }
+
+  const deleteAccountModal = async () => {
+    Alert.alert(
+      t('profile.deleteAccount'),
+      t('profile.deleteAccountConfirm'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.delete'),
+          style: 'destructive',
+          onPress: deleteAccount
+        },
+      ]
     )
   }
 
@@ -106,6 +122,15 @@ export default function ProfileScreen() {
               </Text>
             </TouchableOpacity>
           </View>
+        </View>
+
+        {/* Delete Account */}
+        <View style={styles.section}>
+          <Button
+            label={t('profile.deleteAccount')}
+            onPress={deleteAccountModal}
+            variant="secondary"
+          />
         </View>
 
         {/* Sign Out */}

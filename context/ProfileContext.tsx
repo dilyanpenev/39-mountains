@@ -5,12 +5,14 @@ import { Profile } from '../types'
 interface ProfileContextValue {
   profile: Profile | null
   loading: boolean
+  deleteAccount: () => Promise<void>
   refresh: () => Promise<void>
 }
 
 const ProfileContext = createContext<ProfileContextValue>({
   profile: null,
   loading: true,
+  deleteAccount: async () => {},
   refresh: async () => {},
 })
 
@@ -38,6 +40,19 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     setLoading(false)
   }
 
+  const deleteAccount = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    // delete user data
+    await supabase.from('summits').delete().eq('user_id', user.id)
+    await supabase.from('profiles').delete().eq('id', user.id)
+
+    // delete auth account
+    await supabase.rpc('delete_user')
+    await supabase.auth.signOut()
+  }
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event) => {
@@ -49,7 +64,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <ProfileContext.Provider value={{ profile, loading, refresh: fetchProfile }}>
+    <ProfileContext.Provider value={{ profile, loading, deleteAccount, refresh: fetchProfile }}>
       {children}
     </ProfileContext.Provider>
   )

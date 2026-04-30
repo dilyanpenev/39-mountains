@@ -115,6 +115,8 @@ export default {
     displayName: 'Display Name',
     email: 'Email',
     signOut: 'Sign Out',
+    deleteAccount: 'Delete my account',
+    deleteAccountConfirm: 'Are you sure you want to delete your data',
     stats: {
       title: 'My Stats',
       summited: 'Summited',
@@ -171,14 +173,6 @@ export default {
     allAbove2500: {
       title: 'Alpine Master',
       description: 'Summited all peaks above 2500m',
-    },
-    rilaComplete: {
-      title: 'Rila Champion',
-      description: 'Summited all peaks in the Rila range',
-    },
-    pirinComplete: {
-      title: 'Pirin Champion',
-      description: 'Summited all peaks in the Pirin range',
     },
     winterSummiter: {
       title: 'Winter Warrior',
