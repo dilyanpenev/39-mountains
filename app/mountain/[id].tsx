@@ -23,6 +23,12 @@ import { useProfileStats } from '../../context/StatsContext'
 import { useSummitLog } from '../../context/SummitLogContext'
 import { useAchievements } from '../../context/AchievementContext'
 
+interface SummitDetails {
+  id: string
+  summited_at: string
+  notes: string | null
+}
+
 export default function MountainDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const { t } = useTranslation()
@@ -34,6 +40,7 @@ export default function MountainDetailScreen() {
   const { addSummit, deleteEntry, isSummited, refresh: refreshLog } = useSummitLog()
   const { checkAchievements } = useAchievements()
   const [allMountains, setAllMountains] = useState<Mountain[]>([])
+  const [summitDetails, setSummitDetails] = useState<SummitDetails | null>(null)
 
   const summited = isSummited(Number(id))
 
@@ -46,9 +53,6 @@ export default function MountainDetailScreen() {
   }
 
   const handleSummitSuccess = async () => {
-    setModalVisible(false)
-    await refreshStats()
-    await refreshLog()
     // check achievements with updated entries
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
@@ -76,12 +80,21 @@ export default function MountainDetailScreen() {
     const [mountainResult, summitResult] = await Promise.all([
       supabase.from('mountains').select('*').eq('id', id).single(),
       user
-        ? supabase.from('summits').select('id').eq('mountain_id', id).eq('user_id', user.id).single()
+        ? supabase.from('summits').select('id, summited_at, notes').eq('mountain_id', id).eq('user_id', user.id).single()
         : Promise.resolve({ data: null, error: null }),
     ])
 
     if (mountainResult.data) setMountain(mountainResult.data)
-    if (summitResult.data) setSummitId(summitResult.data.id)
+    if (summitResult.data) {
+      setSummitId(summitResult.data.id)
+      setSummitDetails(
+        {
+          id: summitResult.data.id,
+          summited_at: summitResult.data.summited_at,
+          notes: summitResult.data.notes,
+        }
+      )
+    }
     setLoading(false)
   }
 
@@ -154,7 +167,43 @@ export default function MountainDetailScreen() {
           </View>
 
           {/* Description */}
-          <Text style={styles.description}>{getMountainDescription(mountain)}</Text>
+          {getMountainDescription(mountain).trim() !== '' &&
+            <Text style={styles.description}>{getMountainDescription(mountain)}</Text>
+          }
+
+          {/* Summit Details Card */}
+          {summited && summitDetails && (
+            <View style={styles.summitDetailsCard}>
+              <View style={styles.summitDetailsRow}>
+                <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
+                <Text style={styles.summitDetailsText}>
+                  {t('mountains.summitedOn')} 
+                  {new Date(summitDetails.summited_at).toLocaleDateString(undefined, {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </Text>
+              </View>
+
+              {summitDetails.notes ? (
+                <View style={styles.summitDetailsRow}>
+                  <Ionicons name="chatbubble-outline" size={16} color={colors.text.secondary} />
+                  <Text style={styles.summitDetailsText}>{summitDetails.notes}</Text>
+                </View>
+              ) : null}
+            </View>
+          )}
+
+          {/* View on Map Button */}
+          <TouchableOpacity
+            style={styles.mapButton}
+            onPress={openInMaps}
+            activeOpacity={0.85}
+          >
+            <Ionicons name="map" size={18} color={colors.primary} />
+            <Text style={styles.mapButtonText}>{t('mountains.viewOnMap')}</Text>
+          </TouchableOpacity>
 
           {/* Action Button */}
           {summited ? (
@@ -177,28 +226,14 @@ export default function MountainDetailScreen() {
             onSuccess={async (summitedAt, notes) => {
               setModalVisible(false)
               const success = await addSummit(mountain.id, summitedAt, notes)
-              if (success) await refreshStats()
+              if (success) {
+                await refreshLog()
+                handleSummitSuccess()
+              }
             }}
           />
-
-          <TouchableOpacity
-            style={styles.mapButton}
-            onPress={openInMaps}
-            activeOpacity={0.85}
-          >
-            <Ionicons name="map" size={18} color={colors.primary} />
-            <Text style={styles.mapButtonText}>{t('mountains.viewOnMap')}</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
-
-      {/* Summit Modal */}
-      <SummitModal
-        visible={modalVisible}
-        mountain={mountain}
-        onClose={() => setModalVisible(false)}
-        onSuccess={handleSummitSuccess}
-      />
     </View>
   )
 }
@@ -297,20 +332,50 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   mapButton: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: spacing.sm,
-  paddingVertical: spacing.sm,
-  paddingHorizontal: spacing.md,
-  borderRadius: 12,
-  borderWidth: 1.5,
-  borderColor: colors.primary,
-  backgroundColor: colors.primary + '10',
-},
-mapButtonText: {
-  ...typography.body,
-  color: colors.primary,
-  fontWeight: '600',
-},
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    backgroundColor: colors.primary + '10',
+  },
+  mapButtonText: {
+    ...typography.body,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  summitDetailsCard: {
+    backgroundColor: colors.primary + '12',
+    borderRadius: 12,
+    padding: spacing.md,
+    gap: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.primary + '30',
+  },
+  summitDetailsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.xs,
+  },
+  summitDetailsTitle: {
+    ...typography.body,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  summitDetailsRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.sm,
+  },
+  summitDetailsText: {
+    ...typography.body,
+    color: colors.text.secondary,
+    flex: 1,
+    lineHeight: 22,
+  },
 })

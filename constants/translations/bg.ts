@@ -48,7 +48,7 @@ export default {
   home: {
     welcomeBack: 'Добре дошъл,',
     welcome: 'Добре дошъл!',
-    summitProgress: 'Прогрес',
+    summitProgress: 'Твоят прогрес',
     of: 'от',
     peaks: 'върха изкачени',
     lastSummit: 'Последно изкачване',
@@ -56,7 +56,6 @@ export default {
     remaining: 'оставащи върха',
     completion: 'Завършеност',
     share: 'Сподели',
-
   },
   mountains: {
     title: 'Планини',
@@ -76,6 +75,7 @@ export default {
     markSummited: 'Маркирай като изкачен',
     removeSummit: 'Премахни изкачване',
     summited: 'Изкачен',
+    summitedOn: 'Изкачен на ',
     elevation: 'Височина',
     range: 'Планина',
     region: 'Регион',

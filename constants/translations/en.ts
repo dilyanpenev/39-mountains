@@ -75,6 +75,7 @@ export default {
     markSummited: 'Mark as Summited',
     removeSummit: 'Remove Summit',
     summited: 'Summited',
+    summitedOn: 'Summited on ',
     elevation: 'Elevation',
     range: 'Mountain range',
     region: 'Region',
