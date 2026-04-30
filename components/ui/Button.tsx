@@ -1,5 +1,5 @@
 import { TouchableOpacity, Text, ActivityIndicator, StyleSheet } from 'react-native'
-import { colors, typography, spacing } from '../../constants/theme'
+import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 
 interface ButtonProps {
   label: string
@@ -21,7 +21,7 @@ export function Button({
   return (
     <TouchableOpacity
       style={[
-        styles.button,
+        globalStyles.button,
         isPrimary ? styles.primary : styles.secondary,
         (disabled || loading) && styles.disabled,
       ]}
@@ -41,13 +41,6 @@ export function Button({
 }
 
 const styles = StyleSheet.create({
-  button: {
-    height: 52,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.lg,
-  },
   primary: {
     backgroundColor: colors.primary,
   },

@@ -56,6 +56,13 @@ export function getRelativeTime(dateString: string, language: string): string {
   return `${Math.floor(diffDays / 365)} years ago`
 }
 
+export function getMountainRegion(regionCode: string): string {
+  const key = `regions.${regionCode}`
+  const translated = i18next.t(key)
+  // if key not found i18next returns the key itself so fall back to the raw code
+  return translated !== key ? translated : regionCode
+}
+
 i18next
   .use(initReactI18next)
   .init({

@@ -184,4 +184,15 @@ export default {
       description: 'Summited 3 peaks in a single day',
     },
   },
+  regions: {
+    A: 'Burgas',
+    C: 'Sofia City',
+    CM: 'Smolyan',
+    CO: 'Sofia',
+    E: 'Blagoevgrad',
+    PB: 'Plovdiv',
+    PK: 'Pernik',
+    KH: 'Kyustendil',
+    X: 'Haskovo',
+  },
 }

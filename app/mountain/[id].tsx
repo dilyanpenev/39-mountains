@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { SummitModal } from '../../components/mountains/SummitModal'
-import { getMountainName, getMountainDescription, getMountainRange } from '../../lib/i18n'
+import { getMountainName, getMountainDescription, getMountainRange, getMountainRegion } from '../../lib/i18n'
 import { Mountain } from '../../types'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 import { Button } from '../../components/ui/Button'
@@ -164,6 +164,7 @@ export default function MountainDetailScreen() {
             <StatItem icon="trending-up" label={t('mountains.elevation')} value={`${mountain.elevation_m}m`} />
             <StatItem icon="map" label={t('mountains.range')} value={getMountainRange(mountain)} />
             <StatItem icon="flag" label={t('mountains.diff')} value={t(`mountains.difficulty.${mountain.difficulty}`)} />
+            <StatItem icon="location-outline" label={t('mountains.region')} value={getMountainRegion(mountain.region)} />
           </View>
 
           {/* Description */}
@@ -188,7 +189,7 @@ export default function MountainDetailScreen() {
 
               {summitDetails.notes ? (
                 <View style={styles.summitDetailsRow}>
-                  <Ionicons name="chatbubble-outline" size={16} color={colors.text.secondary} />
+                  <Ionicons name="chatbubble-outline" size={20} color={colors.text.secondary} />
                   <Text style={styles.summitDetailsText}>{summitDetails.notes}</Text>
                 </View>
               ) : null}
@@ -306,15 +307,17 @@ const styles = StyleSheet.create({
   },
   statsRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     backgroundColor: colors.surface,
     borderRadius: 12,
-    padding: spacing.md,
+    padding: spacing.sm,
   },
   statItem: {
+    width: '50%',
     alignItems: 'center',
     gap: 4,
-    flex: 1,
+    padding: spacing.sm,
   },
   statLabel: {
     ...typography.caption,
@@ -332,13 +335,8 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   mapButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    ...globalStyles.button,
     gap: spacing.sm,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: 12,
     borderWidth: 1.5,
     borderColor: colors.primary,
     backgroundColor: colors.primary + '10',
@@ -361,11 +359,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     marginBottom: spacing.xs,
-  },
-  summitDetailsTitle: {
-    ...typography.body,
-    color: colors.primary,
-    fontWeight: '600',
   },
   summitDetailsRow: {
     flexDirection: 'row',

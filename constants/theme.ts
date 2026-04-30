@@ -1,22 +1,22 @@
 export const colors = {
   primary: '#2D6A4F',       // deep forest green
-  secondary: '#52796F',     // muted sage
+  secondary: '#0F7173',     // muted sage
   accent: '#74C69D',        // light green highlight
   background: '#F8F9FA',    // off-white
   surface: '#FFFFFF',
   text: {
     primary: '#1A1A2E',
-    secondary: '#6C757D',
+    secondary: '#0F7173',
     inverse: '#FFFFFF',
   },
   difficulty: {
-    easy: '#52B788',
-    moderate: '#F4A261',
-    hard: '#E76F51',
+    easy: '#D8A47F',
+    moderate: '#F05D5E',
+    hard: '#C92C2C',
   },
   mountain: {
     summited: '#2D6A4F',
-    unsummited: '#ADB5BD',
+    unsummited: '#7BAFB1',
   },
 }
 
@@ -60,6 +60,14 @@ export const globalStyles = {
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
   },
+  button: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    borderRadius: 12,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+  }
 }
 
 export const avatarColors = [

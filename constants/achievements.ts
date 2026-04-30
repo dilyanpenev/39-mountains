@@ -105,4 +105,9 @@ export const ACHIEVEMENTS: Achievement[] = [
       return Object.values(countsByDate).some(count => count >= 3)
     },
   },
+  // Vsichki vurhove v KN
+  // Vsichki vurhove v PK
+  // Vsichki vurhove v Sofiisko
+  // Vsichki vurhove v E
+  // Mistichen pokoritel - strandja
 ]
