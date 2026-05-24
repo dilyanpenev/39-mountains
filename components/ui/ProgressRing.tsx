@@ -70,10 +70,10 @@ const styles = StyleSheet.create({
   summitedCount: {
     fontSize: 36,
     fontWeight: '700',
-    color: colors.text.primary,
+    color: '#fff',
   },
   totalText: {
     ...typography.body,
-    color: colors.text.secondary,
+    color: 'rgba(255,255,255,0.6)',
   },
 })

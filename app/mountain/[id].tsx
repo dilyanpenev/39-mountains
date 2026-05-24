@@ -262,9 +262,11 @@ const styles = StyleSheet.create({
   imagePlaceholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#E9ECEF',
+    backgroundColor: '#1B4332',
     alignItems: 'center',
     justifyContent: 'center',
+    borderBottomLeftRadius: 65,
+    borderBottomRightRadius: 65,
   },
   placeholderEmoji: {
     fontSize: 64,

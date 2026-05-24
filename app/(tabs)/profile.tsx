@@ -15,11 +15,11 @@ import { useProfile } from '../../context/ProfileContext'
 import { useProfileStats } from '../../context/StatsContext'
 import { useAuth } from '../../hooks/useAuth'
 import { useLanguage } from '../../hooks/useLanguage'
-import { getMountainName, getRelativeTime } from '../../lib/i18n'
 import { Avatar } from '../../components/ui/Avatar'
 import { Button } from '../../components/ui/Button'
 import { EditProfileModal } from '../../components/ui/EditProfileModal'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
+import { HeroSection } from '../../components/ui/HeroSection'
 
 export default function ProfileScreen() {
   const { t } = useTranslation()
@@ -59,88 +59,93 @@ export default function ProfileScreen() {
         style={globalStyles.screen}
         contentContainerStyle={[
           styles.container,
-          { paddingTop: insets.top + spacing.lg },
         ]}
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.screenTitle}>{t('profile.title')}</Text>
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => setEditModalVisible(true)}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="pencil-outline" size={16} color={colors.primary} />
-            <Text style={styles.editButtonText}>{t('profile.editProfile')}</Text>
-          </TouchableOpacity>
-        </View>
+        <HeroSection
+          topInset={insets.top + spacing.md}
+          style={styles.profileHero}
+        >
+          <View style={styles.heroTopRow}>
+            <Text style={styles.screenTitle}>{t('profile.title')}</Text>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => setEditModalVisible(true)}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="pencil-outline" size={14} color="#fff" />
+              <Text style={styles.editButtonText}>{t('profile.editProfile')}</Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* Avatar & Name */}
-        <View style={styles.avatarSection}>
-          <Avatar displayName={profile?.display_name} size={96} />
-          <Text style={styles.displayName}>{profile?.display_name}</Text>
-          {/* <Text style={styles.email}>{profile?.email}</Text> */}
-        </View>
+          <View style={styles.avatarSection}>
+            <Avatar displayName={profile?.display_name} size={80} />
+            <Text style={styles.displayName}>{profile?.display_name}</Text>
+            {/* <Text style={styles.email}>{profile?.email}</Text> */}
+          </View>
+        </HeroSection>
 
-        {/* Stats Card */}
-        {!statsLoading && (
-          <View style={styles.statsCard}>
-            <View style={styles.statsGrid}>
-              <StatItem
-                icon="flag"
-                label={t('profile.stats.summited')}
-                value={`${stats.summitedCount} / 39`}
-              />
-              <StatItem
-                icon="trending-up"
-                label={t('profile.stats.totalElevation')}
-                value={`${stats.totalElevation.toLocaleString()}m`}
-              />
+        <View style={styles.mainContainer}>
+          {/* Stats Card */}
+          {!statsLoading && (
+            <View style={styles.statsCard}>
+              <View style={styles.statsGrid}>
+                <StatItem
+                  icon="flag"
+                  label={t('profile.stats.summited')}
+                  value={`${stats.summitedCount} / 39`}
+                />
+                <StatItem
+                  icon="trending-up"
+                  label={t('profile.stats.totalElevation')}
+                  value={`${stats.totalElevation.toLocaleString()}m`}
+                />
+              </View>
+            </View>
+          )}
+
+          {/* Language Toggle */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>{t('profile.language')}</Text>
+            <View style={styles.languageRow}>
+              <TouchableOpacity
+                style={[styles.langButton, language === 'en' && styles.langActive]}
+                onPress={() => switchLanguage('en')}
+              >
+                <Text style={[styles.langText, language === 'en' && styles.langTextActive]}>
+                  🇬🇧 English
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.langButton, language === 'bg' && styles.langActive]}
+                onPress={() => switchLanguage('bg')}
+              >
+                <Text style={[styles.langText, language === 'bg' && styles.langTextActive]}>
+                  🇧🇬 Български
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
-        )}
 
-        {/* Language Toggle */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('profile.language')}</Text>
-          <View style={styles.languageRow}>
-            <TouchableOpacity
-              style={[styles.langButton, language === 'en' && styles.langActive]}
-              onPress={() => switchLanguage('en')}
-            >
-              <Text style={[styles.langText, language === 'en' && styles.langTextActive]}>
-                🇬🇧 English
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.langButton, language === 'bg' && styles.langActive]}
-              onPress={() => switchLanguage('bg')}
-            >
-              <Text style={[styles.langText, language === 'bg' && styles.langTextActive]}>
-                🇧🇬 Български
-              </Text>
-            </TouchableOpacity>
+          {/* Delete Account */}
+          <View style={styles.section}>
+            <Button
+              label={t('profile.deleteAccount')}
+              onPress={deleteAccountModal}
+              variant="secondary"
+            />
           </View>
-        </View>
 
-        {/* Delete Account */}
-        <View style={styles.section}>
-          <Button
-            label={t('profile.deleteAccount')}
-            onPress={deleteAccountModal}
-            variant="secondary"
-          />
-        </View>
-
-        {/* Sign Out */}
-        <View style={styles.section}>
-          <Button
-            label={t('profile.signOut')}
-            onPress={signOut}
-            loading={authLoading}
-            variant="secondary"
-          />
+          {/* Sign Out */}
+          <View style={styles.section}>
+            <Button
+              label={t('profile.signOut')}
+              onPress={signOut}
+              loading={authLoading}
+              variant="secondary"
+            />
+          </View>
         </View>
 
       </ScrollView>
@@ -173,8 +178,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container: {
-    padding: spacing.xl,
     paddingBottom: 120,
+  },
+  mainContainer: {
+    padding: spacing.xl,
     gap: spacing.xl,
   },
   header: {
@@ -184,7 +191,7 @@ const styles = StyleSheet.create({
   },
   screenTitle: {
     ...typography.h1,
-    color: colors.text.primary,
+    color: '#fff',
   },
   editButton: {
     flexDirection: 'row',
@@ -194,12 +201,12 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
     borderRadius: 20,
     borderWidth: 1.5,
-    borderColor: colors.primary,
-    backgroundColor: colors.primary + '10',
+    borderColor: 'rgba(255,255,255,0.4)',
+    backgroundColor: 'rgba(255,255,255,0.1)',
   },
   editButtonText: {
     ...typography.caption,
-    color: colors.primary,
+    color: '#fff',
     fontWeight: '600',
   },
   avatarSection: {
@@ -208,11 +215,11 @@ const styles = StyleSheet.create({
   },
   displayName: {
     ...typography.h2,
-    color: colors.text.primary,
+    color: '#fff',
   },
   email: {
     ...typography.body,
-    color: colors.text.secondary,
+    color: 'rgba(255,255,255,0.7)',
   },
   statsCard: {
     ...globalStyles.card,
@@ -276,5 +283,15 @@ const styles = StyleSheet.create({
   },
   langTextActive: {
     color: colors.text.inverse,
+  },
+  profileHero: {
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.xxl + 16,
+  },
+  heroTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.xl,
   },
 })

@@ -18,6 +18,7 @@ import { RecentSummitCard } from '../../components/mountains/RecentSummitCard'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 import { useAchievements } from '../../context/AchievementContext'
 import { ACHIEVEMENTS } from '../../constants/achievements'
+import { HeroSection } from '../../components/ui/HeroSection'
 
 const TOTAL_PEAKS = 39
 
@@ -41,21 +42,22 @@ export default function HomeScreen() {
   return (
     <ScrollView
       style={globalStyles.screen}
-      contentContainerStyle={[styles.container, { paddingTop: insets.top + spacing.lg }]}
+      contentContainerStyle={[styles.container]}
       showsVerticalScrollIndicator={false}
     >
       {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>{t('home.welcomeBack')}</Text>
-          <Text style={styles.name}>{profile?.display_name ?? ''}!</Text>
+      <HeroSection
+        topInset={insets.top + spacing.lg}
+        style={styles.hero}
+      >
+        <View style={styles.heroContent}>
+          <View>
+            <Text style={styles.greeting}>{t('home.welcomeBack')}</Text>
+            <Text style={styles.name}>{profile?.display_name ?? ''}!</Text>
+          </View>
+          <Text style={styles.emoji}>⛰️</Text>
         </View>
-        <Text style={styles.emoji}>⛰️</Text>
-      </View>
 
-      {/* Progress Ring */}
-      <View style={styles.progressCard}>
-        <Text style={styles.sectionTitle}>{t('home.summitProgress')}</Text>
         <View style={styles.progressContent}>
           <ProgressRing
             progress={progress}
@@ -80,68 +82,71 @@ export default function HomeScreen() {
             />
           </View>
         </View>
-      </View>
+      </HeroSection>
 
-      {/* Most Recent Summit */}
-      {stats.mostRecentSummit && (
-        <View style={styles.section}>
-          <RecentSummitCard
-            mountain={stats.mostRecentSummit.mountain}
-            summitedAt={stats.mostRecentSummit.summited_at}
+      <View style={styles.mainContainer}>
+        {/* Most Recent Summit */}
+        {stats.mostRecentSummit && (
+          <View style={styles.section}>
+            <RecentSummitCard
+              mountain={stats.mostRecentSummit.mountain}
+              summitedAt={stats.mostRecentSummit.summited_at}
+            />
+          </View>
+        )}
+
+        {/* Browse Mountains Button */}
+        <TouchableOpacity
+          style={styles.browseButton}
+          onPress={() => router.push('/(tabs)/mountains')}
+          activeOpacity={0.85}
+        >
+          <View style={styles.browseButtonContent}>
+            <View>
+              <Text style={styles.browseTitle}>{t('home.browseAll')}</Text>
+              <Text style={styles.browseSubtitle}>
+                {TOTAL_PEAKS - stats.summitedCount} {t('home.remaining')}
+              </Text>
+            </View>
+            <Ionicons name="arrow-forward-circle" size={32} color="#fff" />
+          </View>
+        </TouchableOpacity>
+
+        {/* Quick Actions */}
+        <View style={styles.quickActions}>
+          <QuickAction
+            icon="map"
+            label={t('tabs.map')}
+            onPress={() => router.push('/(tabs)/map')}
+          />
+          <QuickAction
+            icon="share-social"
+            label={t('home.share')}
+            onPress={() => router.push('/share')}
+          />
+          <QuickAction
+            icon="share-social"
+            label={t('home.share')}
+            onPress={() => router.push('/(tabs)/profile')}
           />
         </View>
-      )}
 
-      {/* Browse Mountains Button */}
-      <TouchableOpacity
-        style={styles.browseButton}
-        onPress={() => router.push('/(tabs)/mountains')}
-        activeOpacity={0.85}
-      >
-        <View style={styles.browseButtonContent}>
+        <TouchableOpacity
+          style={styles.achievementsButton}
+          onPress={() => router.push('/achievements')}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.achievementsButtonIcon}>🏆</Text>
           <View>
-            <Text style={styles.browseTitle}>{t('home.browseAll')}</Text>
-            <Text style={styles.browseSubtitle}>
-              {TOTAL_PEAKS - stats.summitedCount} {t('home.remaining')}
+            <Text style={styles.achievementsButtonTitle}>{t('achievements.title')}</Text>
+            <Text style={styles.achievementsButtonSubtitle}>
+              {unlockedIds.size} / {ACHIEVEMENTS.length} {t('achievements.unlocked')}
             </Text>
           </View>
-          <Ionicons name="arrow-forward-circle" size={32} color="#fff" />
-        </View>
-      </TouchableOpacity>
-
-      {/* Quick Actions */}
-      <View style={styles.quickActions}>
-        <QuickAction
-          icon="map"
-          label={t('tabs.map')}
-          onPress={() => router.push('/(tabs)/map')}
-        />
-        <QuickAction
-          icon="share-social"
-          label={t('home.share')}
-          onPress={() => router.push('/share')}
-        />
-        <QuickAction
-          icon="share-social"
-          label={t('home.share')}
-          onPress={() => router.push('/(tabs)/profile')}
-        />
+          <Ionicons name="arrow-forward" size={20} color={colors.primary} />
+        </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        style={styles.achievementsButton}
-        onPress={() => router.push('/achievements')}
-        activeOpacity={0.85}
-      >
-        <Text style={styles.achievementsButtonIcon}>🏆</Text>
-        <View>
-          <Text style={styles.achievementsButtonTitle}>{t('achievements.title')}</Text>
-          <Text style={styles.achievementsButtonSubtitle}>
-            {unlockedIds.size} / {ACHIEVEMENTS.length} {t('achievements.unlocked')}
-          </Text>
-        </View>
-        <Ionicons name="arrow-forward" size={20} color={colors.primary} />
-      </TouchableOpacity>
     </ScrollView>
   )
 }
@@ -149,7 +154,7 @@ export default function HomeScreen() {
 function ProgressDetail({ icon, label, value }: { icon: any; label: string; value: string }) {
   return (
     <View style={styles.progressDetail}>
-      <Ionicons name={icon} size={16} color={colors.primary} />
+      <Ionicons name={icon} size={16} color="rgba(255,255,255,0.7)" />
       <View>
         <Text style={styles.progressDetailLabel}>{label}</Text>
         <Text style={styles.progressDetailValue}>{value}</Text>
@@ -176,8 +181,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container: {
-    padding: spacing.xl,
     paddingBottom: 120,
+  },
+  mainContainer: {
+    padding: spacing.xl,
     gap: spacing.xl,
   },
   header: {
@@ -187,11 +194,11 @@ const styles = StyleSheet.create({
   },
   greeting: {
     ...typography.body,
-    color: colors.text.secondary,
+    color: 'rgba(255,255,255,0.7)',
   },
   name: {
     ...typography.h2,
-    color: colors.text.primary,
+    color: '#fff',
   },
   emoji: {
     fontSize: 40,
@@ -221,11 +228,11 @@ const styles = StyleSheet.create({
   },
   progressDetailLabel: {
     ...typography.caption,
-    color: colors.text.secondary,
+    color: 'rgba(255,255,255,0.6)',
   },
   progressDetailValue: {
     ...typography.body,
-    color: colors.text.primary,
+    color: '#fff',
     fontWeight: '600',
   },
   section: {
@@ -276,21 +283,31 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   achievementsButton: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: spacing.md,
-  padding: spacing.md,
-  ...globalStyles.card,
-},
-achievementsButtonIcon: {
-  fontSize: 32,
-},
-achievementsButtonTitle: {
-  ...typography.h3,
-  color: colors.text.primary,
-},
-achievementsButtonSubtitle: {
-  ...typography.caption,
-  color: colors.text.secondary,
-},
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.md,
+    ...globalStyles.card,
+  },
+  achievementsButtonIcon: {
+    fontSize: 32,
+  },
+  achievementsButtonTitle: {
+    ...typography.h3,
+    color: colors.text.primary,
+  },
+  achievementsButtonSubtitle: {
+    ...typography.caption,
+    color: colors.text.secondary,
+  },
+  hero: {
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.xxl + 16,
+  },
+  heroContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.xl,
+  },
 })
