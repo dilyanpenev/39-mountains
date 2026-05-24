@@ -91,7 +91,7 @@ export default function LogScreen() {
             <Text style={styles.emptySubtitle}>{t('log.emptySubtitle')}</Text>
             <TouchableOpacity
               style={styles.exploreButton}
-              onPress={() => router.push('/')}
+              onPress={() => router.push('/(tabs)/mountains')}
             >
               <Text style={styles.exploreButtonText}>{t('log.explore')}</Text>
             </TouchableOpacity>

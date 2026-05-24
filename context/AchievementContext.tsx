@@ -6,7 +6,7 @@ import {
   useCallback,
   ReactNode,
 } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { supabase } from '../lib/supabase'
 import { ACHIEVEMENTS, Achievement } from '../constants/achievements'
 import { Summit } from '../types'
 import { Mountain } from '../types'
@@ -27,29 +27,55 @@ const AchievementsContext = createContext<AchievementsContextValue>({
   revokeAchievements: () => {},
 })
 
-const STORAGE_KEY = 'unlocked_achievements'
-
 export function AchievementsProvider({ children }: { children: ReactNode }) {
   const [unlockedIds, setUnlockedIds] = useState<Set<string>>(new Set())
   const [newlyUnlocked, setNewlyUnlocked] = useState<Achievement | null>(null)
 
   useEffect(() => {
     loadUnlocked()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event) => {
+        if (event === 'SIGNED_IN') loadUnlocked()
+        if (event === 'SIGNED_OUT') setUnlockedIds(new Set())
+      }
+    )
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const loadUnlocked = async () => {
-    try {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        setUnlockedIds(new Set(JSON.parse(stored)))
-      }
-    } catch {}
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    const { data, error } = await supabase
+      .from('user_achievements')
+      .select('achievement_id')
+      .eq('user_id', user.id)
+
+    if (!error && data) {
+      setUnlockedIds(new Set(data.map(a => a.achievement_id)))
+    }
   }
 
-  const saveUnlocked = async (ids: Set<string>) => {
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([...ids]))
-    } catch {}
+  const saveAchievement = async (achievementId: string) => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    await supabase
+      .from('user_achievements')
+      .insert({ user_id: user.id, achievement_id: achievementId })
+  }
+
+  const removeAchievement = async (achievementId: string) => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    await supabase
+      .from('user_achievements')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('achievement_id', achievementId)
   }
 
   const checkAchievements = useCallback(
@@ -64,15 +90,12 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
             if (unlocked) {
               next.add(achievement.id)
               latestNew = achievement
+              saveAchievement(achievement.id)
             }
           }
         }
 
-        if (latestNew) {
-          setNewlyUnlocked(latestNew)
-          saveUnlocked(next)
-        }
-
+        if (latestNew) setNewlyUnlocked(latestNew)
         return next
       })
     },
@@ -81,23 +104,21 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
 
   const revokeAchievements = useCallback(
     (entries: Summit[], allMountains: Mountain[]) => {
-        setUnlockedIds(prev => {
+      setUnlockedIds(prev => {
         const next = new Set(prev)
-        let changed = false
 
         for (const achievement of ACHIEVEMENTS) {
-            if (next.has(achievement.id)) {
+          if (next.has(achievement.id)) {
             const stillValid = achievement.check(entries, allMountains)
             if (!stillValid) {
-                next.delete(achievement.id)
-                changed = true
+              next.delete(achievement.id)
+              removeAchievement(achievement.id)
             }
-            }
+          }
         }
 
-        if (changed) saveUnlocked(next)
         return next
-        })
+      })
     },
     []
   )
@@ -106,7 +127,13 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
 
   return (
     <AchievementsContext.Provider
-      value={{ unlockedIds, newlyUnlocked, clearNewlyUnlocked, checkAchievements, revokeAchievements }}
+      value={{
+        unlockedIds,
+        newlyUnlocked,
+        clearNewlyUnlocked,
+        checkAchievements,
+        revokeAchievements,
+      }}
     >
       {children}
     </AchievementsContext.Provider>
