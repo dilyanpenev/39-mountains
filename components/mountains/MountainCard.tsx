@@ -1,162 +1,173 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
+import { memo } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+// import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { Mountain } from '../../types'
 import { getMountainName, getMountainRange } from '../../lib/i18n'
-import { colors, spacing, typography, globalStyles } from '../../constants/theme'
+import { colors, spacing, typography } from '../../constants/theme'
 
 interface MountainCardProps {
   mountain: Mountain
   summited: boolean
   onPress: () => void
+  isFirst?: boolean
+  isLast?: boolean
 }
 
 const DIFFICULTY_COLORS = {
-  easy: colors.difficulty.easy,
-  moderate: colors.difficulty.moderate,
-  hard: colors.difficulty.hard,
+  easy: '#52B788',
+  moderate: '#F4A261',
+  hard: '#E76F51',
 }
 
-export function MountainCard({ mountain, summited, onPress }: MountainCardProps) {
+function MountainCardComponent({
+  mountain,
+  summited,
+  onPress,
+  isFirst = false,
+  isLast = false,
+}: MountainCardProps) {
   const { t } = useTranslation()
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
+    <TouchableOpacity
+      style={[
+        styles.row,
+        isFirst && styles.rowFirst,
+        isLast && styles.rowLast,
+        !isLast && styles.rowBorder,
+      ]}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      {/* Difficulty accent border */}
+      <View
+        style={[
+          styles.accentBar,
+          { backgroundColor: DIFFICULTY_COLORS[mountain.difficulty] },
+          isFirst && styles.accentBarFirst,
+          isLast && styles.accentBarLast,
+        ]}
+      />
 
-      {/* Cover Image */}
-      <View style={styles.imageContainer}>
+      {/* Thumbnail */}
+      <View style={styles.thumbnail}>
         {mountain.cover_image_url ? (
-          <Image source={{ uri: mountain.cover_image_url }} style={styles.image} />
+          <></>
+          // <Image
+          //   source={{ uri: mountain.cover_image_url }}
+          //   style={styles.thumbnailImage}
+          //   contentFit="cover"
+          // />
         ) : (
-          <View style={styles.imagePlaceholder}>
-            <Text style={styles.placeholderEmoji}>⛰️</Text>
-          </View>
-        )}
-
-        {/* Summited Badge */}
-        {summited && (
-          <View style={styles.summitedBadge}>
-            <Ionicons name="checkmark" size={12} color="#fff" />
-            <Text style={styles.summitedText}>{t('mountains.summited')}</Text>
+          <View style={styles.thumbnailPlaceholder}>
+            <Ionicons name="triangle" size={18} color="rgba(255,255,255,0.5)" />
           </View>
         )}
       </View>
 
-      {/* Content */}
-      <View style={styles.content}>
-        <View>
-          <Text style={styles.name}>
-            {getMountainName(mountain)}
-          </Text>
-          <Text style={styles.elevation}>{mountain.elevation_m}m</Text>
-        </View>
-
-        <View style={styles.row}>
-          <View style={styles.rangeBadge}>
-            <Ionicons name="triangle" size={12} color="#000" />
-            <Text style={styles.rangeText}>{getMountainRange(mountain)}</Text>
-          </View>
-          <View style={[styles.difficultyBadge, { backgroundColor: DIFFICULTY_COLORS[mountain.difficulty] + '22' }]}>
-            <Text style={[styles.difficultyText, { color: DIFFICULTY_COLORS[mountain.difficulty] }]}>
-              {t(`mountains.difficulty.${mountain.difficulty}`)}
-            </Text>
-          </View>
-        </View>
+      {/* Info */}
+      <View style={styles.info}>
+        <Text
+          style={[styles.name, !summited && styles.nameUnsummited]}
+          numberOfLines={1}
+        >
+          {getMountainName(mountain)}
+        </Text>
+        <Text style={styles.meta}>
+          {getMountainRange(mountain)} · {mountain.elevation_m}m · {t(`mountains.difficulty.${mountain.difficulty}`)}
+        </Text>
       </View>
 
+      {/* Right side */}
+      <View style={styles.right}>
+        {summited ? (
+          <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
+        ) : (
+          <Ionicons name="ellipse-outline" size={20} color={colors.text.secondary} />
+        )}
+        <Ionicons name="chevron-forward" size={14} color={colors.text.secondary} />
+      </View>
     </TouchableOpacity>
   )
 }
 
+export const MountainCard = memo(MountainCardComponent)
+
 const styles = StyleSheet.create({
-  card: {
-    ...globalStyles.card,
-    marginBottom: spacing.md,
-    overflow: 'hidden',
-    padding: 0,
-    flexDirection: 'row',
-  },
-  imageContainer: {
-    height: 140,
-    width: '40%',
-    position: 'relative',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  imagePlaceholder: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#E9ECEF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  placeholderEmoji: {
-    fontSize: 40,
-  },
-  summitedBadge: {
-    position: 'absolute',
-    top: spacing.sm,
-    right: spacing.sm,
-    backgroundColor: colors.primary,
-    borderRadius: 20,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  summitedText: {
-    color: '#fff',
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  content: {
-    padding: spacing.md,
-    gap: spacing.xs,
-    flexDirection: 'column',
-    width: '60%',
-    justifyContent: 'space-between'
-  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: colors.surface,
+    borderLeftWidth: 0.5,
+    borderRightWidth: 0.5,
+    borderColor: '#DEE2E6',
+    minHeight: 64,
+    overflow: 'hidden',
+  },
+  rowFirst: {
+    borderTopWidth: 0.5,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+  },
+  rowLast: {
+    borderBottomWidth: 0.5,
+    borderBottomLeftRadius: 14,
+    borderBottomRightRadius: 14,
+  },
+  rowBorder: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#F1F3F5',
+  },
+  accentBar: {
+    width: 6,
+    alignSelf: 'stretch',
+    flexShrink: 0,
+  },
+  accentBarFirst: {
+    borderTopLeftRadius: 14,
+  },
+  accentBarLast: {
+    borderBottomLeftRadius: 14,
+  },
+  thumbnail: {
+    width: 64,
+    height: 64,
+    flexShrink: 0,
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
+  },
+  thumbnailPlaceholder: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#40916C',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  info: {
+    flex: 1,
+    paddingHorizontal: spacing.md,
+    gap: 3,
   },
   name: {
-    ...typography.h3,
-    color: colors.text.primary,
-    flex: 1,
-    marginRight: spacing.sm,
-  },
-  elevation: {
     ...typography.body,
-    color: colors.text.secondary,
-    fontWeight: '600',
+    color: colors.text.primary,
+    fontWeight: '500',
   },
-  rangeBadge: {
-    backgroundColor: colors.secondary + '22',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
-    borderRadius: 6,
+  nameUnsummited: {
+    color: colors.text.primary,
+  },
+  meta: {
+    ...typography.caption,
+    color: colors.text.secondary,
+  },
+  right: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-  },
-  rangeText: {
-    fontSize: 12,
-    color: colors.secondary,
-    fontWeight: '500',
-  },
-  difficultyBadge: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  difficultyText: {
-    fontSize: 12,
-    fontWeight: '500',
+    paddingRight: spacing.md,
   },
 })

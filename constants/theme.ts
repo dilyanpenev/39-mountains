@@ -9,6 +9,7 @@ export const colors = {
     primary: '#1A1A2E',
     secondary: '#0F7173',
     inverse: '#FFFFFF',
+    softInverse: '#F8F9FA',
   },
   difficulty: {
     easy: '#D8A47F',
