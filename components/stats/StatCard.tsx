@@ -121,7 +121,7 @@ export function StatCard({
             <Defs>
               <LinearGradient id="ringGradient" x1="0" y1="0" x2="1" y2="1">
                 <Stop offset="0" stopColor="#74C69D" />
-                <Stop offset="1" stopColor="#1B4332" />
+                <Stop offset="1" stopColor={colors.primaryDark} />
               </LinearGradient>
             </Defs>
             <Circle
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   latestCard: {
-    backgroundColor: '#1B4332',
+    backgroundColor: colors.primaryDark,
   },
   yearCard: {
     backgroundColor: '#52796F',

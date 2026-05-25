@@ -42,7 +42,7 @@ export default function HomeScreen() {
 
   return (
     <ScrollView
-      style={globalStyles.screen}
+      style={[globalStyles.screen, { backgroundColor: colors.primaryDark }]}
       contentContainerStyle={[styles.container]}
       showsVerticalScrollIndicator={false}
     >
@@ -103,7 +103,7 @@ export default function HomeScreen() {
           activeOpacity={0.85}
         >
           <LinearGradient
-            colors={['#2D6A4F', '#1B4332']}
+            colors={['#2D6A4F', colors.primaryDark]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.browseButtonContent}
@@ -125,7 +125,7 @@ export default function HomeScreen() {
           activeOpacity={0.85}
         >
           <LinearGradient
-            colors={['#2D6A4F', '#1B4332']}
+            colors={['#2D6A4F', colors.primaryDark]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.achievementsIconBg}
@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingBottom: 120,
+    backgroundColor: colors.background,
   },
   mainContainer: {
     padding: spacing.xl,

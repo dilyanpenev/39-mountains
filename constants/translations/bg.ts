@@ -135,9 +135,12 @@ export default {
     },
     privacyPolicy: 'Политика за поверителност',
     termsAndConditions: 'Общи условия',
+    appVersion: 'Версия на приложението',
+    contactUs: 'Свържи се с нас',
     sections: {
       account: 'Акаунт',
       legal: 'Правна информация',
+      support: 'Контакти',
       dangerZone: 'Опасна зона',
     },
     deleteAccount: {
@@ -146,7 +149,7 @@ export default {
     },
   },
   share: {
-    title: 'Сподели статистика',
+    title: 'Сподели статистиката си',
     shareButton: 'Сподели картичката',
     sharing: 'Споделяне...',
     hint: 'Картичката ще бъде запазена в галерията ти и можеш да я споделиш в Instagram, WhatsApp или друго приложение.',
@@ -162,11 +165,11 @@ export default {
       description: 'Изкачи първия си връх',
     },
     fiveSummits: {
-      title: 'Отдаден пътешественик',
+      title: 'Отдаден\nпътешественик',
       description: 'Изкачи 5 върха',
     },
     tenSummits: {
-      title: 'Планински изследовател',
+      title: 'Планински\nизследовател',
       description: 'Изкачи 10 върха',
     },
     halfway: {
@@ -192,6 +195,22 @@ export default {
     speedSummiter: {
       title: 'Скоростен алпинист',
       description: 'Изкачи 3 върха в един ден',
+    },
+    knComplete: {
+      title: 'Кюстендилска череша',
+      description: 'Изкачи всички планини в област Кюстендил',
+    },
+    pkComplete: {
+      title: 'Пернишки винкел',
+      description: 'Изкачи всички планини в област Перник',
+    },
+    sfComplete: {
+      title: 'Софийска баница',
+      description: 'Изкачи всички планини в област София',
+    },
+    blgComplete: {
+      title: 'Благоевградска идилия',
+      description: 'Изкачи всички планини в област Благоевград',
     },
   },
   regions: {

@@ -9,6 +9,7 @@ import {
   Linking,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import Constants from 'expo-constants'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { useProfile } from '../../context/ProfileContext'
@@ -23,6 +24,7 @@ import { SettingsGroup, SettingsRow, SettingsDivider } from '../../components/ui
 import { LanguageModal } from '../../components/ui/LanguageModal'
 import { router } from 'expo-router'
 import { useProfileRank } from '../../hooks/useProfileRank'
+import { APP_CONFIG } from '../../constants/configs'
 
 export default function ProfileScreen() {
   const { t } = useTranslation()
@@ -34,6 +36,15 @@ export default function ProfileScreen() {
   const [editModalVisible, setEditModalVisible] = useState(false)
   const [languageModalVisible, setLanguageModalVisible] = useState(false)
   const rank = useProfileRank()
+
+  const appVersion = Constants.expoConfig?.version ?? '—'
+  const buildNumber = Constants.expoConfig?.ios?.buildNumber
+    ?? Constants.expoConfig?.android?.versionCode
+    ?? '—'
+
+  const handleContact = () => {
+    Linking.openURL(`mailto:${APP_CONFIG.contactEmail}?subject=39 Mountains - Support`)
+  }
 
   if (profileLoading) {
     return (
@@ -61,7 +72,7 @@ export default function ProfileScreen() {
   return (
     <>
       <ScrollView
-        style={globalStyles.screen}
+        style={[globalStyles.screen, { backgroundColor: colors.primaryDark }]}
         contentContainerStyle={[
           styles.container,
         ]}
@@ -129,13 +140,29 @@ export default function ProfileScreen() {
               <SettingsRow
                 icon="document-text-outline"
                 label={t('profile.privacyPolicy')}
-                onPress={() => Linking.openURL('https://your-privacy-policy-url.com')}
+                onPress={() => Linking.openURL(APP_CONFIG.privacyPolicyUrl)}
               />
               <SettingsDivider />
               <SettingsRow
                 icon="reader-outline"
                 label={t('profile.termsAndConditions')}
-                onPress={() => Linking.openURL('https://your-terms-url.com')}
+                onPress={() => Linking.openURL(APP_CONFIG.termsUrl)}
+              />
+              <SettingsDivider />
+              <SettingsRow
+                icon="information-circle-outline"
+                label={t('profile.appVersion')}
+                value={`${appVersion} (${buildNumber})`}
+                showChevron={false}
+              />
+            </SettingsGroup>
+
+            {/* Contact Us */}
+            <SettingsGroup title={t('profile.sections.support')}>
+              <SettingsRow
+                icon="mail-outline"
+                label={t('profile.contactUs')}
+                onPress={handleContact}
               />
             </SettingsGroup>
 
@@ -197,6 +224,7 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingBottom: 120,
+    backgroundColor: colors.background,
   },
   mainContainer: {
     padding: spacing.xl,

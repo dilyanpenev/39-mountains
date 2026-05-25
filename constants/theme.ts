@@ -1,5 +1,6 @@
 export const colors = {
   primary: '#2D6A4F',       // deep forest green
+  primaryDark: '#1B4332',
   secondary: '#0F7173',     // muted sage
   accent: '#74C69D',        // light green highlight
   background: '#F8F9FA',    // off-white
@@ -74,6 +75,5 @@ export const avatarColors = [
   '#2D6A4F', // forest green
   '#52796F', // sage
   '#74C69D', // light green
-  '#1B4332', // dark green
   '#40916C', // medium green
 ]

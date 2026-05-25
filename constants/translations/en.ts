@@ -135,9 +135,12 @@ export default {
     },
     privacyPolicy: 'Privacy Policy',
     termsAndConditions: 'Terms & Conditions',
+    appVersion: 'App Version',
+    contactUs: 'Contact Us',
     sections: {
       account: 'Account',
       legal: 'Legal',
+      support: 'Support',
       dangerZone: 'Danger Zone',
     },
     deleteAccount: {
@@ -192,6 +195,22 @@ export default {
     speedSummiter: {
       title: 'Speed Runner',
       description: 'Summited 3 peaks in a single day',
+    },
+    knComplete: {
+      title: 'Kyustendil Cherry',
+      description: 'Summited all mountains in Kyustendil region',
+    },
+    pkComplete: {
+      title: 'Pernik Master',
+      description: 'Summited all mountains in Pernik region',
+    },
+    sfComplete: {
+      title: 'Sofia Banitsa',
+      description: 'Summited all mountains in Sofia region',
+    },
+    blgComplete: {
+      title: 'Blagoevgrad Dream',
+      description: 'Summited all mountains in Blagoevgrad region',
     },
   },
   regions: {

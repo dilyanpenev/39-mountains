@@ -1,5 +1,6 @@
 import { View, StyleSheet, ViewStyle } from 'react-native'
 import Svg, { Path } from 'react-native-svg'
+import { colors } from '../../constants/theme'
 
 interface HeroSectionProps {
   children: React.ReactNode
@@ -40,7 +41,7 @@ export function HeroSection({
 
 const styles = StyleSheet.create({
   hero: {
-    backgroundColor: '#1B4332',
+    backgroundColor: colors.primaryDark,
     overflow: 'hidden',
     position: 'relative',
     borderBottomLeftRadius: 65,

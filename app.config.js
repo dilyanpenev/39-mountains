@@ -16,9 +16,13 @@ export default {
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      buildNumber: '1',
+      bundleIdentifier: 'com.dpenev.mountains39',
       "supportsTablet": false
     },
     "android": {
+      versionCode: 1,
+      package: 'com.dpenev.mountains39',
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

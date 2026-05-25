@@ -111,9 +111,53 @@ export const ACHIEVEMENTS: Achievement[] = [
       return Object.values(countsByDate).some(count => count >= 3)
     },
   },
-  // Vsichki vurhove v KN
-  // Vsichki vurhove v PK
-  // Vsichki vurhove v Sofiisko
-  // Vsichki vurhove v E
+  {
+    id: 'kn_complete',
+    icon: '🍒',
+    titleKey: 'achievements.knComplete.title',
+    descriptionKey: 'achievements.knComplete.description',
+    check: (entries, allMountains?: any[]) => {
+      if (!allMountains) return false
+      const knPeaks = allMountains.filter(m => m.region === 'KH')
+      const summitedIds = new Set(entries.map(e => e.mountain_id))
+      return knPeaks.every(m => summitedIds.has(m.id))
+    },
+  },
+  {
+    id: 'pk_complete',
+    icon: '🔧',
+    titleKey: 'achievements.pkComplete.title',
+    descriptionKey: 'achievements.pkComplete.description',
+    check: (entries, allMountains?: any[]) => {
+      if (!allMountains) return false
+      const pkPeaks = allMountains.filter(m => m.region === 'PK')
+      const summitedIds = new Set(entries.map(e => e.mountain_id))
+      return pkPeaks.every(m => summitedIds.has(m.id))
+    },
+  },
+  {
+    id: 'sf_complete',
+    icon: '🤑',
+    titleKey: 'achievements.sfComplete.title',
+    descriptionKey: 'achievements.sfComplete.description',
+    check: (entries, allMountains?: any[]) => {
+      if (!allMountains) return false
+      const sfPeaks = allMountains.filter(m => m.region === 'C' || m.region === 'CO')
+      const summitedIds = new Set(entries.map(e => e.mountain_id))
+      return sfPeaks.every(m => summitedIds.has(m.id))
+    },
+  },
+  {
+    id: 'blg_complete',
+    icon: '🍂',
+    titleKey: 'achievements.blgComplete.title',
+    descriptionKey: 'achievements.blgComplete.description',
+    check: (entries, allMountains?: any[]) => {
+      if (!allMountains) return false
+      const blgPeaks = allMountains.filter(m => m.region === 'E')
+      const summitedIds = new Set(entries.map(e => e.mountain_id))
+      return blgPeaks.every(m => summitedIds.has(m.id))
+    },
+  },
   // Mistichen pokoritel - strandja
 ]
