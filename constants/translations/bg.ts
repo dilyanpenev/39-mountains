@@ -112,12 +112,10 @@ export default {
   },
   profile: {
     title: 'Профил',
-    editProfile: 'Редактирай профил',
+    editProfile: 'Редактирай',
     displayName: 'Потребителско име',
     email: 'Имейл',
     signOut: 'Излез',
-    deleteAccount: 'Изтрий моя профил',
-    deleteAccountConfirm: 'Сигурен ли си, че искаш да изтриеш своите данни?',
     stats: {
       title: 'Моята статистика',
       summited: 'Изкачени',
@@ -135,6 +133,17 @@ export default {
       avatarHint: 'Аватарът се генерира от инициалите ти',
       nameTooShort: 'Името трябва да е поне 2 символа',
     },
+    privacyPolicy: 'Политика за поверителност',
+    termsAndConditions: 'Общи условия',
+    sections: {
+      account: 'Акаунт',
+      legal: 'Правна информация',
+      dangerZone: 'Опасна зона',
+    },
+    deleteAccount: {
+      title: 'Изтрий акаунта',
+      confirm: 'Това ще изтрие завинаги твоя акаунт и всички данни за изкачванията. Това не може да бъде отменено.',
+    },
   },
   share: {
     title: 'Сподели статистика',
@@ -147,12 +156,13 @@ export default {
     unlocked: 'Отключени',
     congratulations: 'Поздравления!',
     awesome: 'Страхотно!',
+    novice: 'Бъдещ алпинист',
     firstSummit: {
-      title: 'Първи стъпки',
+      title: 'Начинаещ планинар',
       description: 'Изкачи първия си връх',
     },
     fiveSummits: {
-      title: 'Начало',
+      title: 'Отдаден пътешественик',
       description: 'Изкачи 5 върха',
     },
     tenSummits: {
@@ -160,7 +170,7 @@ export default {
       description: 'Изкачи 10 върха',
     },
     halfway: {
-      title: 'Наполовина',
+      title: 'Майстор на височините',
       description: 'Изкачи 20 от 39 върха',
     },
     allPeaks: {

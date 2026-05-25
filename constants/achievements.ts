@@ -5,6 +5,7 @@ export interface Achievement {
   icon: string
   titleKey: string
   descriptionKey: string
+  rank?: number
   check: (entries: Summit[], allMountains?: any[]) => boolean
 }
 
@@ -14,6 +15,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '🏔️',
     titleKey: 'achievements.firstSummit.title',
     descriptionKey: 'achievements.firstSummit.description',
+    rank: 1,
     check: (entries) => entries.length >= 1,
   },
   {
@@ -21,6 +23,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '⛰️',
     titleKey: 'achievements.fiveSummits.title',
     descriptionKey: 'achievements.fiveSummits.description',
+    rank: 2,
     check: (entries) => entries.length >= 5,
   },
   {
@@ -28,6 +31,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '🗻',
     titleKey: 'achievements.tenSummits.title',
     descriptionKey: 'achievements.tenSummits.description',
+    rank: 3,
     check: (entries) => entries.length >= 10,
   },
   {
@@ -35,6 +39,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '🎯',
     titleKey: 'achievements.halfway.title',
     descriptionKey: 'achievements.halfway.description',
+    rank: 4,
     check: (entries) => entries.length >= 20,
   },
   {
@@ -42,6 +47,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '👑',
     titleKey: 'achievements.allPeaks.title',
     descriptionKey: 'achievements.allPeaks.description',
+    rank: 5,
     check: (entries) => entries.length >= 39,
   },
   {

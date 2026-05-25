@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { useProfile } from '../../context/ProfileContext'
@@ -101,7 +102,12 @@ export default function HomeScreen() {
           onPress={() => router.push('/(tabs)/mountains')}
           activeOpacity={0.85}
         >
-          <View style={styles.browseButtonContent}>
+          <LinearGradient
+            colors={['#2D6A4F', '#1B4332']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.browseButtonContent}
+          >
             <View>
               <Text style={styles.browseTitle}>{t('home.browseAll')}</Text>
               <Text style={styles.browseSubtitle}>
@@ -109,10 +115,35 @@ export default function HomeScreen() {
               </Text>
             </View>
             <Ionicons name="arrow-forward-circle" size={32} color="#fff" />
+          </LinearGradient>
+        </TouchableOpacity>
+       
+        {/* Achievements Button */}
+        <TouchableOpacity
+          style={styles.achievementsButton}
+          onPress={() => router.push('/achievements')}
+          activeOpacity={0.85}
+        >
+          <LinearGradient
+            colors={['#2D6A4F', '#1B4332']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.achievementsIconBg}
+          >
+            <Ionicons name="trophy" size={22} color="#fff" />
+          </LinearGradient>
+
+          <View style={styles.achievementsText}>
+            <Text style={styles.achievementsTitle}>{t('achievements.title')}</Text>
+            <Text style={styles.achievementsSubtitle}>
+              {unlockedIds.size} / {ACHIEVEMENTS.length} {t('achievements.unlocked').toLowerCase()}
+            </Text>
           </View>
+
+          <Ionicons name="arrow-forward" size={20} color={colors.primary} />
         </TouchableOpacity>
 
-        {/* Quick Actions */}
+         {/* Quick Actions */}
         <View style={styles.quickActions}>
           <QuickAction
             icon="map"
@@ -131,20 +162,6 @@ export default function HomeScreen() {
           />
         </View>
 
-        <TouchableOpacity
-          style={styles.achievementsButton}
-          onPress={() => router.push('/achievements')}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.achievementsButtonIcon}>🏆</Text>
-          <View>
-            <Text style={styles.achievementsButtonTitle}>{t('achievements.title')}</Text>
-            <Text style={styles.achievementsButtonSubtitle}>
-              {unlockedIds.size} / {ACHIEVEMENTS.length} {t('achievements.unlocked')}
-            </Text>
-          </View>
-          <Ionicons name="arrow-forward" size={20} color={colors.primary} />
-        </TouchableOpacity>
       </View>
 
     </ScrollView>
@@ -241,12 +258,13 @@ const styles = StyleSheet.create({
   browseButton: {
     backgroundColor: colors.primary,
     borderRadius: 16,
-    padding: spacing.lg,
   },
   browseButtonContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    padding: spacing.lg,
+    borderRadius: 16,
   },
   browseTitle: {
     ...typography.h3,
@@ -282,24 +300,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
   },
-  achievementsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    padding: spacing.md,
-    ...globalStyles.card,
-  },
-  achievementsButtonIcon: {
-    fontSize: 32,
-  },
-  achievementsButtonTitle: {
-    ...typography.h3,
-    color: colors.text.primary,
-  },
-  achievementsButtonSubtitle: {
-    ...typography.caption,
-    color: colors.text.secondary,
-  },
   hero: {
     paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xxl + 16,
@@ -309,5 +309,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: spacing.xl,
+  },
+  achievementsButton: {
+    ...globalStyles.card,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.md,
+  },
+  achievementsIconBg: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  achievementsText: {
+    flex: 1,
+    gap: 3,
+  },
+  achievementsTitle: {
+    ...typography.h3,
+    color: colors.text.primary,
+  },
+  achievementsSubtitle: {
+    ...typography.caption,
+    color: colors.text.secondary,
   },
 })

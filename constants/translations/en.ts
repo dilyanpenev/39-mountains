@@ -112,12 +112,10 @@ export default {
   },
   profile: {
     title: 'Profile',
-    editProfile: 'Edit Profile',
+    editProfile: 'Edit',
     displayName: 'Display Name',
     email: 'Email',
     signOut: 'Sign Out',
-    deleteAccount: 'Delete my account',
-    deleteAccountConfirm: 'Are you sure you want to delete your data',
     stats: {
       title: 'My Stats',
       summited: 'Summited',
@@ -135,6 +133,17 @@ export default {
       avatarHint: 'Avatar is generated from your initials',
       nameTooShort: 'Name must be at least 2 characters',
     },
+    privacyPolicy: 'Privacy Policy',
+    termsAndConditions: 'Terms & Conditions',
+    sections: {
+      account: 'Account',
+      legal: 'Legal',
+      dangerZone: 'Danger Zone',
+    },
+    deleteAccount: {
+      title: 'Delete Account',
+      confirm: 'This will permanently delete your account and all your summit data. This cannot be undone.',
+    },
   },
   share: {
     title: 'Share Stats',
@@ -147,12 +156,13 @@ export default {
     unlocked: 'Unlocked',
     congratulations: 'Congratulations!',
     awesome: 'Awesome!',
+    novice: 'Future Mountain Climber',
     firstSummit: {
-      title: 'First Steps',
+      title: 'Novice Mountaineer',
       description: 'Logged your very first summit',
     },
     fiveSummits: {
-      title: 'Getting Started',
+      title: 'Dedicated Traveller',
       description: 'Summited 5 peaks',
     },
     tenSummits: {
@@ -160,7 +170,7 @@ export default {
       description: 'Summited 10 peaks',
     },
     halfway: {
-      title: 'Halfway There',
+      title: 'Champion of Heights',
       description: 'Summited 20 of the 39 peaks',
     },
     allPeaks: {

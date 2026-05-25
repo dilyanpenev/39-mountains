@@ -3,6 +3,7 @@ import Svg, { Circle, Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { Mountain } from '../../types'
 import { getMountainName } from '../../lib/i18n'
 import { colors } from '../../constants/theme'
+import { useTranslation } from 'react-i18next'
 
 export type StatCardVariant = 'progress' | 'latest' | 'yearInReview'
 
@@ -29,6 +30,7 @@ export function StatCard({
 }: StatCardProps) {
   const progress = summitedCount / totalPeaks
   const percentage = Math.round(progress * 100)
+  const { t } = useTranslation()
 
   // SVG ring config
   const size = 120
@@ -152,14 +154,14 @@ export function StatCard({
 
         {/* Stats */}
         <View style={styles.statsColumn}>
-          <CardStat label="Completion" value={`${percentage}%`} />
+          <CardStat label={t('home.completion')} value={`${percentage}%`} />
           <CardStat
-            label="Total Elevation"
+            label={t('profile.stats.totalElevation')}
             value={`${totalElevation.toLocaleString()}m`}
           />
           {highestPeak && (
             <CardStat
-              label="Highest Peak"
+              label={t('profile.stats.highestPeak')}
               value={getMountainName(highestPeak)}
             />
           )}

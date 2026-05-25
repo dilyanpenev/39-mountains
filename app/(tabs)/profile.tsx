@@ -4,9 +4,9 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Linking,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -16,10 +16,13 @@ import { useProfileStats } from '../../context/StatsContext'
 import { useAuth } from '../../hooks/useAuth'
 import { useLanguage } from '../../hooks/useLanguage'
 import { Avatar } from '../../components/ui/Avatar'
-import { Button } from '../../components/ui/Button'
 import { EditProfileModal } from '../../components/ui/EditProfileModal'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 import { HeroSection } from '../../components/ui/HeroSection'
+import { SettingsGroup, SettingsRow, SettingsDivider } from '../../components/ui/SettingsGroup'
+import { LanguageModal } from '../../components/ui/LanguageModal'
+import { router } from 'expo-router'
+import { useProfileRank } from '../../hooks/useProfileRank'
 
 export default function ProfileScreen() {
   const { t } = useTranslation()
@@ -29,6 +32,8 @@ export default function ProfileScreen() {
   const { signOut, loading: authLoading } = useAuth()
   const { language, switchLanguage } = useLanguage()
   const [editModalVisible, setEditModalVisible] = useState(false)
+  const [languageModalVisible, setLanguageModalVisible] = useState(false)
+  const rank = useProfileRank()
 
   if (profileLoading) {
     return (
@@ -67,21 +72,10 @@ export default function ProfileScreen() {
           topInset={insets.top + spacing.md}
           style={styles.profileHero}
         >
-          <View style={styles.heroTopRow}>
-            <Text style={styles.screenTitle}>{t('profile.title')}</Text>
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={() => setEditModalVisible(true)}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="pencil-outline" size={14} color="#fff" />
-              <Text style={styles.editButtonText}>{t('profile.editProfile')}</Text>
-            </TouchableOpacity>
-          </View>
-
           <View style={styles.avatarSection}>
             <Avatar displayName={profile?.display_name} size={80} />
             <Text style={styles.displayName}>{profile?.display_name}</Text>
+            <Text style={styles.rankTitle}>{rank}</Text>
             {/* <Text style={styles.email}>{profile?.email}</Text> */}
           </View>
         </HeroSection>
@@ -106,45 +100,62 @@ export default function ProfileScreen() {
           )}
 
           {/* Language Toggle */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('profile.language')}</Text>
-            <View style={styles.languageRow}>
-              <TouchableOpacity
-                style={[styles.langButton, language === 'en' && styles.langActive]}
-                onPress={() => switchLanguage('en')}
-              >
-                <Text style={[styles.langText, language === 'en' && styles.langTextActive]}>
-                  🇬🇧 English
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.langButton, language === 'bg' && styles.langActive]}
-                onPress={() => switchLanguage('bg')}
-              >
-                <Text style={[styles.langText, language === 'bg' && styles.langTextActive]}>
-                  🇧🇬 Български
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <View style={styles.settingsContainer}>
 
-          {/* Delete Account */}
-          <View style={styles.section}>
-            <Button
-              label={t('profile.deleteAccount')}
-              onPress={deleteAccountModal}
-              variant="secondary"
-            />
-          </View>
+            {/* Account */}
+            <SettingsGroup title={t('profile.sections.account')}>
+              <SettingsRow
+                icon="person-outline"
+                label={t('profile.editProfile')}
+                onPress={() => setEditModalVisible(true)}
+              />
+              <SettingsDivider />
+              <SettingsRow
+                icon="language-outline"
+                label={t('profile.language')}
+                value={language === 'en' ? '🇬🇧 English' : '🇧🇬 Български'}
+                onPress={() => setLanguageModalVisible(true)}
+              />
+              <SettingsDivider />
+              <SettingsRow
+                icon="share-social-outline"
+                label={t('share.title')}
+                onPress={() => router.push('/share')}
+              />
+            </SettingsGroup>
 
-          {/* Sign Out */}
-          <View style={styles.section}>
-            <Button
-              label={t('profile.signOut')}
-              onPress={signOut}
-              loading={authLoading}
-              variant="secondary"
-            />
+            {/* Legal */}
+            <SettingsGroup title={t('profile.sections.legal')}>
+              <SettingsRow
+                icon="document-text-outline"
+                label={t('profile.privacyPolicy')}
+                onPress={() => Linking.openURL('https://your-privacy-policy-url.com')}
+              />
+              <SettingsDivider />
+              <SettingsRow
+                icon="reader-outline"
+                label={t('profile.termsAndConditions')}
+                onPress={() => Linking.openURL('https://your-terms-url.com')}
+              />
+            </SettingsGroup>
+
+            {/* Danger Zone */}
+            <SettingsGroup title={t('profile.sections.dangerZone')}>
+              <SettingsRow
+                icon="log-out-outline"
+                label={t('profile.signOut')}
+                onPress={signOut}
+                showChevron={false}
+              />
+              <SettingsDivider />
+              <SettingsRow
+                icon="trash-outline"
+                label={t('profile.deleteAccount.title')}
+                onPress={deleteAccount}
+                destructive
+              />
+            </SettingsGroup>
+
           </View>
         </View>
 
@@ -156,6 +167,13 @@ export default function ProfileScreen() {
         profile={profile}
         onClose={() => setEditModalVisible(false)}
         onSaved={refresh}
+      />
+      {/* Language Modal */}
+      <LanguageModal
+        visible={languageModalVisible}
+        currentLanguage={language}
+        onSelect={switchLanguage}
+        onClose={() => setLanguageModalVisible(false)}
       />
     </>
   )
@@ -216,6 +234,12 @@ const styles = StyleSheet.create({
   displayName: {
     ...typography.h2,
     color: '#fff',
+  },
+  rankTitle: {
+    fontSize: 13,
+    color: colors.accent,
+    fontWeight: '500',
+    letterSpacing: 0.5,
   },
   email: {
     ...typography.body,
@@ -290,8 +314,10 @@ const styles = StyleSheet.create({
   },
   heroTopRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: spacing.xl,
+    justifyContent: 'flex-end',
+  },
+  settingsContainer: {
+    gap: spacing.xl,
   },
 })
