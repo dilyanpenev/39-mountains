@@ -164,6 +164,12 @@ export default function ProfileScreen() {
                 label={t('profile.contactUs')}
                 onPress={handleContact}
               />
+              <SettingsDivider />
+              <SettingsRow
+                icon="images-outline"
+                label={t('attributions.title')}
+                onPress={() => router.push('/credits')}
+              />
             </SettingsGroup>
 
             {/* Danger Zone */}

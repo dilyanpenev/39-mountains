@@ -154,6 +154,11 @@ export default {
     sharing: 'Sharing...',
     hint: 'Your card will be saved to your camera roll and you can share it to Instagram, WhatsApp, or any other app.',
   },
+  attributions: {
+    title: 'Photo Credits',
+    by: 'by',
+    intro: 'All mountain photos used in this app are credited to their respective authors.',
+  },
   achievements: {
     title: 'Achievements',
     unlocked: 'Unlocked',

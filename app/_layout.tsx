@@ -45,6 +45,7 @@ export default function RootLayout() {
           <Stack.Screen name="mountain/[id]" />
           <Stack.Screen name="share" />
           <Stack.Screen name="achievements" />
+          <Stack.Screen name="credits" />
         </Stack>
         <AchievementModal />
       </AppProviders>

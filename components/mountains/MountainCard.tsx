@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-// import { Image } from 'expo-image'
+import { Image } from 'expo-image'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { Mountain } from '../../types'
@@ -54,12 +54,11 @@ function MountainCardComponent({
       {/* Thumbnail */}
       <View style={styles.thumbnail}>
         {mountain.cover_image_url ? (
-          <></>
-          // <Image
-          //   source={{ uri: mountain.cover_image_url }}
-          //   style={styles.thumbnailImage}
-          //   contentFit="cover"
-          // />
+          <Image
+            source={{ uri: mountain.cover_image_url }}
+            style={styles.thumbnailImage}
+            contentFit="cover"
+          />
         ) : (
           <View style={styles.thumbnailPlaceholder}>
             <Ionicons name="triangle" size={18} color="rgba(255,255,255,0.5)" />

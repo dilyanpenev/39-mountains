@@ -78,7 +78,7 @@ export default {
     summitedOn: 'Изкачен на ',
     elevation: 'Височина',
     range: 'Планина',
-    region: 'Регион',
+    region: 'Област',
     diff: 'Трудност',
     viewDetails: 'Виж детайли',
     viewOnMap: 'Виж на картата',
@@ -153,6 +153,11 @@ export default {
     shareButton: 'Сподели картичката',
     sharing: 'Споделяне...',
     hint: 'Картичката ще бъде запазена в галерията ти и можеш да я споделиш в Instagram, WhatsApp или друго приложение.',
+  },
+  attributions: {
+    title: 'Автори на снимките',
+    by: 'от',
+    intro: 'Всички снимки на планини в това приложение са с отбелязани автори.',
   },
   achievements: {
     title: 'Постижения',
