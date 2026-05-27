@@ -164,6 +164,13 @@ export default {
     shareButton: 'Share Card',
     sharing: 'Sharing...',
     hint: 'Your card will be saved to your camera roll and you can share it to Instagram, WhatsApp, or any other app.',
+    sections: {
+      myProgress: 'My Progress',
+      lastSummit: 'Latest Summit',
+      yearInReview: 'in Review',
+      peaks: 'peaks',
+      summited: 'Summited',
+    }
   },
   attributions: {
     title: 'Photo Credits',

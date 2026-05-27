@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import Svg, { Circle, Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import { Mountain } from '../../types'
-import { getMountainName } from '../../lib/i18n'
+import { formatDate, getMountainName } from '../../lib/i18n'
 import { colors } from '../../constants/theme'
 import { useTranslation } from 'react-i18next'
 
@@ -15,6 +15,9 @@ interface StatCardProps {
   totalElevation: number
   highestPeak: Mountain | null
   mostRecentSummit?: { mountain: Mountain; summited_at: string } | null
+  yearSummitedCount: number
+  yearTotalElevation: number
+  yearHighestPeak: Mountain | null
   year?: number
 }
 
@@ -26,6 +29,9 @@ export function StatCard({
   totalElevation,
   highestPeak,
   mostRecentSummit,
+  yearSummitedCount,
+  yearTotalElevation,
+  yearHighestPeak,
   year = new Date().getFullYear(),
 }: StatCardProps) {
   const progress = summitedCount / totalPeaks
@@ -45,7 +51,7 @@ export function StatCard({
       <View style={[styles.card, styles.latestCard]}>
         <View style={styles.cardHeader}>
           <Text style={styles.appName}>39 Mountains</Text>
-          <Text style={styles.cardType}>Latest Summit</Text>
+          <Text style={styles.cardType}>{t('share.sections.lastSummit')}</Text>
         </View>
 
         <View style={styles.latestContent}>
@@ -57,17 +63,13 @@ export function StatCard({
             {mostRecentSummit.mountain.elevation_m}m
           </Text>
           <Text style={styles.latestDate}>
-            {new Date(mostRecentSummit.summited_at).toLocaleDateString(undefined, {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })}
+            {formatDate(mostRecentSummit.summited_at)}
           </Text>
         </View>
 
         <View style={styles.cardFooter}>
           <Text style={styles.footerName}>{displayName}</Text>
-          <Text style={styles.footerProgress}>{summitedCount} / {totalPeaks} peaks</Text>
+          <Text style={styles.footerProgress}>{summitedCount} / {totalPeaks} {t('share.sections.peaks')}</Text>
         </View>
 
         <MountainSilhouette />
@@ -80,19 +82,19 @@ export function StatCard({
       <View style={[styles.card, styles.yearCard]}>
         <View style={styles.cardHeader}>
           <Text style={styles.appName}>39 Mountains</Text>
-          <Text style={styles.cardType}>{year} in Review</Text>
+          <Text style={styles.cardType}>{year} {t('share.sections.yearInReview')}</Text>
         </View>
 
         <View style={styles.yearContent}>
           <Text style={styles.yearNumber}>{year}</Text>
           <View style={styles.yearStats}>
-            <YearStat label="Summited" value={`${summitedCount}`} />
-            <YearStat label="Elevation" value={`${totalElevation.toLocaleString()}m`} />
-            <YearStat label="Progress" value={`${percentage}%`} />
+            <YearStat label={t('share.sections.summited')} value={`${yearSummitedCount}`} />
+            <YearStat label={t('profile.stats.totalElevation')} value={`${yearTotalElevation.toLocaleString()}m`} />
+            <YearStat label={t('home.completion')} value={`${percentage}%`} />
           </View>
-          {highestPeak && (
+          {yearHighestPeak && (
             <Text style={styles.yearHighlight}>
-              Highest: {getMountainName(highestPeak)} ({highestPeak.elevation_m}m)
+              {t('profile.stats.highestPeak')}: {getMountainName(yearHighestPeak)} ({yearHighestPeak.elevation_m}m)
             </Text>
           )}
         </View>
@@ -111,7 +113,7 @@ export function StatCard({
     <View style={[styles.card, styles.progressCard]}>
       <View style={styles.cardHeader}>
         <Text style={styles.appName}>39 Mountains</Text>
-        <Text style={styles.cardType}>My Progress</Text>
+        <Text style={styles.cardType}>{t('share.sections.myProgress')}</Text>
       </View>
 
       <View style={styles.progressContent}>
@@ -128,7 +130,7 @@ export function StatCard({
               cx={center}
               cy={center}
               r={radius}
-              stroke="rgba(255,255,255,0.2)"
+              stroke={colors.accent}
               strokeWidth={strokeWidth}
               fill="none"
             />

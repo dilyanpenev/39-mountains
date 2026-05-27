@@ -10,6 +10,11 @@ interface ProfileStats {
     mountain: Mountain
     summited_at: string
   } | null
+  yearInReview: {
+    count: number
+    totalElevation: number
+    highestPeak: Mountain | null
+  }
 }
 
 interface StatsContextValue {
@@ -23,6 +28,11 @@ const defaultStats: ProfileStats = {
   totalElevation: 0,
   highestPeak: null,
   mostRecentSummit: null,
+  yearInReview: {
+    count: 0,
+    totalElevation: 0,
+    highestPeak: null
+  }
 }
 
 const StatsContext = createContext<StatsContextValue>({
@@ -70,11 +80,30 @@ export function StatsProvider({ children }: { children: ReactNode }) {
       summited_at: data[0].summited_at,
     } : null
 
+    // Caluculate current year stats
+    const currentYear = new Date().getFullYear()
+    const yearData = data.filter(s => 
+      new Date(s.summited_at).getFullYear() === currentYear
+    )
+
+    const yearMountains: Mountain[] = yearData.map(s => s.mountain).filter(Boolean)
+
+    const yearHighestPeak = yearMountains.length > 0
+      ? yearMountains.reduce((highest, m) =>
+          m.elevation_m > (highest?.elevation_m ?? 0) ? m : highest
+        , yearMountains[0])
+      : null
+
     setStats({
       summitedCount: mountains.length,
       totalElevation,
       highestPeak,
       mostRecentSummit,
+      yearInReview: {
+        count: yearMountains.length,
+        totalElevation: yearMountains.reduce((sum, m) => sum + m.elevation_m, 0),
+        highestPeak: yearHighestPeak,
+      },
     })
 
     setLoading(false)

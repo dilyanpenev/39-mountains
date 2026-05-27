@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  ActivityIndicator,
 } from 'react-native'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -63,6 +62,9 @@ export default function ShareScreen() {
               totalElevation={stats.totalElevation}
               highestPeak={stats.highestPeak}
               mostRecentSummit={stats.mostRecentSummit}
+              yearSummitedCount={stats.yearInReview.count}
+              yearTotalElevation={stats.yearInReview.totalElevation}
+              yearHighestPeak={stats.yearInReview.highestPeak}
             />
           </ViewShot>
         </View>
@@ -119,7 +121,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    ...typography.h2,
+    ...typography.h3,
     color: colors.text.primary,
   },
   content: {

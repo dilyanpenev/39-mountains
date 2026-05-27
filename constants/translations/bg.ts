@@ -164,6 +164,13 @@ export default {
     shareButton: 'Сподели картичката',
     sharing: 'Споделяне...',
     hint: 'Картичката ще бъде запазена в галерията ти и можеш да я споделиш в Instagram, WhatsApp или друго приложение.',
+    sections: {
+      myProgress: 'Моят прогрес',
+      lastSummit: 'Последно изкачен връх',
+      yearInReview: 'досега',
+      peaks: 'върхове',
+      summited: 'Изкачени',
+    }
   },
   attributions: {
     title: 'Автори на снимките',
