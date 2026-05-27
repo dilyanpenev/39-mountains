@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Platform, Linking } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
@@ -22,6 +22,18 @@ export function MapPreviewSheet({ mountain, summited, onClose }: MapPreviewSheet
   const { t } = useTranslation()
 
   if (!mountain) return null
+
+  const openInMaps = () => {
+    const { latitude, longitude } = mountain
+    const label = encodeURIComponent(getMountainName(mountain))
+
+    const url = Platform.select({
+      ios: `https://maps.apple.com/?ll=${latitude},${longitude}&q=${label}`,
+      android: `geo:${latitude},${longitude}?q=${latitude},${longitude}(${label})`,
+    })
+
+    Linking.openURL(url!)
+  }
 
   return (
     <View style={styles.sheet}>
@@ -70,17 +82,30 @@ export function MapPreviewSheet({ mountain, summited, onClose }: MapPreviewSheet
           </View>
         </View>
 
-        <TouchableOpacity
-          style={styles.detailButton}
-          onPress={() => {
-            onClose()
-            router.push(`/mountain/${mountain.id}`)
-          }}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.detailButtonText}>{t('mountains.viewDetails')}</Text>
-          <Ionicons name="arrow-forward" size={16} color="#fff" />
-        </TouchableOpacity>
+        <View style={styles.buttonBox}>
+          {/* Show Details button */}
+          <TouchableOpacity
+            style={styles.detailButton}
+            onPress={() => {
+              onClose()
+              router.push(`/mountain/${mountain.id}`)
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.detailButtonText}>{t('mountains.viewDetails')}</Text>
+            <Ionicons name="arrow-forward" size={16} color="#fff" />
+          </TouchableOpacity>
+
+          {/* External maps button */}
+          <TouchableOpacity
+            style={styles.mapsButton}
+            onPress={openInMaps}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="map-outline" size={16} color={colors.primary} />
+            <Text style={styles.mapsButtonText}>{t('mountains.viewOnMap')}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
     </View>
@@ -173,6 +198,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
   },
+  buttonBox: {
+    gap: spacing.xs,
+  },
   detailButton: {
     backgroundColor: colors.primary,
     borderRadius: 12,
@@ -187,5 +215,22 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     fontSize: 15,
+  },
+  mapsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    backgroundColor: colors.primary + '10',
+    marginTop: spacing.sm,
+  },
+  mapsButtonText: {
+    ...typography.body,
+    color: colors.primary,
+    fontWeight: '600',
   },
 })

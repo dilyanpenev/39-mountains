@@ -81,7 +81,9 @@ export default {
     region: 'Област',
     diff: 'Трудност',
     viewDetails: 'Виж детайли',
-    viewOnMap: 'Виж на картата',
+    additionalInfo: 'Още инфо',
+    viewOnAppMap: 'Покажи на картата',
+    viewOnMap: 'Навигирай до там',
     noResults: 'Няма планини, отговарящи на филтрите',
     sort: {
       sortBy: 'Подреди по',

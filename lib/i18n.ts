@@ -63,6 +63,16 @@ export function getMountainRegion(regionCode: string): string {
   return translated !== key ? translated : regionCode
 }
 
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  const locale = i18next.language === 'bg' ? 'bg-BG' : 'en-GB'
+  return date.toLocaleDateString(locale, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
 i18next
   .use(initReactI18next)
   .init({

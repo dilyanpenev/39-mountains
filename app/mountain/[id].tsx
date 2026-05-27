@@ -15,13 +15,15 @@ import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { SummitModal } from '../../components/mountains/SummitModal'
-import { getMountainName, getMountainDescription, getMountainRange, getMountainRegion } from '../../lib/i18n'
+import { getMountainName, getMountainDescription, getMountainRange, getMountainRegion, formatDate } from '../../lib/i18n'
 import { Mountain } from '../../types'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 import { Button } from '../../components/ui/Button'
 import { useProfileStats } from '../../context/StatsContext'
 import { useSummitLog } from '../../context/SummitLogContext'
 import { useAchievements } from '../../context/AchievementContext'
+import { useMapContext } from '../../context/MapContext'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface SummitDetails {
   id: string
@@ -41,6 +43,8 @@ export default function MountainDetailScreen() {
   const { checkAchievements } = useAchievements()
   const [allMountains, setAllMountains] = useState<Mountain[]>([])
   const [summitDetails, setSummitDetails] = useState<SummitDetails | null>(null)
+  const { setSelectedMapMountainId } = useMapContext()
+  const insets = useSafeAreaInsets()
 
   const summited = isSummited(Number(id))
 
@@ -98,25 +102,6 @@ export default function MountainDetailScreen() {
     setLoading(false)
   }
 
-  const openInMaps = () => {
-    if (!mountain) return
-    const { latitude, longitude } = mountain
-    const label = encodeURIComponent(getMountainName(mountain))
-    const url = Platform.select({
-      ios: `https://maps.apple.com/?ll=${latitude},${longitude}&q=${label}`,
-      android: `geo:${latitude},${longitude}?q=${latitude},${longitude}(${label})`,
-    })
-
-    Linking.canOpenURL(url!).then(supported => {
-      if (supported) {
-        Linking.openURL(url!)
-      } else {
-        // fall back to Google Maps in browser if native maps not available
-        Linking.openURL(`https://www.google.com/maps?q=${latitude},${longitude}`)
-      }
-    })
-  }
-
   if (loading || !mountain) {
     return (
       <View style={globalStyles.centeredContent}>
@@ -127,7 +112,7 @@ export default function MountainDetailScreen() {
 
   return (
     <View style={globalStyles.screen}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
 
         {/* Cover Image */}
         <View style={styles.imageContainer}>
@@ -143,34 +128,15 @@ export default function MountainDetailScreen() {
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={22} color={colors.text.primary} />
           </TouchableOpacity>
+
+          {/* Title at bottom left */}
+          <View style={styles.imageTitleContainer}>
+            <Text style={styles.imageTitle}>{getMountainName(mountain)}</Text>
+          </View>
         </View>
 
         {/* Content */}
         <View style={styles.content}>
-
-          {/* Title Row */}
-          <View style={styles.titleRow}>
-            <Text style={styles.name}>{getMountainName(mountain)}</Text>
-            {summited && (
-              <View style={styles.summitedBadge}>
-                <Ionicons name="checkmark" size={14} color="#fff" />
-                <Text style={styles.summitedText}>{t('mountains.summited')}</Text>
-              </View>
-            )}
-          </View>
-
-          {/* Stats Row */}
-          <View style={styles.statsRow}>
-            <StatItem icon="trending-up" label={t('mountains.elevation')} value={`${mountain.elevation_m}m`} />
-            <StatItem icon="triangle" label={t('mountains.range')} value={getMountainRange(mountain)} />
-            <StatItem icon="flag" label={t('mountains.diff')} value={t(`mountains.difficulty.${mountain.difficulty}`)} />
-            <StatItem icon="location-outline" label={t('mountains.region')} value={getMountainRegion(mountain.region)} />
-          </View>
-
-          {/* Description */}
-          {getMountainDescription(mountain).trim() !== '' &&
-            <Text style={styles.description}>{getMountainDescription(mountain)}</Text>
-          }
 
           {/* Summit Details Card */}
           {summited && summitDetails && (
@@ -179,11 +145,7 @@ export default function MountainDetailScreen() {
                 <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
                 <Text style={styles.summitDetailsText}>
                   {t('mountains.summitedOn')} 
-                  {new Date(summitDetails.summited_at).toLocaleDateString(undefined, {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
+                  {formatDate(summitDetails.summited_at)}
                 </Text>
               </View>
 
@@ -196,45 +158,68 @@ export default function MountainDetailScreen() {
             </View>
           )}
 
-          {/* View on Map Button */}
+          {/* Stats Row */}
+          <View style={styles.statsRow}>
+            <StatItem icon="trending-up" label={t('mountains.elevation')} value={`${mountain.elevation_m}m`} />
+            <StatItem icon="triangle" label={t('mountains.range')} value={getMountainRange(mountain)} />
+            <StatItem icon="flag" label={t('mountains.diff')} value={t(`mountains.difficulty.${mountain.difficulty}`)} />
+            <StatItem icon="location-outline" label={t('mountains.region')} value={getMountainRegion(mountain.region)} />
+          </View>
+
+          
+          {/* Show on map button */}
           <TouchableOpacity
             style={styles.mapButton}
-            onPress={openInMaps}
+            onPress={() => {
+              setSelectedMapMountainId(mountain.id)
+              router.push('/(tabs)/map')
+            }}
             activeOpacity={0.85}
           >
-            <Ionicons name="map" size={18} color={colors.primary} />
-            <Text style={styles.mapButtonText}>{t('mountains.viewOnMap')}</Text>
+            <Ionicons name="pin" size={18} color={colors.primary} />
+            <Text style={styles.mapButtonText}>{t('mountains.viewOnAppMap')}</Text>
           </TouchableOpacity>
 
-          {/* Action Button */}
-          {summited ? (
-            <Button
-              label={t('mountains.removeSummit')}
-              onPress={handleRemoveSummit}
-              variant="secondary"
-            />
-          ) : (
-            <Button
-              label={t('mountains.markSummited')}
-              onPress={() => setModalVisible(true)}
-            />
+          {/* Description */}
+          {getMountainDescription(mountain).trim() !== '' && (
+            <View style={styles.descriptionBox}>
+              <Text style={styles.descriptionTitle}>{t('mountains.additionalInfo')}</Text>
+              <Text style={styles.description}>{getMountainDescription(mountain)}</Text>
+            </View>
           )}
 
-          <SummitModal
-            visible={modalVisible}
-            mountain={mountain}
-            onClose={() => setModalVisible(false)}
-            onSuccess={async (summitedAt, notes) => {
-              setModalVisible(false)
-              const success = await addSummit(mountain.id, summitedAt, notes)
-              if (success) {
-                await refreshLog()
-                handleSummitSuccess()
-              }
-            }}
-          />
         </View>
       </ScrollView>
+
+      {/* Frozen bottom button */}
+      <View style={[styles.bottomBar, { paddingBottom: insets.bottom + spacing.md }]}>
+        {summited ? (
+          <Button
+            label={t('mountains.removeSummit')}
+            onPress={handleRemoveSummit}
+            variant="secondary"
+          />
+        ) : (
+          <Button
+            label={t('mountains.markSummited')}
+            onPress={() => setModalVisible(true)}
+          />
+        )}
+      </View>
+
+      <SummitModal
+        visible={modalVisible}
+        mountain={mountain}
+        onClose={() => setModalVisible(false)}
+        onSuccess={async (summitedAt, notes) => {
+          setModalVisible(false)
+          const success = await addSummit(mountain.id, summitedAt, notes)
+          if (success) {
+            await refreshLog()
+            handleSummitSuccess()
+          }
+        }}
+      />
     </View>
   )
 }
@@ -251,7 +236,7 @@ function StatItem({ icon, label, value }: { icon: any; label: string; value: str
 
 const styles = StyleSheet.create({
   imageContainer: {
-    height: 280,
+    height: 380,
     position: 'relative',
   },
   image: {
@@ -280,6 +265,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 20,
     padding: spacing.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   content: {
     padding: spacing.xl,
@@ -374,5 +361,41 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     flex: 1,
     lineHeight: 22,
+  },
+  imageTitleContainer: {
+    position: 'absolute',
+    bottom: spacing.lg,
+    left: spacing.xl,
+    right: spacing.xl,
+    gap: 4,
+  },
+  imageTitle: {
+    ...typography.h1,
+    color: '#fff',
+    textShadowColor: 'rgba(0,0,0,0.6)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
+  },
+  bottomBar: {
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.md,
+    backgroundColor: colors.background,
+    borderTopWidth: 0.5,
+    borderLeftWidth: 0.5,
+    borderRightWidth: 0.5,
+    borderColor: '#DEE2E6',
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+  },
+  descriptionBox: {
+    borderWidth: 1,
+    borderColor: '#DEE2E6',
+    borderRadius: 12,
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  descriptionTitle: {
+    ...typography.h3,
+    color: colors.text.primary,
   },
 })

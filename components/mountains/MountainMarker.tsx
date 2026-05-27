@@ -5,12 +5,13 @@ import { colors } from '../../constants/theme'
 interface MountainMarkerProps {
   summited: boolean
   onPress: () => void
+  selected?: boolean
 }
 
-export function MountainMarker({ summited, onPress }: MountainMarkerProps) {
+export function MountainMarker({ summited, onPress, selected }: MountainMarkerProps) {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
-      <View style={[styles.marker, summited ? styles.summited : styles.unsummited]}>
+      <View style={[styles.marker, summited ? styles.summited : styles.unsummited, selected && styles.selected,]}>
         <Ionicons
           name={summited ? 'checkmark' : 'triangle'}
           size={14}
@@ -48,5 +49,9 @@ const styles = StyleSheet.create({
   },
   unsummitedPin: {
     backgroundColor: colors.mountain.unsummited,
+  },
+  selected: {
+    borderColor: colors.text.primary,
+    borderWidth: 3,
   },
 })

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import { MountainMarker } from '../../components/mountains/MountainMarker'
 import { MapPreviewSheet } from '../../components/mountains/MapPreviewSheet'
 import { Mountain } from '../../types'
 import { colors, globalStyles, spacing, typography } from '../../constants/theme'
+import { useFocusEffect } from 'expo-router'
+import { useMapContext } from '../../context/MapContext'
 
 // Bulgaria's geographic center
 const BULGARIA_REGION: Region = {
@@ -32,6 +34,8 @@ export default function MapScreen() {
   const { mountains, summitedIds, loading } = useMapMountains()
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
   const [filter, setFilter] = useState<MapFilter>('all')
+  const { selectedMapMountainId, setSelectedMapMountainId } = useMapContext()
+
 
   const filteredMountains = mountains.filter(m => {
     if (filter === 'summited') return summitedIds.has(m.id)
@@ -53,6 +57,16 @@ export default function MapScreen() {
     setSelectedMountain(null)
     // mapRef.current?.animateToRegion(BULGARIA_REGION, 400)
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      if (selectedMapMountainId && mountains.length > 0) {
+        const mountain = mountains.find(m => m.id === selectedMapMountainId)
+        if (mountain) handleMarkerPress(mountain)
+        setSelectedMapMountainId(null)
+      }
+    }, [selectedMapMountainId, mountains])
+  )
 
   if (loading) {
     return (
@@ -91,6 +105,7 @@ export default function MapScreen() {
               onPress={() => {
                 handleMarkerPress(mountain)
               }}
+              selected={selectedMountain?.id === mountain.id}
             />
           </Marker>
         ))}

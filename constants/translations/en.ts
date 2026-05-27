@@ -81,7 +81,9 @@ export default {
     region: 'Region',
     diff: 'Difficulty',
     viewDetails: 'View Details',
-    viewOnMap: 'View on Map',
+    additionalInfo: 'Additional Info',
+    viewOnAppMap: 'Show on Map',
+    viewOnMap: 'Show Route',
     noResults: 'No mountains match your filters',
     sort: {
       sortBy: 'Sort by',

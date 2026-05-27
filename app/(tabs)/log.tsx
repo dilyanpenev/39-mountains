@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { useSummitLog } from '../../context/SummitLogContext'
 import { Summit } from '../../types'
-import { getMountainName } from '../../lib/i18n'
+import { formatDate, getMountainName } from '../../lib/i18n'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useProfileStats } from '../../context/StatsContext'
@@ -111,11 +111,7 @@ interface SummitLogCardProps {
 function SummitLogCard({ entry, onPress, onDelete }: SummitLogCardProps) {
   const { t } = useTranslation()
 
-  const formattedDate = new Date(entry.summited_at).toLocaleDateString(undefined, {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+  const formattedDate = formatDate(entry.summited_at)
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>

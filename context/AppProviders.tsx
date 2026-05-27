@@ -3,6 +3,7 @@ import { ProfileProvider } from './ProfileContext'
 import { StatsProvider } from './StatsContext'
 import { SummitLogProvider } from './SummitLogContext'
 import { AchievementsProvider } from './AchievementContext'
+import { MapProvider } from './MapContext'
 
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
@@ -10,7 +11,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
       <StatsProvider>
         <AchievementsProvider>
           <SummitLogProvider>
-            {children}
+            <MapProvider>
+              {children}
+            </MapProvider>
           </SummitLogProvider>
         </AchievementsProvider>
       </StatsProvider>

@@ -55,7 +55,7 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
 
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>{t('log.summitDate')}</Text>
+            <Text style={styles.mountainName}>{getMountainName(mountain)}</Text>
             <TouchableOpacity onPress={onClose}>
               <Ionicons name="close" size={24} color={colors.text.secondary} />
             </TouchableOpacity>
@@ -66,7 +66,7 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={styles.scrollContent}
           >
-            <Text style={styles.mountainName}>{getMountainName(mountain)}</Text>
+            <Text style={styles.title}>{t('log.summitDate')}</Text>
 
             <DateTimePicker
               value={date}
