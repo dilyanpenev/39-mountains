@@ -162,7 +162,7 @@ export default function MountainDetailScreen() {
           {/* Stats Row */}
           <View style={styles.statsRow}>
             <StatItem icon="trending-up" label={t('mountains.elevation')} value={`${mountain.elevation_m}m`} />
-            <StatItem icon="map" label={t('mountains.range')} value={getMountainRange(mountain)} />
+            <StatItem icon="triangle" label={t('mountains.range')} value={getMountainRange(mountain)} />
             <StatItem icon="flag" label={t('mountains.diff')} value={t(`mountains.difficulty.${mountain.difficulty}`)} />
             <StatItem icon="location-outline" label={t('mountains.region')} value={getMountainRegion(mountain.region)} />
           </View>
@@ -258,6 +258,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+    borderBottomLeftRadius: 65,
+    borderBottomRightRadius: 65,
   },
   imagePlaceholder: {
     width: '100%',

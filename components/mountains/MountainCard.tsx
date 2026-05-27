@@ -81,10 +81,8 @@ function MountainCardComponent({
 
       {/* Right side */}
       <View style={styles.right}>
-        {summited ? (
+        {summited && (
           <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
-        ) : (
-          <Ionicons name="ellipse-outline" size={20} color={colors.text.secondary} />
         )}
         <Ionicons name="chevron-forward" size={14} color={colors.text.secondary} />
       </View>

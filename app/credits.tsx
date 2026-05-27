@@ -12,43 +12,51 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { PHOTOCREDITS, PhotoCredit } from '../constants/photoCredits'
 import { colors, typography, spacing } from '../constants/theme'
+import { memo, useCallback } from 'react'
 
 export default function PhotoCreditsScreen() {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
 
-  const renderItem = ({ item, index }: { item: PhotoCredit; index: number }) => {
-    const isFirst = index === 0
-    const isLast = index === PHOTOCREDITS.length - 1
-
-    return (
-      <TouchableOpacity
-        style={[
-          styles.row,
-          isFirst && styles.rowFirst,
-          isLast && styles.rowLast,
-          !isLast && styles.rowDivider,
-        ]}
-        onPress={() => item.url && Linking.openURL(item.url)}
-        activeOpacity={item.url ? 0.7 : 1}
-        disabled={!item.url}
-      >
-        <View style={styles.rowContent}>
-          <Text style={styles.mountainName}>{item.mountainName}</Text>
-          <Text style={styles.author}>
-            {t('attributions.by')} {item.author}
-          </Text>
-        </View>
-        {item.url && (
-          <Ionicons
-            name="open-outline"
-            size={16}
-            color={colors.text.secondary}
-          />
-        )}
-      </TouchableOpacity>
+    const renderItem = useCallback(
+        ({ item, index }: { item: PhotoCredit; index: number }) => (
+            <PhotoCreditRow item={item} index={index} />
+        ),
+        []
     )
-  }
+
+    const PhotoCreditRow = memo(({ item, index }: { item: PhotoCredit; index: number }) => {
+        const isFirst = index === 0
+        const isLast = index === PHOTOCREDITS.length - 1
+
+        return (
+        <TouchableOpacity
+            style={[
+            styles.row,
+            isFirst && styles.rowFirst,
+            isLast && styles.rowLast,
+            !isLast && styles.rowDivider,
+            ]}
+            onPress={() => item.url && Linking.openURL(item.url)}
+            activeOpacity={item.url ? 0.7 : 1}
+            disabled={!item.url}
+        >
+            <View style={styles.rowContent}>
+            <Text style={styles.mountainName}>{item.mountainName}</Text>
+            <Text style={styles.author}>
+                {t('attributions.by')} {item.author}
+            </Text>
+            </View>
+            {item.url && (
+            <Ionicons
+                name="open-outline"
+                size={16}
+                color={colors.text.secondary}
+            />
+            )}
+        </TouchableOpacity>
+        )
+    })
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
