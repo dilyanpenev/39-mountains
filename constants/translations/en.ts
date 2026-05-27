@@ -37,6 +37,15 @@ export default {
       passwordMismatch: 'Passwords do not match',
       passwordTooShort: 'Password must be at least 6 characters',
     },
+    forgotPassword: {
+      link: 'Forgot password?',
+      title: 'Forgot Password',
+      subtitle: 'Enter your email and we will send you a link to reset your password.',
+      sendButton: 'Send Reset Link',
+      sentTitle: 'Check your email',
+      sentSubtitle: 'We sent a password reset link to your email address.',
+      backToLogin: 'Back to Login',
+    },
   },
   tabs: {
     home: 'Home',

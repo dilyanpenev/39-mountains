@@ -13,6 +13,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { colors, typography, spacing } from '../../constants/theme'
+import { t } from 'i18next'
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('')
@@ -37,31 +38,40 @@ export default function LoginScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.emoji}>⛰️</Text>
-          <Text style={styles.title}>39 Mountains</Text>
-          <Text style={styles.subtitle}>Track your Bulgarian summits</Text>
+          <Text style={styles.title}>{t('auth.login.title')}</Text>
+          <Text style={styles.subtitle}>{t('auth.login.subtitle')}</Text>
         </View>
 
         {/* Form */}
         <View style={styles.form}>
           <Input
-            label="Email"
+            label={t('auth.login.email')}
             value={email}
             onChangeText={setEmail}
-            placeholder="you@example.com"
+            placeholder={t('auth.login.emailPlaceholder')}
             keyboardType="email-address"
           />
           <Input
-            label="Password"
+            label={t('auth.login.password')}
             value={password}
             onChangeText={setPassword}
-            placeholder="Your password"
+            placeholder={t('auth.login.passwordPlaceholder')}
             secureToggle
           />
 
           {error && <Text style={styles.errorText}>{error}</Text>}
 
+          <TouchableOpacity
+            style={styles.forgotPassword}
+            onPress={() => router.push('/auth/forgot-password')}
+          >
+            <Text style={styles.forgotPasswordText}>
+              {t('auth.forgotPassword.link')}
+            </Text>
+          </TouchableOpacity>
+
           <Button
-            label="Log In"
+            label={t('auth.login.loginButton')}
             onPress={handleLogin}
             loading={loading}
             disabled={!email || !password}
@@ -70,9 +80,9 @@ export default function LoginScreen() {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account? </Text>
+          <Text style={styles.footerText}>{t('auth.login.noAccount')} </Text>
           <TouchableOpacity onPress={() => router.push('/auth/register')}>
-            <Text style={styles.link}>Sign Up</Text>
+            <Text style={styles.link}>{t('auth.login.signUp')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -128,5 +138,15 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.primary,
     fontWeight: '600',
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginTop: -spacing.sm,
+    marginBottom: spacing.sm,
+  },
+  forgotPasswordText: {
+    ...typography.caption,
+    color: colors.primary,
+    fontWeight: '500',
   },
 })

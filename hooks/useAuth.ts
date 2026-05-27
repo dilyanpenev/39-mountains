@@ -37,5 +37,18 @@ export function useAuth() {
     setLoading(false)
   }
 
-  return { signUp, signIn, signOut, loading, error }
+  const forgotPassword = async (email: string) => {
+    setLoading(true)
+    setError(null)
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'mountains39://reset-password',
+    })
+
+    if (error) setError(error.message)
+    setLoading(false)
+    return !error
+  }
+
+  return { signUp, signIn, signOut, forgotPassword, loading, error }
 }

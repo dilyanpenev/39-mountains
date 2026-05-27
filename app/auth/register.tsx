@@ -13,6 +13,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { colors, typography, spacing } from '../../constants/theme'
+import { t } from 'i18next'
 
 export default function RegisterScreen() {
   const [displayName, setDisplayName] = useState('')
@@ -28,17 +29,16 @@ export default function RegisterScreen() {
     if (!displayName || !email || !password || !confirmPassword) return
 
     if (password !== confirmPassword) {
-      setConfirmError('Passwords do not match')
+      setConfirmError(t('auth.register.passwordMismatch'))
       return
     }
 
     if (password.length < 6) {
-      setConfirmError('Password must be at least 6 characters')
+      setConfirmError(t('auth.register.passwordTooShort'))
       return
     }
 
     await signUp(email, password, displayName)
-    // root _layout.tsx listens to auth state and redirects automatically
   }
 
   const isFormValid = displayName && email && password && confirmPassword
@@ -55,37 +55,37 @@ export default function RegisterScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.emoji}>⛰️</Text>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Start tracking your summits</Text>
+          <Text style={styles.title}>{t('auth.register.title')}</Text>
+          <Text style={styles.subtitle}>{t('auth.register.subtitle')}</Text>
         </View>
 
         {/* Form */}
         <View style={styles.form}>
           <Input
-            label="Display Name"
+            label={t('auth.register.displayName')}
             value={displayName}
             onChangeText={setDisplayName}
-            placeholder="Your name"
+            placeholder={t('auth.register.displayNamePlaceholder')}
           />
           <Input
-            label="Email"
+            label={t('auth.register.email')}
             value={email}
             onChangeText={setEmail}
-            placeholder="you@example.com"
+            placeholder={t('auth.register.emailPlaceholder')}
             keyboardType="email-address"
           />
           <Input
-            label="Password"
+            label={t('auth.register.password')}
             value={password}
             onChangeText={setPassword}
-            placeholder="Min. 6 characters"
+            placeholder={t('auth.register.passwordPlaceholder')}
             secureToggle
           />
           <Input
-            label="Confirm Password"
+            label={t('auth.register.confirmPassword')}
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            placeholder="Repeat your password"
+            placeholder={t('auth.register.confirmPasswordPlaceholder')}
             secureToggle
             error={confirmError}
           />
@@ -93,7 +93,7 @@ export default function RegisterScreen() {
           {error && <Text style={styles.errorText}>{error}</Text>}
 
           <Button
-            label="Create Account"
+            label={t('auth.register.registerButton')}
             onPress={handleRegister}
             loading={loading}
             disabled={!isFormValid}
@@ -102,9 +102,9 @@ export default function RegisterScreen() {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account? </Text>
+          <Text style={styles.footerText}>{t('auth.register.hasAccount')} </Text>
           <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.link}>Log In</Text>
+            <Text style={styles.link}>{t('auth.register.logIn')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
