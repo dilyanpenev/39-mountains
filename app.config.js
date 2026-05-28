@@ -7,11 +7,11 @@ export default {
     "version": "1.0.0",
     "scheme": "mountains39",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/39mountains-appicon-2.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/39mountains-appicon-2.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -24,7 +24,7 @@ export default {
       versionCode: 1,
       package: 'com.dpenev.mountains39',
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/39mountains-appicon-2.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,

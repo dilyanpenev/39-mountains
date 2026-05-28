@@ -80,7 +80,7 @@ export default {
     lastSummit: 'Последно изкачване',
     browseAll: 'Всички планини',
     remaining: 'оставащи върха',
-    completion: 'Завършеност',
+    completion: 'Покорени',
     share: 'Сподели',
   },
   mountains: {

@@ -146,19 +146,9 @@ export default function HomeScreen() {
          {/* Quick Actions */}
         <View style={styles.quickActions}>
           <QuickAction
-            icon="map"
-            label={t('tabs.map')}
-            onPress={() => router.push('/(tabs)/map')}
-          />
-          <QuickAction
             icon="share-social"
             label={t('home.share')}
             onPress={() => router.push('/share')}
-          />
-          <QuickAction
-            icon="share-social"
-            label={t('home.share')}
-            onPress={() => router.push('/(tabs)/profile')}
           />
         </View>
 

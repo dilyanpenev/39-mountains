@@ -10,6 +10,7 @@ export type StatCardVariant = 'progress' | 'latest' | 'yearInReview'
 interface StatCardProps {
   variant: StatCardVariant
   displayName: string
+  rankTitle: string
   summitedCount: number
   totalPeaks: number
   totalElevation: number
@@ -24,6 +25,7 @@ interface StatCardProps {
 export function StatCard({
   variant,
   displayName,
+  rankTitle,
   summitedCount,
   totalPeaks,
   totalElevation,
@@ -101,6 +103,7 @@ export function StatCard({
 
         <View style={styles.cardFooter}>
           <Text style={styles.footerName}>{displayName}</Text>
+          <Text style={styles.footerRank}>{rankTitle}</Text>
         </View>
 
         <MountainSilhouette />
@@ -172,6 +175,7 @@ export function StatCard({
 
       <View style={styles.cardFooter}>
         <Text style={styles.footerName}>{displayName}</Text>
+        <Text style={styles.footerRank}>{rankTitle}</Text>
       </View>
 
       <MountainSilhouette />
@@ -349,6 +353,8 @@ const styles = StyleSheet.create({
     borderTopColor: 'rgba(255,255,255,0.15)',
     paddingTop: 12,
     marginTop: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   footerName: {
     color: 'rgba(255,255,255,0.9)',
@@ -365,5 +371,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+  },
+  footerRank: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 11,
+    fontWeight: '500',
+    letterSpacing: 0.5,
+    marginTop: 2,
   },
 })

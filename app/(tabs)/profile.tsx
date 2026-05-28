@@ -58,8 +58,8 @@ export default function ProfileScreen() {
 
   const deleteAccountModal = async () => {
     Alert.alert(
-      t('profile.deleteAccount'),
-      t('profile.deleteAccountConfirm'),
+      t('profile.deleteAccount.title'),
+      t('profile.deleteAccount.confirm'),
       [
         { text: t('common.cancel'), style: 'cancel' },
         {

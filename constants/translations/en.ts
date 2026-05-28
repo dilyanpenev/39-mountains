@@ -80,7 +80,7 @@ export default {
     lastSummit: 'Last Summit',
     browseAll: 'Browse All Mountains',
     remaining: 'peaks remaining',
-    completion: 'Completion',
+    completion: 'Completed',
     share: 'Share Stats',
   },
   mountains: {

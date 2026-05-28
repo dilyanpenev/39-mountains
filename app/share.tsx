@@ -17,6 +17,7 @@ import { useShareCard } from '../hooks/useShareCard'
 import { StatCard, StatCardVariant } from '../components/stats/StatCard'
 import { Button } from '../components/ui/Button'
 import { colors, typography, spacing } from '../constants/theme'
+import { useProfileRank } from '../hooks/useProfileRank'
 
 const VARIANTS: { key: StatCardVariant; label: string; labelBg: string }[] = [
   { key: 'progress', label: 'My Progress', labelBg: 'Прогрес' },
@@ -31,6 +32,7 @@ export default function ShareScreen() {
   const { stats } = useProfileStats()
   const { viewShotRef, shareCard, sharing } = useShareCard()
   const [selectedVariant, setSelectedVariant] = useState<StatCardVariant>('progress')
+  const rank = useProfileRank()
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -57,6 +59,7 @@ export default function ShareScreen() {
             <StatCard
               variant={selectedVariant}
               displayName={profile?.display_name ?? ''}
+              rankTitle={rank}
               summitedCount={stats.summitedCount}
               totalPeaks={39}
               totalElevation={stats.totalElevation}
