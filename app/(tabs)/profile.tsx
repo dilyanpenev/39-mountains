@@ -25,6 +25,7 @@ import { LanguageModal } from '../../components/ui/LanguageModal'
 import { router } from 'expo-router'
 import { useProfileRank } from '../../hooks/useProfileRank'
 import { APP_CONFIG } from '../../constants/configs'
+import { exportUserData } from '../../lib/exportData'
 
 export default function ProfileScreen() {
   const { t } = useTranslation()
@@ -36,6 +37,7 @@ export default function ProfileScreen() {
   const [editModalVisible, setEditModalVisible] = useState(false)
   const [languageModalVisible, setLanguageModalVisible] = useState(false)
   const rank = useProfileRank()
+  const [exporting, setExporting] = useState(false)
 
   const appVersion = Constants.expoConfig?.version ?? '—'
   const buildNumber = Constants.expoConfig?.ios?.buildNumber
@@ -67,6 +69,12 @@ export default function ProfileScreen() {
         },
       ]
     )
+  }
+
+  const handleExport = async () => {
+    setExporting(true)
+    await exportUserData()
+    setExporting(false)
   }
 
   return (
@@ -133,6 +141,12 @@ export default function ProfileScreen() {
                 label={t('share.title')}
                 onPress={() => router.push('/share')}
               />
+              <SettingsDivider />
+              <SettingsRow
+                icon="download-outline"
+                label={exporting ? t('profile.exporting') : t('profile.exportData')}
+                onPress={handleExport}
+              />
             </SettingsGroup>
 
             {/* Legal */}
@@ -184,7 +198,7 @@ export default function ProfileScreen() {
               <SettingsRow
                 icon="trash-outline"
                 label={t('profile.deleteAccount.title')}
-                onPress={deleteAccount}
+                onPress={deleteAccountModal}
                 destructive
               />
             </SettingsGroup>
