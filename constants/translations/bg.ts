@@ -19,6 +19,7 @@ export default {
       loginButton: 'Влез',
       noAccount: 'Нямаш акаунт? ',
       signUp: 'Регистрирай се',
+      continueWithGoogle: 'Продължи с Google',
     },
     register: {
       title: 'Създай акаунт',
@@ -148,6 +149,8 @@ export default {
     termsAndConditions: 'Общи условия',
     appVersion: 'Версия на приложението',
     contactUs: 'Свържи се с нас',
+    exportData: 'Експортирай данните ми',
+    exporting: 'Експортиране...',
     sections: {
       account: 'Акаунт',
       legal: 'Правна информация',

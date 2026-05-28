@@ -40,7 +40,8 @@ export default {
     "plugins": [
       "expo-secure-store",
       "expo-router",
-      "expo-localization"
+      "expo-localization",
+      "expo-web-browser"
     ]
   }
 }

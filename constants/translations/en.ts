@@ -19,6 +19,7 @@ export default {
       loginButton: 'Log In',
       noAccount: "Don't have an account? ",
       signUp: 'Sign Up',
+      continueWithGoogle: 'Continue with Google',
     },
     register: {
       title: 'Create Account',
@@ -148,6 +149,8 @@ export default {
     termsAndConditions: 'Terms & Conditions',
     appVersion: 'App Version',
     contactUs: 'Contact Us',
+    exportData: 'Export My Data',
+    exporting: 'Exporting...',
     sections: {
       account: 'Account',
       legal: 'Legal',
