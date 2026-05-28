@@ -47,6 +47,23 @@ export default {
       backToLogin: 'Back to Login',
     },
   },
+  onboarding: {
+    skip: 'Skip',
+    next: 'Next',
+    getStarted: 'Get Started',
+    welcome: {
+      title: 'Welcome to 39 Mountains',
+      subtitle: 'Track your journey through all 39 mountain peaks of Bulgaria — from Rila to Pirin, Balkan and beyond.',
+    },
+    log: {
+      title: 'Log Your Summits',
+      subtitle: 'Mark each peak as summited, add the date, your notes and photos. Build your personal summit log as you go.',
+    },
+    share: {
+      title: 'Share Your Progress',
+      subtitle: 'Generate beautiful stat cards showing your achievement and share them with friends on social media.',
+    },
+  },
   tabs: {
     home: 'Home',
     mountains: 'Mountains',
@@ -148,6 +165,8 @@ export default {
     termsAndConditions: 'Terms & Conditions',
     appVersion: 'App Version',
     contactUs: 'Contact Us',
+    exportData: 'Export My Data',
+    exporting: 'Exporting...',
     sections: {
       account: 'Account',
       legal: 'Legal',

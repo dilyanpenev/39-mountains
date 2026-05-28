@@ -7,6 +7,8 @@ import { supabase } from '../lib/supabase'
 import '../lib/i18n'
 import { AppProviders } from '../context/AppProviders'
 import { AchievementModal } from '../components/achievements/AchievementModal'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ONBOARDING_COMPLETE_KEY } from './onboarding'
 
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
@@ -29,12 +31,23 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (!initialized) return
-    if (session) {
-      router.replace('/(tabs)')
-    } else {
-      router.replace('/auth/login')
+
+    const navigate = async () => {
+      const onboardingComplete = await AsyncStorage.getItem(ONBOARDING_COMPLETE_KEY)
+
+      if (onboardingComplete !== 'true') {
+        router.replace('/onboarding')
+      } else if (session) {
+        router.replace('/(tabs)')
+      } else {
+        router.replace('/auth/login')
+      }
     }
+
+    navigate()
   }, [session, initialized])
+
+  if (!initialized) return null
 
   return (
     <SafeAreaProvider>
@@ -46,6 +59,7 @@ export default function RootLayout() {
           <Stack.Screen name="share" />
           <Stack.Screen name="achievements" />
           <Stack.Screen name="credits" />
+          <Stack.Screen name="onboarding" />
         </Stack>
         <AchievementModal />
       </AppProviders>
