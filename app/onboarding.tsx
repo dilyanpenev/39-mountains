@@ -15,6 +15,9 @@ import { useTranslation } from 'react-i18next'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Svg, { Path, Circle } from 'react-native-svg'
 import { colors, typography, spacing } from '../constants/theme'
+import Onboarding1Svg from '../assets/onboarding-1.svg'
+import Onboarding2Svg from '../assets/onboarding-2.svg'
+import Onboarding3Svg from '../assets/onboarding-3.svg'
 
 const { width } = Dimensions.get('window')
 
@@ -155,19 +158,19 @@ export default function OnboardingScreen() {
       id: 'welcome',
       titleKey: 'onboarding.welcome.title',
       subtitleKey: 'onboarding.welcome.subtitle',
-      illustration: <MountainIllustration />,
+      illustration: <Onboarding1Svg width={280} height={240} />,
     },
     {
       id: 'log',
       titleKey: 'onboarding.log.title',
       subtitleKey: 'onboarding.log.subtitle',
-      illustration: <LogIllustration />,
+      illustration: <Onboarding2Svg width={280} height={240} />,
     },
     {
       id: 'share',
       titleKey: 'onboarding.share.title',
       subtitleKey: 'onboarding.share.subtitle',
-      illustration: <ShareIllustration />,
+      illustration: <Onboarding3Svg width={280} height={240} />,
     },
   ]
 
@@ -200,11 +203,9 @@ export default function OnboardingScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
 
       {/* Skip button */}
-      {!isLastSlide && (
-        <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-          <Text style={styles.skipText}>{t('onboarding.skip')}</Text>
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+        <Text style={styles.skipText}>{t('onboarding.skip')}</Text>
+      </TouchableOpacity>
 
       {/* Slides */}
       <FlatList
