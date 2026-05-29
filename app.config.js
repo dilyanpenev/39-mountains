@@ -2,8 +2,9 @@ import 'dotenv/config'
 
 export default {
   "expo": {
-    "name": "39-mountains",
+    "name": "39 Mountains",
     "slug": "39-mountains",
+    "owner": "didiloni",
     "version": "1.0.0",
     "scheme": "mountains39",
     "orientation": "portrait",
@@ -18,7 +19,10 @@ export default {
     "ios": {
       buildNumber: '1',
       bundleIdentifier: 'com.dpenev.mountains39',
-      "supportsTablet": false
+      "supportsTablet": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       versionCode: 1,
@@ -36,11 +40,15 @@ export default {
     "extra": {
       "supabaseUrl": process.env.EXPO_PUBLIC_SUPABASE_URL,
       "supabaseKey": process.env.EXPO_PUBLIC_SUPABASE_KEY,
+      "eas": {
+        "projectId": "aa19364d-a2b3-4296-b955-61aa44997e68"
+      }
     },
     "plugins": [
       "expo-secure-store",
       "expo-router",
-      "expo-localization"
+      "expo-localization",
+      "expo-font"
     ]
   }
 }

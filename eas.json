@@ -1,0 +1,36 @@
+{
+  "cli": {
+    "version": ">= 20.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": false
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "ios": {
+        "buildConfiguration": "Release"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "dilyanpenev@gmail.com",
+        "ascAppId": "6774664083",
+        "appleTeamId": "RDYK3UKLRK"
+      }
+    }
+  }
+}
