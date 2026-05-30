@@ -15,12 +15,28 @@ const resources = {
 const deviceLanguage = Localization.getLocales()[0]?.languageCode ?? 'en'
 const supportedLanguage = ['en', 'bg'].includes(deviceLanguage) ? deviceLanguage : 'en'
 
-// Load persisted language preference
-AsyncStorage.getItem('user-language').then((savedLang) => {
-  if (savedLang && ['en', 'bg'].includes(savedLang)) {
-    i18next.changeLanguage(savedLang)
+i18next
+  .use(initReactI18next)
+  .init({
+    resources,
+    lng: supportedLanguage,
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false,
+    },
+  })
+
+export async function loadSavedLanguage() {
+  try {
+    const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default
+    const savedLang = await AsyncStorage.getItem('user-language')
+    if (savedLang && ['en', 'bg'].includes(savedLang)) {
+      await i18next.changeLanguage(savedLang)
+    }
+  } catch (e) {
+    console.warn('Could not load saved language:', e)
   }
-})
+}
 
 export function getMountainName(mountain: Mountain): string {
   return i18next.language === 'bg' ? mountain.name_bg : mountain.name_en

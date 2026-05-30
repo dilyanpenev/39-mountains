@@ -2,25 +2,31 @@ import { useEffect, useState } from 'react'
 import { Stack, router } from 'expo-router'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Session } from '@supabase/supabase-js'
-import * as MediaLibrary from 'expo-media-library'
 import { supabase } from '../lib/supabase'
-import '../lib/i18n'
 import { AppProviders } from '../context/AppProviders'
 import { AchievementModal } from '../components/achievements/AchievementModal'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ONBOARDING_COMPLETE_KEY } from './onboarding'
+import { loadSavedLanguage } from '../lib/i18n'
 
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
   const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
-    MediaLibrary.requestPermissionsAsync()
+    const init = async () => {
+      try {
+        await loadSavedLanguage()
+      } catch (e) {
+        console.warn('Language load error:', e)
+      }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+      const { data: { session } } = await supabase.auth.getSession()
       setSession(session)
       setInitialized(true)
-    })
+    }
+
+    init()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => setSession(session)

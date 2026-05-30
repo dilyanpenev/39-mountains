@@ -5,6 +5,10 @@ import Constants from 'expo-constants'
 const supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl
 const supabaseKey = Constants.expoConfig?.extra?.supabaseKey
 
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Missing Supabase environment variables. Check your app.config.js and eas.json.')
+}
+
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     storage: AsyncStorage,

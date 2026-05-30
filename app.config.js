@@ -21,7 +21,9 @@ export default {
       bundleIdentifier: 'com.dpenev.mountains39',
       "supportsTablet": false,
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        NSPhotoLibraryUsageDescription: 'Required to save your summit stat cards to your photo library.',
+        NSPhotoLibraryAddUsageDescription: 'Required to save your summit stat cards to your photo library.',
       }
     },
     "android": {
@@ -48,7 +50,7 @@ export default {
       "expo-secure-store",
       "expo-router",
       "expo-localization",
-      "expo-font"
+      "expo-font",
     ]
   }
 }
