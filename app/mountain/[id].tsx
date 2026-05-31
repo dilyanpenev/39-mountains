@@ -56,17 +56,6 @@ export default function MountainDetailScreen() {
     await refreshLog()
   }
 
-  const handleSummitSuccess = async () => {
-    // check achievements with updated entries
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-    const { data } = await supabase
-      .from('summits')
-      .select('*, mountain:mountains(*)')
-      .eq('user_id', user.id)
-    if (data) checkAchievements(data, allMountains)
-  }
-
   useEffect(() => {
     fetchMountain()
     fetchAllMountains()
@@ -213,10 +202,15 @@ export default function MountainDetailScreen() {
         onClose={() => setModalVisible(false)}
         onSuccess={async (summitedAt, notes) => {
           setModalVisible(false)
-          const success = await addSummit(mountain.id, summitedAt, notes)
-          if (success) {
-            await refreshLog()
-            handleSummitSuccess()
+          const newSummitId = await addSummit(mountain.id, summitedAt, notes)
+          if (newSummitId) {
+            setSummitId(newSummitId)
+            setSummitDetails({
+              id: newSummitId,
+              summited_at: summitedAt,
+              notes: notes ?? null,
+            })
+            await refreshStats()
           }
         }}
       />

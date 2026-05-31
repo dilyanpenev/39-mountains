@@ -20,7 +20,7 @@ interface SummitLogContextValue {
     summitedAt: string,
     notes?: string,
     photoUrl?: string
-  ) => Promise<boolean>
+  ) => Promise<string | null>
   deleteEntry: (summitId: string, mountainId: number) => Promise<void>
   isSummited: (mountainId: number) => boolean
 }
@@ -30,7 +30,7 @@ const SummitLogContext = createContext<SummitLogContextValue>({
   loading: true,
   error: null,
   refresh: async () => {},
-  addSummit: async () => false,
+  addSummit: async () => null,
   deleteEntry: async () => {},
   isSummited: () => false,
 })
@@ -84,24 +84,23 @@ export function SummitLogProvider({ children }: { children: ReactNode }) {
     summitedAt: string,
     notes?: string,
     photoUrl?: string
-  ): Promise<boolean> => {
-    setError(null)
+  ): Promise<string | null> => {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return false
+    if (!user) return null
 
-    const { error } = await supabase.from('summits').insert({
+    const { data, error } = await supabase.from('summits').insert({
       user_id: user.id,
       mountain_id: mountainId,
       summited_at: summitedAt,
       notes: notes ?? null,
       photo_url: photoUrl ?? null,
-    })
+    }).select('id').single()
 
     if (error) {
       setError(error.message)
+      return null
     }
 
-    // refetch to get the joined mountain data
     await fetchEntries()
 
     // check for newly unlocked achievements
@@ -113,7 +112,7 @@ export function SummitLogProvider({ children }: { children: ReactNode }) {
     const allMountains = await fetchAllMountains()
     if (updatedEntries) checkAchievements(updatedEntries, allMountains)
 
-    return true
+    return data.id
   }, [checkAchievements])
 
   const deleteEntry = useCallback(async (
