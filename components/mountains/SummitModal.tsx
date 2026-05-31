@@ -38,10 +38,20 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
     const day = String(date.getDate()).padStart(2, '0')
     const dateString = `${year}-${month}-${day}`
     onSuccess(dateString, notes)
+
+    // reset state after submitting
+    setDate(new Date())
+    setNotes('')
+  }
+
+  const handleClose = () => {
+    setDate(new Date())
+    setNotes('')
+    onClose()
   }
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
+    <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
       <KeyboardAvoidingView
         style={styles.overlay}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -49,7 +59,7 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
         <TouchableOpacity
           style={styles.backdrop}
           activeOpacity={1}
-          onPress={onClose}
+          onPress={handleClose}
         />
 
         <View style={styles.sheet}>
@@ -59,7 +69,7 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
           {/* Header */}
           <View style={styles.header}>
             <Text style={styles.mountainName}>{getMountainName(mountain)}</Text>
-            <TouchableOpacity onPress={onClose}>
+            <TouchableOpacity onPress={handleClose}>
               <Ionicons name="close" size={24} color={colors.text.secondary} />
             </TouchableOpacity>
           </View>
