@@ -78,50 +78,65 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
       .eq('achievement_id', achievementId)
   }
 
-  const checkAchievements = useCallback(
-    (entries: Summit[], allMountains: Mountain[]) => {
-      setUnlockedIds(prev => {
-        const next = new Set(prev)
-        let latestNew: Achievement | null = null
+const checkAchievements = useCallback(
+  async (entries: Summit[], allMountains: Mountain[]) => {
+    const toSave: Achievement[] = []
+    let latestNew: Achievement | null = null
 
-        for (const achievement of ACHIEVEMENTS) {
-          if (!next.has(achievement.id)) {
-            const unlocked = achievement.check(entries, allMountains)
-            if (unlocked) {
-              next.add(achievement.id)
-              latestNew = achievement
-              saveAchievement(achievement.id)
-            }
+    setUnlockedIds(prev => {
+      const next = new Set(prev)
+
+      for (const achievement of ACHIEVEMENTS) {
+        if (!next.has(achievement.id)) {
+          const unlocked = achievement.check(entries, allMountains)
+          if (unlocked) {
+            next.add(achievement.id)
+            toSave.push(achievement)
+            latestNew = achievement
           }
         }
+      }
 
-        if (latestNew) setNewlyUnlocked(latestNew)
-        return next
-      })
-    },
-    []
-  )
+      return next
+    })
 
-  const revokeAchievements = useCallback(
-    (entries: Summit[], allMountains: Mountain[]) => {
-      setUnlockedIds(prev => {
-        const next = new Set(prev)
+    if (latestNew) setNewlyUnlocked(latestNew)
 
-        for (const achievement of ACHIEVEMENTS) {
-          if (next.has(achievement.id)) {
-            const stillValid = achievement.check(entries, allMountains)
-            if (!stillValid) {
-              next.delete(achievement.id)
-              removeAchievement(achievement.id)
-            }
+    // database calls outside the state setter
+    for (const achievement of toSave) {
+      await saveAchievement(achievement.id)
+    }
+  },
+  []
+)
+
+const revokeAchievements = useCallback(
+  async (entries: Summit[], allMountains: Mountain[]) => {
+    const toRevoke: string[] = []
+
+    setUnlockedIds(prev => {
+      const next = new Set(prev)
+
+      for (const achievement of ACHIEVEMENTS) {
+        if (next.has(achievement.id)) {
+          const stillValid = achievement.check(entries, allMountains)
+          if (!stillValid) {
+            next.delete(achievement.id)
+            toRevoke.push(achievement.id)
           }
         }
+      }
 
-        return next
-      })
-    },
-    []
-  )
+      return next
+    })
+
+    // database calls outside the state setter
+    for (const achievementId of toRevoke) {
+      await removeAchievement(achievementId)
+    }
+  },
+  []
+)
 
   const clearNewlyUnlocked = () => setNewlyUnlocked(null)
 

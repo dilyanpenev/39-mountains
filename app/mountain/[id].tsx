@@ -52,6 +52,7 @@ export default function MountainDetailScreen() {
     if (!summitId) return
     await deleteEntry(summitId, Number(id))
     setSummitId(null)
+    setSummitDetails(null)
     await refreshStats()
     await refreshLog()
   }
@@ -191,7 +192,10 @@ export default function MountainDetailScreen() {
         ) : (
           <Button
             label={t('mountains.markSummited')}
-            onPress={() => setModalVisible(true)}
+            onPress={() => {
+              setSummitDetails(null)
+              setModalVisible(true)
+            }}
           />
         )}
       </View>

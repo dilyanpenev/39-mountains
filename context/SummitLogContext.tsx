@@ -116,28 +116,30 @@ export function SummitLogProvider({ children }: { children: ReactNode }) {
   }, [checkAchievements])
 
   const deleteEntry = useCallback(async (
-    summitId: string,
-    mountainId: number
-  ) => {
-    setError(null)
+  summitId: string,
+  mountainId: number
+) => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
 
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+  const { error } = await supabase
+    .from('summits')
+    .delete()
+    .eq('id', summitId)
+    .eq('user_id', user.id)
 
-    const { error } = await supabase
-      .from('summits')
-      .delete()
-      .eq('id', summitId)
-      .eq('user_id', user.id)
+  if (error) setError(error.message)
 
-    if (error) setError(error.message)
+  let updatedEntries: Summit[] = []
+  setEntries(prev => {
+    updatedEntries = prev.filter(e => e.id !== summitId)
+    return updatedEntries
+  })
 
-    const updatedEntries = entries.filter(e => e.id !== summitId)
-    setEntries(updatedEntries)
+  const allMountains = await fetchAllMountains()
+  revokeAchievements(updatedEntries, allMountains)
 
-    const allMountains = await fetchAllMountains()
-    revokeAchievements(updatedEntries, allMountains)
-  }, [entries, revokeAchievements])
+}, [revokeAchievements])
 
   const isSummited = useCallback(
     (mountainId: number) => entries.some(e => e.mountain_id === mountainId),
