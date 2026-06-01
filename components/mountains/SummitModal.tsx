@@ -17,7 +17,7 @@ import { Mountain } from '../../types'
 import { getMountainName } from '../../lib/i18n'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
-import { colors, typography, spacing } from '../../constants/theme'
+import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 
 interface SummitModalProps {
   visible: boolean
@@ -30,7 +30,7 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
   const { t } = useTranslation()
   const [date, setDate] = useState(new Date())
   const [notes, setNotes] = useState('')
-  const { loading, error } = useSummitLog()
+  const { loading, error: summitLogError } = useSummitLog()
 
   const handleSubmit = () => {
     const year = date.getFullYear()
@@ -98,7 +98,7 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
               numberOfLines={3}
             />
 
-            {error && <Text style={styles.errorText}>{error}</Text>}
+            {summitLogError && <Text style={globalStyles.errorText}>{summitLogError}</Text>}
 
             <Button
               label={t('mountains.markSummited')}
@@ -157,10 +157,5 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     marginBottom: spacing.lg,
-  },
-  errorText: {
-    ...typography.caption,
-    color: '#E76F51',
-    textAlign: 'center',
   },
 })

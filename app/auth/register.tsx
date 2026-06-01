@@ -12,7 +12,7 @@ import { router } from 'expo-router'
 import { useAuth } from '../../hooks/useAuth'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
-import { colors, typography, spacing } from '../../constants/theme'
+import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 import { t } from 'i18next'
 
 export default function RegisterScreen() {
@@ -90,7 +90,7 @@ export default function RegisterScreen() {
             error={confirmError}
           />
 
-          {error && <Text style={styles.errorText}>{error}</Text>}
+          {error && <Text style={globalStyles.errorText}>{error}</Text>}
 
           <Button
             label={t('auth.register.registerButton')}
@@ -141,12 +141,6 @@ const styles = StyleSheet.create({
   },
   form: {
     marginBottom: spacing.xl,
-  },
-  errorText: {
-    ...typography.caption,
-    color: '#E76F51',
-    marginBottom: spacing.md,
-    textAlign: 'center',
   },
   footer: {
     flexDirection: 'row',

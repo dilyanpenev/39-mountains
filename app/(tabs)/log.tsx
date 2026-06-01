@@ -19,10 +19,11 @@ import { formatDate, getMountainName } from '../../lib/i18n'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useProfileStats } from '../../context/StatsContext'
+import { Button } from '../../components/ui/Button'
 
 export default function LogScreen() {
   const { t } = useTranslation()
-  const { entries, loading, refresh: refreshLog, deleteEntry } = useSummitLog()
+  const { entries, error: summitLogError, loading, refresh: refreshLog, deleteEntry } = useSummitLog()
   const insets = useSafeAreaInsets()
   const { refresh: refreshStats } = useProfileStats() 
 
@@ -36,9 +37,11 @@ export default function LogScreen() {
           text: t('common.delete'),
           style: 'destructive',
           onPress: async () => {
-            await deleteEntry(entry.id, entry.mountain_id)
-            await refreshStats()
-            await refreshLog()
+            const success: boolean = await deleteEntry(entry.id, entry.mountain_id)
+            if (success) {
+              await refreshStats()
+              await refreshLog()
+            }
           },
         },
       ]
@@ -57,6 +60,16 @@ export default function LogScreen() {
     return (
       <View style={globalStyles.centeredContent}>
         <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    )
+  }
+
+  if (summitLogError) {
+    return (
+      <View style={globalStyles.centeredContent}>
+        <Ionicons name="cloud-offline-outline" size={48} color={colors.text.secondary} />
+        <Text style={globalStyles.errorText}>{summitLogError}</Text>
+        <Button label={t('common.retry')} onPress={refreshLog} variant="secondary" />
       </View>
     )
   }

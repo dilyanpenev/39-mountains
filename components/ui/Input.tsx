@@ -8,7 +8,7 @@ import {
   TextInputProps,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { colors, typography, spacing } from '../../constants/theme'
+import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 
 interface InputProps extends TextInputProps {
   label: string
@@ -40,7 +40,7 @@ export function Input({ label, error, secureToggle = false, ...props }: InputPro
           </TouchableOpacity>
         )}
       </View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <Text style={globalStyles.errorText}>{error}</Text>}
     </View>
   )
 }
@@ -77,10 +77,5 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     padding: spacing.xs,
-  },
-  errorText: {
-    ...typography.caption,
-    color: '#E76F51',
-    marginTop: spacing.xs,
   },
 })

@@ -69,6 +69,12 @@ export const globalStyles = {
     borderRadius: 12,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.md,
+  },
+  errorText: {
+    ...typography.caption,
+    color: '#E76F51',
+    marginBottom: spacing.md,
+    textAlign: 'center' as const,
   }
 }
 

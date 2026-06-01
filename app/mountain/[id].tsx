@@ -39,7 +39,7 @@ export default function MountainDetailScreen() {
   const [modalVisible, setModalVisible] = useState(false)
   const [loading, setLoading] = useState(true)
   const { refresh: refreshStats } = useProfileStats()
-  const { addSummit, deleteEntry, isSummited, refresh: refreshLog } = useSummitLog()
+  const { addSummit, deleteEntry, error: summitLogError, isSummited, refresh: refreshLog } = useSummitLog()
   const { checkAchievements } = useAchievements()
   const [allMountains, setAllMountains] = useState<Mountain[]>([])
   const [summitDetails, setSummitDetails] = useState<SummitDetails | null>(null)
@@ -96,6 +96,16 @@ export default function MountainDetailScreen() {
     return (
       <View style={globalStyles.centeredContent}>
         <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    )
+  }
+
+  if (summitLogError) {
+    return (
+      <View style={globalStyles.centeredContent}>
+        <Ionicons name="cloud-offline-outline" size={48} color={colors.text.secondary} />
+        <Text style={globalStyles.errorText}>{summitLogError}</Text>
+        <Button label={t('common.retry')} onPress={refreshLog} variant="secondary" />
       </View>
     )
   }

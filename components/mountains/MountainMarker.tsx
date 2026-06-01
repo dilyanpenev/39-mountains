@@ -13,7 +13,7 @@ export function MountainMarker({ summited, onPress, selected }: MountainMarkerPr
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
       <View style={[styles.marker, summited ? styles.summited : styles.unsummited, selected && styles.selected,]}>
         <Ionicons
-          name={summited ? 'checkmark' : 'triangle'}
+          name={summited ? 'triangle' : 'prism'}
           size={14}
           color="#fff"
         />

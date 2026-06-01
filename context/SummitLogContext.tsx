@@ -21,7 +21,7 @@ interface SummitLogContextValue {
     notes?: string,
     photoUrl?: string
   ) => Promise<string | null>
-  deleteEntry: (summitId: string, mountainId: number) => Promise<void>
+  deleteEntry: (summitId: string, mountainId: number) => Promise<boolean>
   isSummited: (mountainId: number) => boolean
 }
 
@@ -31,7 +31,7 @@ const SummitLogContext = createContext<SummitLogContextValue>({
   error: null,
   refresh: async () => {},
   addSummit: async () => null,
-  deleteEntry: async () => {},
+  deleteEntry: async () => false,
   isSummited: () => false,
 })
 
@@ -69,8 +69,12 @@ export function SummitLogProvider({ children }: { children: ReactNode }) {
       .eq('user_id', user.id)
       .order('summited_at', { ascending: false })
 
-    if (!error) setEntries(data ?? [])
-    else setError(error.message)
+    if (error) {
+      setError(error.message)
+    } else {
+      setError(null)
+      setEntries(data ?? [])
+    }
     setLoading(false)
   }
 
@@ -99,6 +103,8 @@ export function SummitLogProvider({ children }: { children: ReactNode }) {
     if (error) {
       setError(error.message)
       return null
+    } else {
+      setError(null)
     }
 
     await fetchEntries()
@@ -116,30 +122,36 @@ export function SummitLogProvider({ children }: { children: ReactNode }) {
   }, [checkAchievements])
 
   const deleteEntry = useCallback(async (
-  summitId: string,
-  mountainId: number
-) => {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return
+    summitId: string,
+    mountainId: number
+  ): Promise<boolean> => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return false
 
-  const { error } = await supabase
-    .from('summits')
-    .delete()
-    .eq('id', summitId)
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('summits')
+      .delete()
+      .eq('id', summitId)
+      .eq('user_id', user.id)
 
-  if (error) setError(error.message)
+    if (error) {
+      setError(error.message)
+      return false
+    } else {
+      setError(null)
+    }
 
-  let updatedEntries: Summit[] = []
-  setEntries(prev => {
-    updatedEntries = prev.filter(e => e.id !== summitId)
-    return updatedEntries
-  })
+    let updatedEntries: Summit[] = []
+    setEntries(prev => {
+      updatedEntries = prev.filter(e => e.id !== summitId)
+      return updatedEntries
+    })
 
-  const allMountains = await fetchAllMountains()
-  revokeAchievements(updatedEntries, allMountains)
+    const allMountains = await fetchAllMountains()
+    revokeAchievements(updatedEntries, allMountains)
 
-}, [revokeAchievements])
+    return true
+  }, [revokeAchievements])
 
   const isSummited = useCallback(
     (mountainId: number) => entries.some(e => e.mountain_id === mountainId),
