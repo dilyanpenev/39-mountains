@@ -7,6 +7,8 @@ export default {
     cancel: 'Откажи',
     delete: 'Изтрий',
     confirm: 'Потвърди',
+    noInternet: 'Няма интернет връзка',
+    retry: 'Опитай отново',
   },
   auth: {
     login: {
@@ -45,6 +47,13 @@ export default {
       sentTitle: 'Провери имейла си',
       sentSubtitle: 'Изпратихме линк за нулиране на паролата на твоя имейл адрес.',
       backToLogin: 'Обратно към входа',
+    },
+    resetPassword: {
+      title: 'Нова парола',
+      subtitle: 'Въведи новата си парола.',
+      button: 'Смени паролата',
+      successTitle: 'Паролата е сменена',
+      successSubtitle: 'Паролата ти беше сменена успешно. Пренасочване към входа...',
     },
   },
   onboarding: {

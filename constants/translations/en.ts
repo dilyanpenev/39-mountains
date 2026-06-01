@@ -7,6 +7,8 @@ export default {
     cancel: 'Cancel',
     delete: 'Delete',
     confirm: 'Confirm',
+    noInternet: 'No internet connection',
+    retry: 'Try Again',
   },
   auth: {
     login: {
