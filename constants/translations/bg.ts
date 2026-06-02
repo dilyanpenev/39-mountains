@@ -8,6 +8,7 @@ export default {
     delete: 'Изтрий',
     confirm: 'Потвърди',
     noInternet: 'Няма интернет връзка',
+    noInternetSubtitle: 'Моля провери връзката си и опитай отново.',
     retry: 'Опитай отново',
   },
   auth: {

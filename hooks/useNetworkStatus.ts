@@ -5,15 +5,25 @@ export function useNetworkStatus() {
   const [isConnected, setIsConnected] = useState(true)
 
   useEffect(() => {
+    let mounted = true
+
     const check = async () => {
-      const state = await Network.getNetworkStateAsync()
-      setIsConnected(state.isConnected ?? true)
+      try {
+        const state = await Network.getNetworkStateAsync()
+        if (mounted) setIsConnected(state.isConnected ?? true)
+      } catch {
+        if (mounted) setIsConnected(false)
+      }
     }
 
     check()
 
     const interval = setInterval(check, 5000)
-    return () => clearInterval(interval)
+
+    return () => {
+      mounted = false
+      clearInterval(interval)
+    }
   }, [])
 
   return { isConnected }

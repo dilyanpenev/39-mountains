@@ -8,6 +8,7 @@ export default {
     delete: 'Delete',
     confirm: 'Confirm',
     noInternet: 'No internet connection',
+    noInternetSubtitle: 'Please check your connection and try again.',
     retry: 'Try Again',
   },
   auth: {
