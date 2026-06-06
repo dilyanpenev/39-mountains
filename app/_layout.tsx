@@ -8,6 +8,8 @@ import { AchievementModal } from '../components/achievements/AchievementModal'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ONBOARDING_COMPLETE_KEY } from './onboarding'
 import { loadSavedLanguage } from '../lib/i18n'
+import { NetworkBanner } from '../components/ui/NetworkBanner'
+import { ErrorBoundary } from '../components/ui/ErrorBoundary'
 
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
@@ -57,18 +59,21 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <AppProviders>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="auth" />
-          <Stack.Screen name="mountain/[id]" />
-          <Stack.Screen name="share" />
-          <Stack.Screen name="achievements" />
-          <Stack.Screen name="credits" />
-          <Stack.Screen name="onboarding" />
-        </Stack>
-        <AchievementModal />
-      </AppProviders>
+      <ErrorBoundary>
+        <AppProviders>
+          <NetworkBanner />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="auth" />
+            <Stack.Screen name="mountain/[id]" />
+            <Stack.Screen name="share" />
+            <Stack.Screen name="achievements" />
+            <Stack.Screen name="credits" />
+            <Stack.Screen name="onboarding" />
+          </Stack>
+          <AchievementModal />
+        </AppProviders>
+      </ErrorBoundary>
     </SafeAreaProvider>
   )
 }

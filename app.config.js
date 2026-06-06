@@ -13,11 +13,10 @@ export default {
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/39mountains-appicon-2.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "imageWidth": 150,
+      "backgroundColor": "#1B4332"
     },
     "ios": {
-      buildNumber: '1',
       bundleIdentifier: 'com.dpenev.mountains39',
       "supportsTablet": false,
       "infoPlist": {

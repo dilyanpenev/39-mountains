@@ -40,9 +40,7 @@ export default function ProfileScreen() {
   const [exporting, setExporting] = useState(false)
 
   const appVersion = Constants.expoConfig?.version ?? '—'
-  const buildNumber = Constants.expoConfig?.ios?.buildNumber
-    ?? Constants.expoConfig?.android?.versionCode
-    ?? '—'
+  const buildNumber = Constants.expoConfig?.ios?.buildNumber ?? '-'
 
   const handleContact = () => {
     Linking.openURL(`mailto:${APP_CONFIG.contactEmail}?subject=39 Mountains - Support`)

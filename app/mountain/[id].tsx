@@ -21,7 +21,6 @@ import { colors, typography, spacing, globalStyles } from '../../constants/theme
 import { Button } from '../../components/ui/Button'
 import { useProfileStats } from '../../context/StatsContext'
 import { useSummitLog } from '../../context/SummitLogContext'
-import { useAchievements } from '../../context/AchievementContext'
 import { useMapContext } from '../../context/MapContext'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -40,7 +39,6 @@ export default function MountainDetailScreen() {
   const [loading, setLoading] = useState(true)
   const { refresh: refreshStats } = useProfileStats()
   const { addSummit, deleteEntry, error: summitLogError, isSummited, refresh: refreshLog } = useSummitLog()
-  const { checkAchievements } = useAchievements()
   const [allMountains, setAllMountains] = useState<Mountain[]>([])
   const [summitDetails, setSummitDetails] = useState<SummitDetails | null>(null)
   const { setSelectedMapMountainId } = useMapContext()
