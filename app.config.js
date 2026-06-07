@@ -13,7 +13,7 @@ export default {
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/39mountains-appicon-2.png",
-      "imageWidth": 150,
+      "imageWidth": 100,
       "backgroundColor": "#1B4332"
     },
     "ios": {

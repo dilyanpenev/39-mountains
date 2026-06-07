@@ -26,6 +26,7 @@ import { router } from 'expo-router'
 import { useProfileRank } from '../../hooks/useProfileRank'
 import { APP_CONFIG } from '../../constants/configs'
 import { exportUserData } from '../../lib/exportData'
+import * as Application from 'expo-application';
 
 export default function ProfileScreen() {
   const { t } = useTranslation()
@@ -39,8 +40,9 @@ export default function ProfileScreen() {
   const rank = useProfileRank()
   const [exporting, setExporting] = useState(false)
 
-  const appVersion = Constants.expoConfig?.version ?? '—'
-  const buildNumber = Constants.expoConfig?.ios?.buildNumber ?? '-'
+  const appVersion = Application.nativeApplicationVersion ?? '—'
+  const buildNumber = Application.nativeBuildVersion ?? '-'
+
 
   const handleContact = () => {
     Linking.openURL(`mailto:${APP_CONFIG.contactEmail}?subject=39 Mountains - Support`)
@@ -171,12 +173,12 @@ export default function ProfileScreen() {
 
             {/* Contact Us */}
             <SettingsGroup title={t('profile.sections.support')}>
-              <SettingsRow
+              {/* <SettingsRow
                 icon="mail-outline"
                 label={t('profile.contactUs')}
                 onPress={handleContact}
               />
-              <SettingsDivider />
+              <SettingsDivider /> */}
               <SettingsRow
                 icon="images-outline"
                 label={t('attributions.title')}
