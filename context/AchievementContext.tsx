@@ -14,6 +14,7 @@ import { Mountain } from '../types'
 interface AchievementsContextValue {
   unlockedIds: Set<string>
   newlyUnlocked: Achievement | null
+  error: string | null,
   clearNewlyUnlocked: () => void
   checkAchievements: (entries: Summit[], allMountains: Mountain[]) => void
   revokeAchievements: (entries: Summit[], allMountains: Mountain[]) => void
@@ -22,6 +23,7 @@ interface AchievementsContextValue {
 const AchievementsContext = createContext<AchievementsContextValue>({
   unlockedIds: new Set(),
   newlyUnlocked: null,
+  error: null,
   clearNewlyUnlocked: () => {},
   checkAchievements: () => {},
   revokeAchievements: () => {},
@@ -30,6 +32,7 @@ const AchievementsContext = createContext<AchievementsContextValue>({
 export function AchievementsProvider({ children }: { children: ReactNode }) {
   const [unlockedIds, setUnlockedIds] = useState<Set<string>>(new Set())
   const [newlyUnlocked, setNewlyUnlocked] = useState<Achievement | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     loadUnlocked()
@@ -53,7 +56,10 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
       .select('achievement_id')
       .eq('user_id', user.id)
 
-    if (!error && data) {
+    if (error) {
+      setError(error.message)
+    }
+    else if (!error && data) {
       setUnlockedIds(new Set(data.map(a => a.achievement_id)))
     }
   }
@@ -62,20 +68,28 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
-    await supabase
+    const { error } = await supabase
       .from('user_achievements')
       .insert({ user_id: user.id, achievement_id: achievementId })
+    
+    if (error) {
+      setError(error.message)
+    }
   }
 
   const removeAchievement = async (achievementId: string) => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
-    await supabase
+    const { error } = await supabase
       .from('user_achievements')
       .delete()
       .eq('user_id', user.id)
       .eq('achievement_id', achievementId)
+    
+    if (error) {
+      setError(error.message)
+    }
   }
 
 const checkAchievements = useCallback(
@@ -102,7 +116,6 @@ const checkAchievements = useCallback(
 
     if (latestNew) setNewlyUnlocked(latestNew)
 
-    // database calls outside the state setter
     for (const achievement of toSave) {
       await saveAchievement(achievement.id)
     }
@@ -130,7 +143,6 @@ const revokeAchievements = useCallback(
       return next
     })
 
-    // database calls outside the state setter
     for (const achievementId of toRevoke) {
       await removeAchievement(achievementId)
     }
@@ -145,6 +157,7 @@ const revokeAchievements = useCallback(
       value={{
         unlockedIds,
         newlyUnlocked,
+        error,
         clearNewlyUnlocked,
         checkAchievements,
         revokeAchievements,

@@ -42,7 +42,7 @@ export function useAuth() {
     setError(null)
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'mountains39://reset-password',
+      redirectTo: 'mountains39://auth/reset-password',
     })
 
     if (error) setError(error.message)

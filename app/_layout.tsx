@@ -10,6 +10,7 @@ import { ONBOARDING_COMPLETE_KEY } from './onboarding'
 import { loadSavedLanguage } from '../lib/i18n'
 import { NetworkBanner } from '../components/ui/NetworkBanner'
 import { ErrorBoundary } from '../components/ui/ErrorBoundary'
+import * as Linking from 'expo-linking';
 
 export default function RootLayout() {
   const [session, setSession] = useState<Session | null>(null)
@@ -31,7 +32,13 @@ export default function RootLayout() {
     init()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => setSession(session)
+      (event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          router.replace('/auth/reset-password')
+          return
+        }
+        setSession(session)
+      }
     )
 
     return () => subscription.unsubscribe()
@@ -54,6 +61,34 @@ export default function RootLayout() {
 
     navigate()
   }, [session, initialized])
+
+  useEffect(() => {
+    // Handle the deep link when app is already open
+    const subscription = Linking.addEventListener('url', ({ url }) => {
+      handleDeepLink(url);
+    });
+
+    // Handle the deep link when app is opened from cold start
+    Linking.getInitialURL().then((url) => {
+      if (url) handleDeepLink(url);
+    });
+
+    return () => subscription.remove();
+  }, []);
+
+  const handleDeepLink = async (url: string) => {
+    // Extract tokens from the URL fragment
+    const params = new URLSearchParams(url.split('#')[1]);
+    const access_token = params.get('access_token');
+    const refresh_token = params.get('refresh_token');
+    const type = params.get('type');
+
+    if (type === 'recovery' && access_token && refresh_token) {
+      // Set the session so the user is authenticated
+      await supabase.auth.setSession({ access_token, refresh_token });
+      router.replace('/auth/reset-password');
+    }
+  };
 
   if (!initialized) return null
 
