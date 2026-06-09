@@ -26,14 +26,18 @@ export default {
       }
     },
     "android": {
-      versionCode: 1,
       package: 'com.dpenev.mountains39',
       "adaptiveIcon": {
-        "foregroundImage": "./assets/39mountains-appicon-2.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/android-icon.png",
+        "backgroundColor": "#1B4332"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "config": {
+        "googleMaps": {
+          "apiKey": process.env.MAPS_SDK_API_KEY
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
