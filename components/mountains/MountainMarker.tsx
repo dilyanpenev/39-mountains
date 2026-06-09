@@ -18,7 +18,6 @@ export function MountainMarker({ summited, onPress, selected }: MountainMarkerPr
           color="#fff"
         />
       </View>
-      {/* <View style={[styles.pin, summited ? styles.summitedPin : styles.unsummitedPin]} /> */}
     </TouchableOpacity>
   )
 }
@@ -43,12 +42,6 @@ const styles = StyleSheet.create({
     width: 2,
     height: 8,
     alignSelf: 'center',
-  },
-  summitedPin: {
-    backgroundColor: colors.primary,
-  },
-  unsummitedPin: {
-    backgroundColor: colors.mountain.unsummited,
   },
   selected: {
     borderColor: colors.text.primary,

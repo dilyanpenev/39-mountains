@@ -1,10 +1,11 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Platform,
 } from 'react-native'
 import MapView, { Marker, Region } from 'react-native-maps'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -33,9 +34,17 @@ export default function MapScreen() {
   const mapRef = useRef<MapView>(null)
   const { mountains, summitedIds, loading } = useMapMountains()
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(null)
+  const [prevSelectedId, setPrevSelectedId] = useState<number | null>(null)
   const [filter, setFilter] = useState<MapFilter>('all')
   const { selectedMapMountainId, setSelectedMapMountainId } = useMapContext()
+  const [tracksViewChanges, setTracksViewChanges] = useState(true)
 
+  useEffect(() => {
+    if (!loading) {
+      const timer = setTimeout(() => setTracksViewChanges(false), 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [loading])
 
   const filteredMountains = mountains.filter(m => {
     if (filter === 'summited') return summitedIds.has(m.id)
@@ -44,6 +53,9 @@ export default function MapScreen() {
   })
 
   const handleMarkerPress = (mountain: Mountain) => {
+    // needed for Android refresh
+    setPrevSelectedId(selectedMountain?.id ?? null)
+    setTimeout(() => setPrevSelectedId(null), 500)
     setSelectedMountain(mountain)
     mapRef.current?.animateToRegion({
       latitude: mountain.latitude - 0.15,
@@ -54,7 +66,10 @@ export default function MapScreen() {
   }
 
   const handleClose = () => {
+    // needed for Android refresh
+    setPrevSelectedId(selectedMountain?.id ?? null)
     setSelectedMountain(null)
+    setTimeout(() => setPrevSelectedId(null), 500)
     // mapRef.current?.animateToRegion(BULGARIA_REGION, 400)
   }
 
@@ -97,8 +112,15 @@ export default function MapScreen() {
             }}
             onPress={(e) => {
               e.stopPropagation()
+              {Platform.OS === 'android' && handleMarkerPress(mountain)}
             }}
-            tracksViewChanges={false}
+            tracksViewChanges={Platform.OS === 'ios' 
+              ? false 
+              : (tracksViewChanges ||
+                  selectedMountain?.id === mountain.id ||
+                  prevSelectedId === mountain.id
+                )}
+            anchor={{ x: 0.5, y: 0.5 }}
           >
             <MountainMarker
               summited={summitedIds.has(mountain.id)}
