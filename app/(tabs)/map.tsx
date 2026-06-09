@@ -39,12 +39,11 @@ export default function MapScreen() {
   const { selectedMapMountainId, setSelectedMapMountainId } = useMapContext()
   const [tracksViewChanges, setTracksViewChanges] = useState(true)
 
-  useEffect(() => {
-    if (!loading) {
-      const timer = setTimeout(() => setTracksViewChanges(false), 1000)
-      return () => clearTimeout(timer)
-    }
-  }, [loading])
+  const handleMapReady = () => {
+    if (Platform.OS === 'ios') return () => {}
+    const timer = setTimeout(() => setTracksViewChanges(false), 1000)
+    return () => clearTimeout(timer)
+  }
 
   const filteredMountains = mountains.filter(m => {
     if (filter === 'summited') return summitedIds.has(m.id)
@@ -102,6 +101,7 @@ export default function MapScreen() {
         onPress={() => selectedMountain && handleClose()}
         showsUserLocation
         showsCompass={false}
+        onMapReady={handleMapReady}
       >
         {filteredMountains.map(mountain => (
           <Marker
