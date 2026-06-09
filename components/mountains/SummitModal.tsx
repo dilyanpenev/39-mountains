@@ -31,6 +31,7 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
   const [date, setDate] = useState(new Date())
   const [notes, setNotes] = useState('')
   const { loading, error: summitLogError } = useSummitLog()
+  const [showPicker, setShowPicker] = useState(false)
 
   const handleSubmit = () => {
     const year = date.getFullYear()
@@ -54,7 +55,8 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
     <Modal visible={visible} animationType="fade" transparent onRequestClose={handleClose}>
       <KeyboardAvoidingView
         style={styles.overlay}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        enabled={Platform.OS === 'ios'}
       >
         <TouchableOpacity
           style={styles.backdrop}
@@ -81,13 +83,40 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
           >
             <Text style={styles.title}>{t('log.summitDate')}</Text>
 
-            <DateTimePicker
-              value={date}
-              mode="date"
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onChange={(_, selected) => selected && setDate(selected)}
-              maximumDate={new Date()}
-            />
+            {Platform.OS === 'ios' ? (
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="spinner"
+                onChange={(_, selected) => selected && setDate(selected)}
+                maximumDate={new Date()}
+              />
+            ) : (
+              <>
+                <TouchableOpacity
+                  onPress={() => setShowPicker(true)}
+                  style={styles.dateButton}
+                >
+                  <Ionicons name="calendar-outline" size={18} color={colors.primary} />
+                  <Text style={styles.dateButtonText}>
+                    {date.toLocaleDateString('en-GB')}
+                  </Text>
+                </TouchableOpacity>
+
+                {showPicker && (
+                  <DateTimePicker
+                    value={date}
+                    mode="date"
+                    display="default"
+                    onChange={(_, selected) => {
+                      setShowPicker(false)
+                      if (selected) setDate(selected)
+                    }}
+                    maximumDate={new Date()}
+                  />
+                )}
+              </>
+            )}
 
             <Input
               label={t('log.notes')}
@@ -157,5 +186,18 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     marginBottom: spacing.lg,
+  },
+  dateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 8,
+    padding: spacing.md,
+  },
+  dateButtonText: {
+    ...typography.body,
+    color: colors.text.primary,
   },
 })

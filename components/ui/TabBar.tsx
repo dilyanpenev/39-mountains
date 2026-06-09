@@ -133,7 +133,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 32 : 20,
+    bottom: 32,
     left: spacing.xl,
     right: spacing.xl,
     alignItems: 'center',

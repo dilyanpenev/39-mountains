@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  Platform,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import Constants from 'expo-constants'
@@ -297,7 +298,8 @@ const styles = StyleSheet.create({
     ...globalStyles.card,
     paddingHorizontal: spacing.lg,
     gap: spacing.md,
-    backgroundColor: 'rgba(255,255,255,0)'
+    backgroundColor: 'rgba(255,255,255,0)',
+    ...(Platform.OS === 'android' && { elevation: 0 })
   },
   statsGrid: {
     flexDirection: 'row',
@@ -308,9 +310,10 @@ const styles = StyleSheet.create({
     width: '45%',
     alignItems: 'center',
     gap: spacing.xs,
-    backgroundColor: colors.background,
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: spacing.md,
+    ...(Platform.OS === 'android' && { elevation: 2 })
   },
   statValue: {
     ...typography.h3,
