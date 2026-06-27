@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Modal,
   View,
@@ -13,7 +13,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { useSummitLog } from '../../context/SummitLogContext'
-import { Mountain } from '../../types'
+import { Mountain, SummitDisplayDetails } from '../../types'
 import { getMountainName } from '../../lib/i18n'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
@@ -22,16 +22,31 @@ import { colors, typography, spacing, globalStyles } from '../../constants/theme
 interface SummitModalProps {
   visible: boolean
   mountain: Mountain
+  existingSummit: SummitDisplayDetails | null
   onClose: () => void
   onSuccess: (summitedAt: string, notes: string) => void
 }
 
-export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitModalProps) {
+export function SummitModal({ visible, mountain, existingSummit, onClose, onSuccess }: SummitModalProps) {
   const { t } = useTranslation()
+  const isEditMode = !!existingSummit
   const [date, setDate] = useState(new Date())
   const [notes, setNotes] = useState('')
+  // const [photos, setPhotos] = useState(existingSummit?.photos || []);
   const { loading, error: summitLogError } = useSummitLog()
   const [showPicker, setShowPicker] = useState(false)
+
+  useEffect(() => {
+    if (visible) {
+      setDate(existingSummit ? parseDate(existingSummit.summited_at) : new Date())
+      setNotes(existingSummit?.notes || '')
+    }
+  }, [visible, existingSummit])
+
+  const parseDate = (dateString: string) => {
+    const [year, month, day] = dateString.split('-').map(Number)
+    return new Date(year, month - 1, day)
+  }
 
   const handleSubmit = () => {
     const year = date.getFullYear()
@@ -46,8 +61,8 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
   }
 
   const handleClose = () => {
-    setDate(new Date())
-    setNotes('')
+    setDate(existingSummit ? parseDate(existingSummit.summited_at) : new Date())
+    setNotes(existingSummit?.notes || '')
     onClose()
   }
 
@@ -130,7 +145,7 @@ export function SummitModal({ visible, mountain, onClose, onSuccess }: SummitMod
             {summitLogError && <Text style={globalStyles.errorText}>{summitLogError}</Text>}
 
             <Button
-              label={t('mountains.markSummited')}
+              label={isEditMode ? t('common.saveChanges') : t('mountains.markSummited')}
               onPress={handleSubmit}
               loading={loading}
             />

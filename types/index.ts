@@ -31,3 +31,9 @@ export interface Summit {
   created_at: string
   mountain?: Mountain
 }
+
+export interface SummitDisplayDetails {
+  id: string
+  summited_at: string
+  notes: string | null
+}

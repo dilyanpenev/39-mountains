@@ -193,4 +193,9 @@ export const PHOTOCREDITS: PhotoCredit[] = [
     author: 'Boyan Petrov',
     url: 'https://geograf.bg/bg/article/taynite-na-strandzha-planina',
   },
+  {
+    mountainName: 'Onboarding Graphics',
+    author: 'Katerina Limpitsouni',
+    url: 'https://undraw.co/illustrations',
+  },
 ]

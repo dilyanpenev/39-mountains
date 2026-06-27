@@ -21,6 +21,11 @@ interface SummitLogContextValue {
     notes?: string,
     photoUrl?: string
   ) => Promise<string | null>
+  updateSummit: (
+    summitId: string,
+    summitedAt: string,
+    notes?: string,
+  ) => Promise<boolean>
   deleteEntry: (summitId: string, mountainId: number) => Promise<boolean>
   isSummited: (mountainId: number) => boolean
 }
@@ -31,6 +36,7 @@ const SummitLogContext = createContext<SummitLogContextValue>({
   error: null,
   refresh: async () => {},
   addSummit: async () => null,
+  updateSummit: async () => false,
   deleteEntry: async () => false,
   isSummited: () => false,
 })
@@ -121,6 +127,35 @@ export function SummitLogProvider({ children }: { children: ReactNode }) {
     return data.id
   }, [checkAchievements])
 
+
+  const updateSummit = useCallback(async (
+    summitId: string,
+    summitedAt: string,
+    notes?: string,
+  ): Promise<boolean> => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return false
+
+    const { error } = await supabase
+      .from('summits')
+      .update({
+        summited_at: summitedAt,
+        notes: notes ?? null,
+      })
+      .eq('id', summitId)
+      .eq('user_id', user.id)
+
+    if (error) {
+      setError(error.message)
+      return false
+    }
+
+    setError(null)
+    await fetchEntries()
+    return true
+  }, [])
+
+
   const deleteEntry = useCallback(async (
     summitId: string,
     mountainId: number
@@ -166,6 +201,7 @@ export function SummitLogProvider({ children }: { children: ReactNode }) {
         error,
         refresh: fetchEntries,
         addSummit,
+        updateSummit,
         deleteEntry,
         isSummited,
       }}

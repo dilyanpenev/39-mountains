@@ -16,19 +16,13 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { SummitModal } from '../../components/mountains/SummitModal'
 import { getMountainName, getMountainDescription, getMountainRange, getMountainRegion, formatDate } from '../../lib/i18n'
-import { Mountain } from '../../types'
+import { Mountain, SummitDisplayDetails } from '../../types'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
 import { Button } from '../../components/ui/Button'
 import { useProfileStats } from '../../context/StatsContext'
 import { useSummitLog } from '../../context/SummitLogContext'
 import { useMapContext } from '../../context/MapContext'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
-interface SummitDetails {
-  id: string
-  summited_at: string
-  notes: string | null
-}
 
 export default function MountainDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -38,9 +32,9 @@ export default function MountainDetailScreen() {
   const [modalVisible, setModalVisible] = useState(false)
   const [loading, setLoading] = useState(true)
   const { refresh: refreshStats } = useProfileStats()
-  const { addSummit, deleteEntry, error: summitLogError, isSummited, refresh: refreshLog } = useSummitLog()
+  const { addSummit, updateSummit, deleteEntry, error: summitLogError, isSummited, refresh: refreshLog } = useSummitLog()
   const [allMountains, setAllMountains] = useState<Mountain[]>([])
-  const [summitDetails, setSummitDetails] = useState<SummitDetails | null>(null)
+  const [summitDetails, setSummitDetails] = useState<SummitDisplayDetails | null>(null)
   const { setSelectedMapMountainId } = useMapContext()
   const insets = useSafeAreaInsets()
 
@@ -145,6 +139,9 @@ export default function MountainDetailScreen() {
                   {t('mountains.summitedOn')} 
                   {formatDate(summitDetails.summited_at)}
                 </Text>
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                  <Ionicons name="pencil-outline" size={18} color={colors.text.secondary} />
+                </TouchableOpacity>
               </View>
 
               {summitDetails.notes ? (
@@ -192,11 +189,22 @@ export default function MountainDetailScreen() {
       {/* Frozen bottom button */}
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom + spacing.md }]}>
         {summited ? (
-          <Button
-            label={t('mountains.removeSummit')}
-            onPress={handleRemoveSummit}
-            variant="secondary"
-          />
+          <View style={styles.bottomButtons}>
+            <View style={{ flex: 1 }}>
+              <Button
+                label={t('mountains.editSummit')}
+                onPress={() => setModalVisible(true)}
+                variant="secondary"
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Button
+                label={t('mountains.removeSummit')}
+                onPress={handleRemoveSummit}
+                variant="secondary"
+              />
+            </View>
+          </View>
         ) : (
           <Button
             label={t('mountains.markSummited')}
@@ -211,18 +219,31 @@ export default function MountainDetailScreen() {
       <SummitModal
         visible={modalVisible}
         mountain={mountain}
+        existingSummit={summitDetails}
         onClose={() => setModalVisible(false)}
         onSuccess={async (summitedAt, notes) => {
           setModalVisible(false)
-          const newSummitId = await addSummit(mountain.id, summitedAt, notes)
-          if (newSummitId) {
-            setSummitId(newSummitId)
-            setSummitDetails({
-              id: newSummitId,
-              summited_at: summitedAt,
-              notes: notes ?? null,
-            })
-            await refreshStats()
+          if (summited && summitId) {
+            const success = await updateSummit(summitId, summitedAt, notes)
+            if (success) {
+              setSummitDetails({
+                id: summitId,
+                summited_at: summitedAt,
+                notes: notes ?? null,
+              })
+              await refreshStats()
+            }
+          } else {
+            const newSummitId = await addSummit(mountain.id, summitedAt, notes)
+            if (newSummitId) {
+              setSummitId(newSummitId)
+              setSummitDetails({
+                id: newSummitId,
+                summited_at: summitedAt,
+                notes: notes ?? null,
+              })
+              await refreshStats()
+            }
           }
         }}
       />
@@ -392,6 +413,10 @@ const styles = StyleSheet.create({
     borderColor: '#DEE2E6',
     borderTopLeftRadius: 35,
     borderTopRightRadius: 35,
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    gap: spacing.md,
   },
   descriptionBox: {
     borderWidth: 1,

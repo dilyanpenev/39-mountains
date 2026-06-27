@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.text.inverse,
     fontWeight: '600',
+    textAlign: 'center',
   },
   labelSecondary: {
     color: colors.primary,
