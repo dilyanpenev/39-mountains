@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Platform,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Animated
 } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Ionicons } from '@expo/vector-icons'
@@ -18,6 +19,7 @@ import { getMountainName } from '../../lib/i18n'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
+import { useModalAnimation } from '../../hooks/useModalAnimation'
 
 interface SummitModalProps {
   visible: boolean
@@ -66,8 +68,10 @@ export function SummitModal({ visible, mountain, existingSummit, onClose, onSucc
     onClose()
   }
 
+  const { slideAnim } = useModalAnimation(visible)
+
   return (
-    <Modal visible={visible} animationType="fade" transparent onRequestClose={handleClose}>
+    <Modal visible={visible} animationType="none" transparent onRequestClose={handleClose}>
       <KeyboardAvoidingView
         style={styles.overlay}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -79,7 +83,7 @@ export function SummitModal({ visible, mountain, existingSummit, onClose, onSucc
           onPress={handleClose}
         />
 
-        <View style={styles.sheet}>
+        <Animated.View style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}>
           {/* Handle */}
           <View style={styles.handle} />
 
@@ -150,7 +154,7 @@ export function SummitModal({ visible, mountain, existingSummit, onClose, onSucc
               loading={loading}
             />
           </ScrollView>
-        </View>
+        </Animated.View>
       </KeyboardAvoidingView>
     </Modal>
   )
@@ -170,7 +174,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: spacing.xl,
-    paddingBottom: Platform.OS === 'ios' ? 40 : spacing.xl,
+    paddingBottom: Platform.OS === 'ios' ? spacing.md : spacing.xl,
     maxHeight: '85%',
   },
   scrollContent: {

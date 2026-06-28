@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Animated,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
@@ -18,6 +19,7 @@ import { Avatar } from './Avatar'
 import { Input } from './Input'
 import { Button } from './Button'
 import { colors, typography, spacing } from '../../constants/theme'
+import { useModalAnimation } from '../../hooks/useModalAnimation'
 
 interface EditProfileModalProps {
   visible: boolean
@@ -37,6 +39,7 @@ export function EditProfileModal({
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const MAX_NAME_LENGTH = 20
+  const { slideAnim } = useModalAnimation(visible)
 
   const handleSave = async () => {
     if (!displayName.trim()) {
@@ -76,12 +79,7 @@ export function EditProfileModal({
   }
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      onRequestClose={handleClose}
-    >
+    <Modal visible={visible} animationType="none" transparent onRequestClose={handleClose}>
       <KeyboardAvoidingView
         style={styles.overlay}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -93,7 +91,7 @@ export function EditProfileModal({
           onPress={handleClose}
         />
 
-        <View style={styles.sheet}>
+        <Animated.View style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}>
           {/* Handle */}
           <View style={styles.handle} />
 
@@ -151,7 +149,7 @@ export function EditProfileModal({
               loading={saving}
             />
           </ScrollView>
-        </View>
+        </Animated.View>
       </KeyboardAvoidingView>
     </Modal>
   )

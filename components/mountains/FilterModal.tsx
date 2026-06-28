@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { MountainFilters } from '../../hooks/useMountains'
 import { Button } from '../ui/Button'
 import { colors, typography, spacing } from '../../constants/theme'
-import { useEffect, useRef } from 'react'
+import { useModalAnimation } from '../../hooks/useModalAnimation'
 
 interface FilterModalProps {
   visible: boolean
@@ -22,42 +22,7 @@ export function FilterModal({ visible, filters, onUpdate, onClose }: FilterModal
     { value: 'elevation_asc', label: t('mountains.sort.elevationAsc') },
     { value: 'name', label: t('mountains.sort.name') },
   ]
-  const slideAnim = useRef(new Animated.Value(600)).current
-  const backdropOpacity = useRef(new Animated.Value(0)).current
-
-  useEffect(() => {
-  if (visible) {
-    slideAnim.setValue(600)
-    backdropOpacity.setValue(0)
-    Animated.parallel([
-      Animated.timing(backdropOpacity, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.spring(slideAnim, {
-        toValue: 0,
-        damping: 20,
-        mass: 0.8,
-        stiffness: 150,
-        useNativeDriver: true,
-      }),
-    ]).start()
-  } else {
-    Animated.parallel([
-      Animated.timing(backdropOpacity, {
-        toValue: 0,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 600,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start()
-  }
-}, [visible])
+  const { slideAnim } = useModalAnimation(visible)
 
   return (
     <Modal visible={visible} animationType="none" transparent onRequestClose={onClose}>

@@ -11,8 +11,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { Language } from '../../hooks/useLanguage'
 import { colors, typography, spacing } from '../../constants/theme'
-import { useEffect, useRef } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useModalAnimation } from '../../hooks/useModalAnimation'
 
 interface LanguageOption {
   code: Language
@@ -40,113 +39,59 @@ export function LanguageModal({
   onClose,
 }: LanguageModalProps) {
   const { t } = useTranslation()
-  const overlayOpacity = useRef(new Animated.Value(0)).current
-  const sheetTranslateY = useRef(new Animated.Value(300)).current
-  const insets = useSafeAreaInsets()
-
-  useEffect(() => {
-    if (visible) {
-      Animated.parallel([
-        Animated.timing(overlayOpacity, {
-          toValue: 1,
-          duration: 250,
-          useNativeDriver: true,
-        }),
-        Animated.spring(sheetTranslateY, {
-          toValue: 0,
-          damping: 20,
-          stiffness: 200,
-          useNativeDriver: true,
-        }),
-      ]).start()
-    } else {
-      Animated.parallel([
-        Animated.timing(overlayOpacity, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(sheetTranslateY, {
-          toValue: 300,
-          duration: 250,
-          useNativeDriver: true,
-        }),
-      ]).start()
-    }
-  }, [visible])
+  const { slideAnim } = useModalAnimation(visible)
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="none"
-      onRequestClose={onClose}
-    >
-      <Animated.View style={[styles.overlay, { opacity: overlayOpacity }]}>
-        <TouchableOpacity style={StyleSheet.absoluteFill} onPress={onClose} />
-      </Animated.View>
-      <Animated.View
-        style={[
-          styles.sheet,
-          { 
-            transform: [{ translateY: sheetTranslateY }],
-            paddingBottom: insets.bottom + spacing.xl,
-          },
-        ]}
-      >
-        <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={onClose}
-        >
-          <View style={styles.sheet}>
-            <View style={styles.handle} />
+    <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
+      <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose} />
+      <Animated.View style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}>
+        <View style={styles.sheet}>
+          <View style={styles.handle} />
 
-            <Text style={styles.title}>{t('profile.language')}</Text>
+          <Text style={styles.title}>{t('profile.language')}</Text>
 
-            <FlatList
-              data={LANGUAGES}
-              keyExtractor={item => item.code}
-              renderItem={({ item, index }) => (
-                <>
-                  <TouchableOpacity
-                    style={styles.option}
-                    onPress={() => {
-                      onSelect(item.code)
-                      onClose()
-                    }}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={styles.flag}>{item.flag}</Text>
-                    <View style={styles.optionText}>
-                      <Text style={styles.optionLabel}>{item.label}</Text>
-                      <Text style={styles.optionNative}>{item.nativeLabel}</Text>
-                    </View>
-                    {currentLanguage === item.code && (
-                      <Ionicons
-                        name="checkmark-circle"
-                        size={22}
-                        color={colors.primary}
-                      />
-                    )}
-                  </TouchableOpacity>
-                  {index < LANGUAGES.length - 1 && (
-                    <View style={styles.divider} />
+          <FlatList
+            data={LANGUAGES}
+            keyExtractor={item => item.code}
+            renderItem={({ item, index }) => (
+              <>
+                <TouchableOpacity
+                  style={styles.option}
+                  onPress={() => {
+                    onSelect(item.code)
+                    onClose()
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.flag}>{item.flag}</Text>
+                  <View style={styles.optionText}>
+                    <Text style={styles.optionLabel}>{item.label}</Text>
+                    <Text style={styles.optionNative}>{item.nativeLabel}</Text>
+                  </View>
+                  {currentLanguage === item.code && (
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={22}
+                      color={colors.primary}
+                    />
                   )}
-                </>
-              )}
-            />
-          </View>
-        </TouchableOpacity>
+                </TouchableOpacity>
+                {index < LANGUAGES.length - 1 && (
+                  <View style={styles.divider} />
+                )}
+              </>
+            )}
+          />
+        </View>
       </Animated.View>
     </Modal>
   )
 }
 
 const styles = StyleSheet.create({
-  overlay: {
+  backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
   },
   sheet: {
     position: 'absolute',
