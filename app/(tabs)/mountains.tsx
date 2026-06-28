@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   RefreshControl,
+  TextInput,
+  TouchableOpacity,
 } from 'react-native'
 import { router } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -13,15 +15,17 @@ import { useTranslation } from 'react-i18next'
 import { useMountains } from '../../hooks/useMountains'
 import { useSummitLog } from '../../context/SummitLogContext'
 import { MountainCard } from '../../components/mountains/MountainCard'
-import { FilterBar } from '../../components/mountains/FilterBar'
 import { Mountain } from '../../types'
 import { colors, typography, spacing, globalStyles } from '../../constants/theme'
+import { Ionicons } from '@expo/vector-icons'
+import { FilterModal } from '../../components/mountains/FilterModal'
 
 export default function MountainsScreen() {
   const { t } = useTranslation()
   const insets = useSafeAreaInsets()
   const { mountains, loading, filters, updateFilters, refresh } = useMountains()
   const { isSummited } = useSummitLog()
+  const [filterModalVisible, setFilterModalVisible] = useState(false)
 
   const renderItem = useCallback(({ item, index }: { item: Mountain; index: number }) => (
     <MountainCard
@@ -56,8 +60,25 @@ export default function MountainsScreen() {
         />
       </View>
 
-      {/* Filters */}
-      <FilterBar filters={filters} onUpdate={updateFilters} />
+      {/* Search Bar and Filters */}
+      <View style={styles.searchRow}>
+        <View style={styles.searchContainer}>
+          <Ionicons name="search-outline" size={18} color={colors.text.secondary} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder={t('mountains.searchPeaks')}
+            placeholderTextColor={colors.text.secondary}
+            value={filters.search}
+            onChangeText={val => updateFilters({ search: val })}
+          />
+        </View>
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={() => setFilterModalVisible(true)}
+        >
+          <Ionicons name="options-outline" size={22} color={colors.text.primary} />
+        </TouchableOpacity>
+      </View>
     </View>
   )
 
@@ -97,6 +118,13 @@ export default function MountainsScreen() {
             <Text style={styles.emptyText}>{t('mountains.noResults')}</Text>
           </View>
         }
+      />
+      {/* Filter Modal */}
+      <FilterModal
+        visible={filterModalVisible}
+        filters={filters}
+        onUpdate={updateFilters}
+        onClose={() => setFilterModalVisible(false)}
       />
     </View>
   )
@@ -154,5 +182,36 @@ const styles = StyleSheet.create({
   emptyText: {
     ...typography.body,
     color: colors.text.secondary,
+  },
+  searchRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.surface,
+    borderRadius: 10,
+    paddingHorizontal: spacing.md,
+    borderWidth: 1,
+    borderColor: '#DEE2E6',
+    height: 44,
+  },
+  searchInput: {
+    flex: 1,
+    ...typography.body,
+    color: colors.text.primary,
+  },
+  filterButton: {
+    width: 44,
+    height: 44,
+    backgroundColor: colors.surface,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#DEE2E6',
   },
 })

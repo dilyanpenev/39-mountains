@@ -97,6 +97,7 @@ export default {
   mountains: {
     title: 'Планини',
     difficulty: {
+      all: 'Всички',
       easy: 'Лесно',
       moderate: 'Умерено',
       hard: 'Трудно',
@@ -112,6 +113,9 @@ export default {
     markSummited: 'Маркирай като изкачен',
     editSummit: 'Редактирай изкачване',
     removeSummit: 'Премахни изкачване',
+    searchPeaks: 'Търсене...',
+    applyFilters: 'Приложи филтри',
+    filterObjectives: 'Филтриране',
     summited: 'Изкачен',
     summitedOn: 'Изкачен на ',
     elevation: 'Височина',

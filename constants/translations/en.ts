@@ -90,6 +90,7 @@ export default {
   mountains: {
     title: 'Mountains',
     difficulty: {
+      all: 'All',
       easy: 'Easy',
       moderate: 'Moderate',
       hard: 'Hard',
@@ -105,6 +106,9 @@ export default {
     markSummited: 'Mark as Summited',
     editSummit: 'Edit Summit',
     removeSummit: 'Remove Summit',
+    searchPeaks: 'Search peaks...',
+    applyFilters: 'Apply filters',
+    filterObjectives: 'Filter By',
     summited: 'Summited',
     summitedOn: 'Summited on ',
     elevation: 'Elevation',

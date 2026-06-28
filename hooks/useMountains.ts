@@ -11,12 +11,14 @@ export interface MountainFilters {
   difficulty: DifficultyFilter
   summited: SummitedFilter
   sort: SortOption
+  search: string
 }
 
 export const DEFAULT_FILTERS: MountainFilters = {
   difficulty: 'all',
   summited: 'all',
   sort: 'elevation_desc',
+  search: '',
 }
 
 export function useMountains() {
@@ -66,6 +68,10 @@ export function useMountains() {
       if (filters.difficulty !== 'all' && m.difficulty !== filters.difficulty) return false
       if (filters.summited === 'summited' && !summitedIds.has(m.id)) return false
       if (filters.summited === 'unsummited' && summitedIds.has(m.id)) return false
+      if (filters.search) {
+        const q = filters.search.toLowerCase()
+        if (!m.name_en.toLowerCase().includes(q) && !m.name_bg.toLowerCase().includes(q)) return false
+      }
       return true
     })
     .sort((a, b) => {
