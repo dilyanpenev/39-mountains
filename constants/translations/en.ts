@@ -134,6 +134,13 @@ export default {
       summited: 'Summited',
       unsummited: 'Not yet climbed',
     },
+    trailhead: {
+      trailheads: 'Trailheads',
+      navigate: 'Navigate',
+      nearestTown: 'Nearest town',
+      routeLength: 'Distance',
+      elevation_gain: 'Elevation Gain'
+    },
   },
   log: {
     title: 'My Summit Log',

@@ -37,3 +37,26 @@ export interface SummitDisplayDetails {
   summited_at: string
   notes: string | null
 }
+
+export interface Trailhead {
+  id: number
+  mountain_id: number
+  name_en: string
+  name_bg: string
+  lat: number
+  lng: number
+  parking_en: string | null
+  parking_bg: string | null
+  nearest_town_en: string | null
+  nearest_town_bg: string | null
+  difficulty: 'easy' | 'moderate' | 'hard' | null
+  gpx_url: string | null
+  route_length_km: number | null
+  elevation_gain_m: number | null
+  elevation_profile: {
+    lat: number
+    lon: number
+    distance: number
+    elevation: number
+  }[] | null
+}

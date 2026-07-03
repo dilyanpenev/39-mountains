@@ -4,7 +4,7 @@ import * as Localization from 'expo-localization'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import en from '../constants/translations/en'
 import bg from '../constants/translations/bg'
-import { Mountain } from '../types'
+import { Mountain, Trailhead } from '../types'
 
 const resources = {
   en: { translation: en },
@@ -48,6 +48,18 @@ export function getMountainDescription(mountain: Mountain): string {
 
 export function getMountainRange(mountain: Mountain): string {
   return i18next.language === 'bg' ? mountain.range_bg : mountain.range_en
+}
+
+export function getTrailheadName(trailhead: Trailhead): string {
+  return i18next.language === 'bg' ? trailhead.name_bg : trailhead.name_en
+}
+
+export function getTrailheadParking(trailhead: Trailhead): string | null {
+  return i18next.language === 'bg' ? trailhead.parking_bg : trailhead.parking_en
+}
+
+export function getTrailheadTown(trailhead: Trailhead): string | null {
+  return i18next.language === 'bg' ? trailhead.nearest_town_bg : trailhead.nearest_town_en
 }
 
 export function getRelativeTime(dateString: string, language: string): string {

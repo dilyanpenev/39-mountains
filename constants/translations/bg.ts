@@ -141,6 +141,13 @@ export default {
       summited: 'Изкачени',
       unsummited: 'Неизкачени',
     },
+    trailhead: {
+      trailheads: 'Маршрути',
+      navigate: 'Навигирай',
+      nearestTown: 'Най-близък град',
+      routeLength: 'Дистанция',
+      elevation_gain: 'Денивелация'
+    },
   },
   log: {
     title: 'Моят дневник',

@@ -1,6 +1,7 @@
 import * as Sharing from 'expo-sharing'
 import * as FileSystem from 'expo-file-system'
 import { supabase } from './supabase'
+import { Linking, Platform } from 'react-native'
 
 export async function exportUserData(): Promise<boolean> {
   try {
@@ -96,4 +97,11 @@ export async function exportUserData(): Promise<boolean> {
     console.error('Export failed:', err)
     return false
   }
+}
+
+export const openInMaps = (latitude: number, longitude: number, label: string) => {
+  const url = Platform.OS === 'ios'
+    ? `https://maps.apple.com/?ll=${latitude},${longitude}&q=${encodeURIComponent(label)}`
+    : `google.navigation:q=${latitude},${longitude}`
+  Linking.openURL(url)
 }

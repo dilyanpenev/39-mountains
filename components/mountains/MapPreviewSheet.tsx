@@ -1,10 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Platform, Linking } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { Mountain } from '../../types'
 import { getMountainName, getMountainRange } from '../../lib/i18n'
 import { colors, typography, spacing } from '../../constants/theme'
+import { openInMaps } from '../../lib/exportData'
 
 interface MapPreviewSheetProps {
   mountain: Mountain | null
@@ -22,18 +23,6 @@ export function MapPreviewSheet({ mountain, summited, onClose }: MapPreviewSheet
   const { t } = useTranslation()
 
   if (!mountain) return null
-
-  const openInMaps = () => {
-    const { latitude, longitude } = mountain
-    const label = encodeURIComponent(getMountainName(mountain))
-
-    const url = Platform.select({
-      ios: `https://maps.apple.com/?ll=${latitude},${longitude}&q=${label}`,
-      android: `geo:${latitude},${longitude}?q=${latitude},${longitude}(${label})`,
-    })
-
-    Linking.openURL(url!)
-  }
 
   return (
     <View style={styles.sheet}>
@@ -99,7 +88,7 @@ export function MapPreviewSheet({ mountain, summited, onClose }: MapPreviewSheet
           {/* External maps button */}
           <TouchableOpacity
             style={styles.mapsButton}
-            onPress={openInMaps}
+            onPress={() => openInMaps(mountain.latitude, mountain.longitude, getMountainName(mountain))}
             activeOpacity={0.8}
           >
             <Ionicons name="map-outline" size={16} color={colors.primary} />
