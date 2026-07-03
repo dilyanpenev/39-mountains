@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   View,
   Text,
   Image,
-  ScrollView,
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
+  Animated,
 } from 'react-native'
 import { useLocalSearchParams, router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -37,6 +37,16 @@ export default function MountainDetailScreen() {
   const [summitDetails, setSummitDetails] = useState<SummitDisplayDetails | null>(null)
   const { setSelectedMapMountainId } = useMapContext()
   const insets = useSafeAreaInsets()
+
+  // Animated scroll
+  const scrollY = useRef(new Animated.Value(0)).current
+  const IMAGE_HEIGHT = 380
+
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [IMAGE_HEIGHT - 100, IMAGE_HEIGHT - 60],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  })
 
   const summited = isSummited(Number(id))
 
@@ -106,8 +116,28 @@ export default function MountainDetailScreen() {
 
   return (
     <View style={globalStyles.screen}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-
+      {/* Sticky header */}
+      <View style={[styles.stickyHeader, { paddingTop: insets.top }]}>
+        <Animated.View style={[styles.stickyHeaderBg, { opacity: headerOpacity }]} />
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={22} color={colors.text.primary} />
+        </TouchableOpacity>
+        <Animated.Text
+          style={[styles.stickyTitle, { opacity: headerOpacity }]}
+          numberOfLines={1}
+        >
+          {getMountainName(mountain)}
+        </Animated.Text>
+      </View>
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
+      >
         {/* Cover Image */}
         <View style={styles.imageContainer}>
           {mountain.cover_image_url ? (
@@ -117,11 +147,6 @@ export default function MountainDetailScreen() {
               <Text style={styles.placeholderEmoji}>⛰️</Text>
             </View>
           )}
-
-          {/* Back Button */}
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={22} color={colors.text.primary} />
-          </TouchableOpacity>
 
           {/* Title at bottom left */}
           <View style={styles.imageTitleContainer}>
@@ -257,7 +282,7 @@ export default function MountainDetailScreen() {
         )}
 
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
 
       {/* Frozen bottom button */}
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom + spacing.md }]}>
@@ -358,10 +383,28 @@ const styles = StyleSheet.create({
   placeholderEmoji: {
     fontSize: 64,
   },
-  backButton: {
+  stickyHeader: {
     position: 'absolute',
-    top: 52,
-    left: spacing.xl,
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.sm,
+    gap: spacing.md,
+  },
+  stickyHeaderBg: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: colors.background,
+  },
+  stickyTitle: {
+    ...typography.h2,
+    color: colors.text.primary,
+    flex: 1,
+  },
+  backButton: {
     backgroundColor: colors.surface,
     borderRadius: 20,
     padding: spacing.sm,
