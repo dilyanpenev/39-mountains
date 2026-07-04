@@ -7,16 +7,18 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native'
-import MapView, { Marker, Region } from 'react-native-maps'
+import MapView, { Marker, Polyline, Region } from 'react-native-maps'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 import { useMapMountains } from '../../hooks/useMapMountains'
 import { MountainMarker } from '../../components/mountains/MountainMarker'
 import { MapPreviewSheet } from '../../components/mountains/MapPreviewSheet'
-import { Mountain } from '../../types'
+import { Mountain, Trailhead } from '../../types'
 import { colors, globalStyles, spacing, typography } from '../../constants/theme'
 import { useFocusEffect } from 'expo-router'
 import { useMapContext } from '../../context/MapContext'
+import { supabase } from '../../lib/supabase'
+import { TrailheadModal } from '../../components/mountains/TrailheadModal'
 
 // Bulgaria's geographic center
 const BULGARIA_REGION: Region = {
@@ -38,6 +40,10 @@ export default function MapScreen() {
   const [filter, setFilter] = useState<MapFilter>('all')
   const { selectedMapMountainId, setSelectedMapMountainId } = useMapContext()
   const [tracksViewChanges, setTracksViewChanges] = useState(true)
+
+  const [trailheads, setTrailheads] = useState<Trailhead[]>([])
+  const [trailheadModalVisible, setTrailheadModalVisible] = useState(false)
+  const [activeTrailhead, setActiveTrailhead] = useState<Trailhead | null>(null)
 
   const handleMapReady = () => {
     if (Platform.OS === 'ios') return () => {}
@@ -68,6 +74,8 @@ export default function MapScreen() {
     // needed for Android refresh
     setPrevSelectedId(selectedMountain?.id ?? null)
     setSelectedMountain(null)
+    setActiveTrailhead(null)
+    setTrailheadModalVisible(false)
     setTimeout(() => setPrevSelectedId(null), 500)
     // mapRef.current?.animateToRegion(BULGARIA_REGION, 400)
   }
@@ -81,6 +89,23 @@ export default function MapScreen() {
       }
     }, [selectedMapMountainId, mountains])
   )
+
+  useEffect(() => {
+    if (selectedMountain) {
+      supabase
+        .from('trailheads')
+        .select('*')
+        .eq('mountain_id', selectedMountain.id)
+        .then(({ data }) => {
+          setTrailheads(data ?? [])
+          setActiveTrailhead(null)
+        })
+    } else {
+      setTrailheads([])
+      setActiveTrailhead(null)
+      setTrailheadModalVisible(false)
+    }
+  }, [selectedMountain?.id])
 
   if (loading) {
     return (
@@ -131,6 +156,19 @@ export default function MapScreen() {
             />
           </Marker>
         ))}
+        {/* Active route polyline */}
+        {activeTrailhead?.elevation_profile && (
+          <Polyline
+            coordinates={activeTrailhead.elevation_profile.map(p => ({
+              latitude: p.lat,
+              longitude: p.lon,
+            }))}
+            strokeColor={colors.primary}
+            strokeWidth={3}
+            lineCap="round"
+            lineJoin="round"
+          />
+        )}
       </MapView>
 
       {/* Filter Toggle */}
@@ -161,9 +199,35 @@ export default function MapScreen() {
         <MapPreviewSheet
           mountain={selectedMountain}
           summited={summitedIds.has(selectedMountain.id)}
+          trailheads={trailheads}
           onClose={handleClose}
+          onShowRoutes={() => setTrailheadModalVisible(true)}
         />
       )}
+
+      <TrailheadModal
+        visible={trailheadModalVisible}
+        trailheads={trailheads}
+        activeTrailhead={activeTrailhead}
+        onClose={() => setTrailheadModalVisible(false)}
+        onSelect={(trailhead) => {
+          setActiveTrailhead(trailhead)
+          if (trailhead?.elevation_profile && trailhead.elevation_profile.length > 0) {
+            const lats = trailhead.elevation_profile.map(p => p.lat)
+            const lons = trailhead.elevation_profile.map(p => p.lon)
+            const minLat = Math.min(...lats)
+            const maxLat = Math.max(...lats)
+            const minLon = Math.min(...lons)
+            const maxLon = Math.max(...lons)
+            mapRef.current?.animateToRegion({
+              latitude: (minLat + maxLat) / 2,
+              longitude: (minLon + maxLon) / 2,
+              latitudeDelta: (maxLat - minLat) * 1.5,
+              longitudeDelta: (maxLon - minLon) * 1.5,
+            }, 600)
+          }
+        }}
+      />
 
     </View>
   )

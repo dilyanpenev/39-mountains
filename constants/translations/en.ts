@@ -141,6 +141,12 @@ export default {
       routeLength: 'Distance',
       elevation_gain: 'Elevation Gain'
     },
+    map: {
+      showRoute: "Show Route",
+      selectRoute: "Select a Route",
+      selectRouteHint: "Tap a route to display it on the map",
+      hideRoute: "Hide Route"
+    }
   },
   log: {
     title: 'My Summit Log',

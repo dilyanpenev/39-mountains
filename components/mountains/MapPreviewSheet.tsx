@@ -2,15 +2,16 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
-import { Mountain } from '../../types'
+import { Mountain, Trailhead } from '../../types'
 import { getMountainName, getMountainRange } from '../../lib/i18n'
 import { colors, typography, spacing } from '../../constants/theme'
-import { openInMaps } from '../../lib/exportData'
 
 interface MapPreviewSheetProps {
   mountain: Mountain | null
   summited: boolean
+  trailheads: Trailhead[]
   onClose: () => void
+  onShowRoutes: () => void
 }
 
 const DIFFICULTY_COLORS = {
@@ -19,7 +20,7 @@ const DIFFICULTY_COLORS = {
   hard: colors.difficulty.hard,
 }
 
-export function MapPreviewSheet({ mountain, summited, onClose }: MapPreviewSheetProps) {
+export function MapPreviewSheet({ mountain, summited, trailheads, onClose, onShowRoutes }: MapPreviewSheetProps) {
   const { t } = useTranslation()
 
   if (!mountain) return null
@@ -85,15 +86,15 @@ export function MapPreviewSheet({ mountain, summited, onClose }: MapPreviewSheet
             <Ionicons name="arrow-forward" size={16} color="#fff" />
           </TouchableOpacity>
 
-          {/* External maps button */}
-          <TouchableOpacity
-            style={styles.mapsButton}
-            onPress={() => openInMaps(mountain.latitude, mountain.longitude, getMountainName(mountain))}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="map-outline" size={16} color={colors.primary} />
-            <Text style={styles.mapsButtonText}>{t('mountains.viewOnMap')}</Text>
-          </TouchableOpacity>
+          {trailheads.length > 0 && (
+            <TouchableOpacity
+              style={styles.trailheadBtn}
+              onPress={onShowRoutes}
+            >
+              <Ionicons name="map-outline" size={16} color={colors.primary} />
+              <Text style={styles.trailheadBtnText}>{t('mountains.map.showRoute')}</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
@@ -218,6 +219,22 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   mapsButtonText: {
+    ...typography.body,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  trailheadBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    backgroundColor: colors.primary + '10',
+  },
+  trailheadBtnText: {
     ...typography.body,
     color: colors.primary,
     fontWeight: '600',

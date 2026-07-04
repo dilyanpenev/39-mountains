@@ -148,6 +148,12 @@ export default {
       routeLength: 'Дистанция',
       elevation_gain: 'Денивелация'
     },
+    map: {
+      showRoute: "Покажи маршрут",
+      selectRoute: "Избери маршрут",
+      selectRouteHint: "Докосни маршрут, за да го видиш на картата",
+      hideRoute: "Скрий маршрута"
+    }
   },
   log: {
     title: 'Моят дневник',
