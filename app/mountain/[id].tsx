@@ -22,6 +22,7 @@ import { useSummitLog } from '../../context/SummitLogContext'
 import { useMapContext } from '../../context/MapContext'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { openInMaps } from '../../lib/exportData'
+import { ElevationProfile } from '../../components/mountains/ElevationProfile'
 
 export default function MountainDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -37,6 +38,7 @@ export default function MountainDetailScreen() {
   const [summitDetails, setSummitDetails] = useState<SummitDisplayDetails | null>(null)
   const { setSelectedMapMountainId } = useMapContext()
   const insets = useSafeAreaInsets()
+  const [expandedTrailhead, setExpandedTrailhead] = useState<number | null>(trailheads.length === 1 ? trailheads[0].id : null)
 
   // Animated scroll
   const scrollY = useRef(new Animated.Value(0)).current
@@ -212,75 +214,89 @@ export default function MountainDetailScreen() {
 
           {/* Trailheads */}
           {trailheads.length > 0 && (
-          <View style={styles.descriptionBox}>
-            <Text style={styles.descriptionTitle}>{t('mountains.trailhead.trailheads')}</Text>
-            {trailheads.map((trailhead, index) => (
-              <View key={trailhead.id}>
-                {index > 0 && <View style={styles.trailheadDivider} />}
-                
-                <Text style={styles.trailheadName}>{getTrailheadName(trailhead)}</Text>
+            <View>
+              <Text style={styles.descriptionTitle}>{t('mountains.trailhead.trailheads')}</Text>
+              {trailheads.map((trailhead, index) => {
+                const isExpanded = expandedTrailhead === trailhead.id
+                const label = String.fromCharCode(65 + index) // A, B, C...
+                return (
+                  <View key={trailhead.id} style={styles.trailheadCard}>
+                    {/* Header row */}
+                    <TouchableOpacity
+                      style={styles.trailheadHeader}
+                      onPress={() => setExpandedTrailhead(isExpanded ? null : trailhead.id)}
+                      activeOpacity={0.7}
+                    >
+                      <View style={styles.trailheadBadge}>
+                        <Text style={styles.trailheadBadgeText}>{label}</Text>
+                      </View>
+                      <View style={styles.trailheadHeaderText}>
+                        <Text style={styles.trailheadName}>{getTrailheadName(trailhead)}</Text>
+                        <Text style={styles.trailheadSubtitle}>
+                          {getTrailheadTown(trailhead)}
+                          {trailhead.difficulty ? ` · ${t(`mountains.difficulty.${trailhead.difficulty}`)}` : ''}
+                        </Text>
+                      </View>
+                      <Ionicons
+                        name={isExpanded ? 'chevron-up' : 'chevron-down'}
+                        size={18}
+                        color={colors.text.secondary}
+                      />
+                    </TouchableOpacity>
 
-                <View style={styles.trailheadGrid}>
-                  {trailhead.nearest_town_en && (
-                    <View style={styles.trailheadChip}>
-                      <Ionicons name="business-outline" size={14} color={colors.text.secondary} />
-                      <View>
-                        <Text style={styles.trailheadChipLabel}>{t('mountains.trailhead.nearestTown')}</Text>
-                        <Text style={styles.trailheadChipValue}>{getTrailheadTown(trailhead)}</Text>
-                      </View>
-                    </View>
-                  )}
-                  {trailhead.difficulty && (
-                    <View style={styles.trailheadChip}>
-                      <Ionicons name="flag-outline" size={14} color={colors.text.secondary} />
-                      <View>
-                        <Text style={styles.trailheadChipLabel}>{t('mountains.diff')}</Text>
-                        <Text style={styles.trailheadChipValue}>{t(`mountains.difficulty.${trailhead.difficulty}`)}</Text>
-                      </View>
-                    </View>
-                  )}
-                </View>
+                    {/* Expanded content */}
+                    {isExpanded && (
+                      <View style={styles.trailheadBody}>
+                        {/* Info chips */}
+                        <View style={styles.trailheadGrid}>
+                          {trailhead.route_length_km && (
+                            <View style={styles.trailheadChip}>
+                              <Ionicons name="map-outline" size={13} color={colors.text.secondary} />
+                              <View>
+                                <Text style={styles.trailheadChipLabel}>{t('mountains.trailhead.routeLength')}</Text>
+                                <Text style={styles.trailheadChipValue}>{trailhead.route_length_km} km</Text>
+                              </View>
+                            </View>
+                          )}
+                          {trailhead.elevation_gain_m && (
+                            <View style={styles.trailheadChip}>
+                              <Ionicons name="trending-up-outline" size={13} color={colors.text.secondary} />
+                              <View>
+                                <Text style={styles.trailheadChipLabel}>{t('mountains.trailhead.elevation_gain')}</Text>
+                                <Text style={styles.trailheadChipValue}>{trailhead.elevation_gain_m} m</Text>
+                              </View>
+                            </View>
+                          )}
+                        </View>
 
-                <View style={styles.trailheadGrid}>
-                  {trailhead.route_length_km && (
-                    <View style={styles.trailheadChip}>
-                      <Ionicons name="map-outline" size={14} color={colors.text.secondary} />
-                      <View>
-                        <Text style={styles.trailheadChipLabel}>{t('mountains.trailhead.routeLength')}</Text>
-                        <Text style={styles.trailheadChipValue}>{trailhead.route_length_km} km</Text>
-                      </View>
-                    </View>
-                  )}
-                  {trailhead.elevation_gain_m && (
-                    <View style={styles.trailheadChip}>
-                      <Ionicons name="swap-vertical-outline" size={14} color={colors.text.secondary} />
-                      <View>
-                        <Text style={styles.trailheadChipLabel}>{t('mountains.trailhead.elevation_gain')}</Text>
-                        <Text style={styles.trailheadChipValue}>{trailhead.elevation_gain_m} m</Text>
-                      </View>
-                    </View>
-                  )}
-                </View>
+                        {/* Parking */}
+                        {trailhead.parking_en && (
+                          <View style={styles.trailheadParking}>
+                            <Ionicons name="car-outline" size={14} color={colors.text.secondary} />
+                            <Text style={styles.trailheadParkingText}>{getTrailheadParking(trailhead)}</Text>
+                          </View>
+                        )}
 
-                {trailhead.parking_en && (
-                  <View style={styles.trailheadParking}>
-                    <Ionicons name="car-outline" size={14} color={colors.text.secondary} />
-                    <Text style={styles.trailheadParkingText}>{getTrailheadParking(trailhead)}</Text>
+                        {/* Elevation profile */}
+                        {trailhead.elevation_profile && (
+                          <ElevationProfile data={trailhead.elevation_profile} />
+                        )}
+
+                        {/* Navigate button */}
+                        <TouchableOpacity
+                          style={styles.trailheadNavigateBtn}
+                          onPress={() => openInMaps(trailhead.lat, trailhead.lng, getTrailheadName(trailhead))}
+                        >
+                          <Ionicons name="navigate-outline" size={15} color={colors.primary} />
+                          <Text style={styles.trailheadNavigateText}>{t('mountains.trailhead.navigate')}</Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
                   </View>
-                )}
-
-                <TouchableOpacity
-                  style={styles.trailheadNavigateBtn}
-                  onPress={() => openInMaps(trailhead.lat, trailhead.lng, getTrailheadName(trailhead))}
-                >
-                  <Ionicons name="navigate-outline" size={15} color={colors.primary} />
-                  <Text style={styles.trailheadNavigateText}>{t('mountains.trailhead.navigate')}</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        )}
-
+                )
+              })}
+            </View>
+          )}
         </View>
       </Animated.ScrollView>
 
@@ -544,16 +560,54 @@ const styles = StyleSheet.create({
   descriptionTitle: {
     ...typography.h3,
     color: colors.text.primary,
+    paddingBottom: spacing.md,
+  },
+  trailheadCard: {
+    borderWidth: 1,
+    borderColor: '#DEE2E6',
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: spacing.sm,
+  },
+  trailheadHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  trailheadHeaderText: {
+    flex: 1,
+  },
+  trailheadBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: colors.primary + '15',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  trailheadBadgeText: {
+    ...typography.body,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  trailheadBody: {
+    padding: spacing.md,
+    paddingTop: 0,
+    gap: spacing.sm,
   },
   trailheadName: {
-    ...typography.h3,
+    ...typography.body,
     color: colors.text.primary,
-    marginBottom: spacing.sm,
+    fontWeight: '600',
+  },
+  trailheadSubtitle: {
+    ...typography.caption,
+    color: colors.text.secondary,
   },
   trailheadGrid: {
     flexDirection: 'row',
     gap: spacing.sm,
-    marginBottom: spacing.sm,
   },
   trailheadChip: {
     flex: 1,
@@ -579,7 +633,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: spacing.sm,
-    marginBottom: spacing.sm,
   },
   trailheadParkingText: {
     ...typography.body,
@@ -596,16 +649,10 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderRadius: 8,
     padding: spacing.sm,
-    marginTop: spacing.xs,
   },
   trailheadNavigateText: {
     ...typography.body,
     color: colors.primary,
     fontWeight: '600',
-  },
-  trailheadDivider: {
-    height: 1,
-    backgroundColor: '#DEE2E6',
-    marginVertical: spacing.md,
   },
 })
