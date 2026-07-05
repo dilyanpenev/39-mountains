@@ -133,7 +133,7 @@ export default function MountainDetailScreen() {
       </View>
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: true }
@@ -159,26 +159,65 @@ export default function MountainDetailScreen() {
         {/* Content */}
         <View style={styles.content}>
 
-          {/* Summit Details Card */}
-          {summited && summitDetails && (
-            <View style={styles.summitDetailsCard}>
-              <View style={styles.summitDetailsRow}>
-                <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
-                <Text style={styles.summitDetailsText}>
-                  {t('mountains.summitedOn')} 
-                  {formatDate(summitDetails.summited_at)}
+          {/* Summit Status Card */}
+          <View style={styles.summitDetailsCard}>
+            <View style={styles.summitStatusHeader}>
+              <View style={styles.summitStatusIcon}>
+                <Ionicons
+                  name={summited ? 'checkmark' : 'triangle-outline'}
+                  size={20}
+                  color={colors.primary}
+                />
+              </View>
+              <View style={styles.summitStatusText}>
+                <Text style={styles.summitStatusTitle}>{t('mountains.summitStatus')}</Text>
+                <Text style={styles.summitStatusSubtitle}>
+                  {summited && summitDetails
+                    ? `${t('mountains.summitedOn')} ${formatDate(summitDetails.summited_at)}`
+                    : t('mountains.notSummitedYet')}
                 </Text>
-                <TouchableOpacity onPress={() => setModalVisible(true)}>
-                  <Ionicons name="pencil-outline" size={18} color={colors.text.secondary} />
+              </View>
+            </View>
+
+            {summited && summitDetails?.notes && (
+              <View style={styles.summitDetailsRow}>
+                <Ionicons name="chatbubble-outline" size={16} color={colors.text.secondary} />
+                <Text style={styles.summitDetailsText}>{summitDetails.notes}</Text>
+              </View>
+            )}
+
+            {summited ? (
+              <View style={styles.bottomButtons}>
+                <View style={{ flex: 1 }}>
+                  <Button
+                    label={t('mountains.editSummit')}
+                    onPress={() => setModalVisible(true)}
+                    variant="secondary"
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={handleRemoveSummit}
+                >
+                  <Ionicons name="trash-outline" size={18} color={colors.text.secondary} />
                 </TouchableOpacity>
               </View>
+            ) : (
+              <Button
+                label={t('mountains.markSummited')}
+                onPress={() => {
+                  setSummitDetails(null)
+                  setModalVisible(true)
+                }}
+              />
+            )}
+          </View>
 
-              {summitDetails.notes ? (
-                <View style={styles.summitDetailsRow}>
-                  <Ionicons name="chatbubble-outline" size={20} color={colors.text.secondary} />
-                  <Text style={styles.summitDetailsText}>{summitDetails.notes}</Text>
-                </View>
-              ) : null}
+          {/* Description */}
+          {getMountainDescription(mountain).trim() !== '' && (
+            <View style={styles.descriptionBox}>
+              {/* <Text style={styles.descriptionTitle}>{t('mountains.additionalInfo')}</Text> */}
+              <Text style={styles.description}>{getMountainDescription(mountain)}</Text>
             </View>
           )}
 
@@ -204,13 +243,7 @@ export default function MountainDetailScreen() {
             <Text style={styles.mapButtonText}>{t('mountains.viewOnAppMap')}</Text>
           </TouchableOpacity>
 
-          {/* Description */}
-          {getMountainDescription(mountain).trim() !== '' && (
-            <View style={styles.descriptionBox}>
-              <Text style={styles.descriptionTitle}>{t('mountains.additionalInfo')}</Text>
-              <Text style={styles.description}>{getMountainDescription(mountain)}</Text>
-            </View>
-          )}
+          
 
           {/* Trailheads */}
           {trailheads.length > 0 && (
@@ -299,36 +332,6 @@ export default function MountainDetailScreen() {
           )}
         </View>
       </Animated.ScrollView>
-
-      {/* Frozen bottom button */}
-      <View style={[styles.bottomBar, { paddingBottom: insets.bottom + spacing.md }]}>
-        {summited ? (
-          <View style={styles.bottomButtons}>
-            <View style={{ flex: 1 }}>
-              <Button
-                label={t('mountains.editSummit')}
-                onPress={() => setModalVisible(true)}
-                variant="secondary"
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Button
-                label={t('mountains.removeSummit')}
-                onPress={handleRemoveSummit}
-                variant="secondary"
-              />
-            </View>
-          </View>
-        ) : (
-          <Button
-            label={t('mountains.markSummited')}
-            onPress={() => {
-              setSummitDetails(null)
-              setModalVisible(true)
-            }}
-          />
-        )}
-      </View>
 
       <SummitModal
         visible={modalVisible}
@@ -429,6 +432,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: spacing.xl,
+    paddingTop: spacing.lg,
     gap: spacing.lg,
   },
   titleRow: {
@@ -497,12 +501,37 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   summitDetailsCard: {
-    backgroundColor: colors.primary + '12',
-    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderRadius: 16,
     padding: spacing.md,
-    gap: spacing.sm,
+    gap: spacing.md,
     borderWidth: 1,
-    borderColor: colors.primary + '30',
+    borderColor: '#DEE2E6',
+  },
+  summitStatusHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  summitStatusIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: colors.primary + '15',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  summitStatusTitle: {
+    ...typography.h3,
+    color: colors.text.primary,
+  },
+  summitStatusSubtitle: {
+    ...typography.caption,
+    color: colors.text.secondary,
+    marginTop: 2,
+  },
+  summitStatusText: {
+    flex: 1,
   },
   summitDetailsHeader: {
     flexDirection: 'row',
@@ -550,11 +579,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.md,
   },
-  descriptionBox: {
-    borderWidth: 1,
-    borderColor: '#DEE2E6',
+  deleteButton: {
     borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
     padding: spacing.md,
+  },
+  descriptionBox: {
     gap: spacing.sm,
   },
   descriptionTitle: {
